@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preguntas y Respuestas — Museo Piedra Pintada</title>
+  <meta name="description" content="Preguntas frecuentes sobre el Museo Arqueológico Piedra Pintada y formulario para enviar nuevas consultas.">
+  <link rel="stylesheet" href="../css/estilos.css">
+  <style>
+    .qa-item {
+      background: var(--grad-card);
+      border: 1px solid var(--glass-border);
+      border-radius: 1rem;
+      overflow: hidden;
+      margin-bottom: .75rem;
+      transition: border-color .2s;
+    }
+    .qa-item:hover { border-color: rgba(200,146,42,.3); }
+    .qa-pregunta {
+      width: 100%;
+      text-align: left;
+      padding: 1.1rem 1.25rem;
+      background: none;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      cursor: pointer;
+      font-family: var(--font-cuerpo);
+      font-size: .95rem;
+      font-weight: 600;
+      color: var(--color-texto);
+    }
+    .qa-flecha { font-size: 1.1rem; color: var(--color-dorado); transition: transform .3s var(--ease-out); flex-shrink:0; }
+    .qa-item.abierto .qa-flecha { transform: rotate(180deg); }
+    .qa-respuesta {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .35s var(--ease-out), padding .35s var(--ease-out);
+      padding: 0 1.25rem;
+    }
+    .qa-item.abierto .qa-respuesta { max-height: 300px; padding: 0 1.25rem 1.25rem; }
+    .qa-respuesta-texto { font-size: .9rem; color: var(--color-texto-2); line-height: 1.75; border-left: 3px solid rgba(200,146,42,.4); padding-left: 1rem; }
+    .qa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+    @media(max-width:768px) { .qa-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<div class="bg-texture" aria-hidden="true"></div>
+<div id="header-placeholder"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <nav class="breadcrumb"><a href="../index.html">Inicio</a><span class="breadcrumb__sep">›</span><span aria-current="page">Preguntas</span></nav>
+    <span class="etiqueta">Centro de ayuda</span>
+    <h1>Preguntas y Respuestas</h1>
+    <div class="divisor divisor--left"></div>
+  </div>
+</section>
+
+<section class="section--sm">
+  <div class="container">
+    <div class="qa-grid">
+      <!-- Preguntas frecuentes -->
+      <div>
+        <h2 style="margin-bottom:1.5rem;">Preguntas frecuentes</h2>
+        <div id="lista-qa" role="list"></div>
+      </div>
+
+      <!-- Formulario nueva pregunta -->
+      <div class="revelar retraso-2">
+        <div style="background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1.5rem;padding:2rem;position:sticky;top:calc(var(--header-h) + 1.5rem);">
+          <h2 style="font-size:1.3rem;margin-bottom:.5rem;">¿Tienes otra pregunta?</h2>
+          <p style="font-size:.85rem;color:var(--color-texto-2);margin-bottom:1.5rem;line-height:1.6;">Envíanos tu consulta y el equipo del museo la responderá en máximo 3 días hábiles.</p>
+          <form id="form-pregunta" novalidate>
+            <div class="form-grupo">
+              <label class="form-etiqueta" for="preg-nombre">Tu nombre (opcional)</label>
+              <input type="text" id="preg-nombre" class="form-input" placeholder="Nombre o anónimo">
+            </div>
+            <div class="form-grupo">
+              <label class="form-etiqueta" for="preg-email">Correo (para recibir respuesta)</label>
+              <input type="email" id="preg-email" class="form-input" placeholder="tu@correo.com">
+            </div>
+            <div class="form-grupo">
+              <label class="form-etiqueta" for="preg-texto">Tu pregunta *</label>
+              <textarea id="preg-texto" class="form-textarea" placeholder="Escribe tu pregunta aquí..." required></textarea>
+              <div class="form-error">La pregunta es obligatoria</div>
+            </div>
+            <button type="submit" class="btn btn--primario w-full" id="btn-enviar-pregunta" style="justify-content:center;">
+              ❓ Enviar pregunta
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="footer-placeholder"></div>
+
+<script src="../js/componentes.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/app.js"></script>
+<script>
+'use strict';
+let QAS = [];
+
+function renderQa() {
+  const lista = document.getElementById('lista-qa');
+  lista.innerHTML = QAS.map((qa, i) => `
+    <div class="qa-item revelar" role="listitem" id="qa-item-${i}">
+      <button class="qa-pregunta" onclick="toggleQa(${i})" aria-expanded="false" aria-controls="qa-resp-${i}" id="qa-btn-${i}">
+        <span>💬 ${qa.q}</span>
+        <span class="qa-flecha" aria-hidden="true">▾</span>
+      </button>
+      <div class="qa-respuesta" id="qa-resp-${i}" role="region" aria-labelledby="qa-btn-${i}">
+        <div class="qa-respuesta-texto">${qa.r}</div>
+      </div>
+    </div>
+  `).join('');
+  const obs = new IntersectionObserver(en => en.forEach(e => { if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);} }), {threshold:.08});
+  lista.querySelectorAll('.revelar').forEach(el => obs.observe(el));
+}
+
+function toggleQa(i) {
+  const item = document.getElementById(`qa-item-${i}`);
+  const btn  = document.getElementById(`qa-btn-${i}`);
+  const abierto = item.classList.toggle('abierto');
+  btn.setAttribute('aria-expanded', abierto);
+}
+
+// Formulario
+document.getElementById('form-pregunta').addEventListener('submit', async e => {
+  e.preventDefault();
+  if (!window.Museo?.validarFormulario(e.target)) return;
+  const btn = document.getElementById('btn-enviar-pregunta');
+  btn.textContent = 'Enviando...'; btn.disabled = true;
+  
+  try {
+    await window.api.preguntas.crear(document.getElementById('preg-texto').value);
+    btn.textContent = '✅ Pregunta enviada';
+    window.Museo?.mostrarToast('❓ Tu pregunta fue enviada. Responderemos pronto.', 'exito');
+    e.target.reset();
+  } catch(err) {
+    console.error(err);
+  } finally {
+    setTimeout(() => { btn.textContent = '❓ Enviar pregunta'; btn.disabled = false; }, 3000);
+  }
+});
+
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const data = await window.api.preguntas.obtenerPublicadas();
+    QAS = data.map(q => ({
+      q: q.pregunta,
+      r: q.respuesta
+    }));
+  } catch(err) {
+    console.error(err);
+  }
+  renderQa();
+});
+</script>
+</body>
+</html>

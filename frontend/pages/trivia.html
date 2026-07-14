@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trivia Arqueológica — Museo Piedra Pintada</title>
+  <meta name="description" content="Pon a prueba tu conocimiento sobre arqueología venezolana y los petroglifos de Piedra Pintada en nuestra trivia interactiva.">
+  <link rel="stylesheet" href="../css/estilos.css">
+  <style>
+    .trivia-wrapper {
+      min-height: calc(100vh - var(--header-h));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: calc(var(--header-h) + 2rem) 1rem 2rem;
+    }
+    .trivia-card {
+      background: var(--grad-card);
+      border: 1px solid var(--glass-border);
+      border-radius: 2rem;
+      width: 100%;
+      max-width: 700px;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg), var(--shadow-gold);
+    }
+    .trivia-header {
+      background: linear-gradient(135deg, rgba(200,146,42,0.15), rgba(90,60,30,0.2));
+      border-bottom: 1px solid var(--glass-border);
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .trivia-body { padding: 2.5rem 2rem; }
+    .pregunta-numero {
+      font-size: .78rem;
+      color: var(--color-texto-3);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-bottom: .75rem;
+    }
+    .pregunta-texto {
+      font-family: var(--font-titulo);
+      font-size: 1.4rem;
+      line-height: 1.35;
+      margin-bottom: 2rem;
+      color: var(--color-texto);
+    }
+    .opciones { display: flex; flex-direction: column; gap: .75rem; }
+    .opcion-btn {
+      width: 100%;
+      padding: 1rem 1.25rem;
+      background: rgba(44,31,18,0.5);
+      border: 2px solid rgba(200,146,42,.2);
+      border-radius: 1rem;
+      color: var(--color-texto);
+      font-size: .95rem;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: all .2s var(--ease-out);
+      font-family: var(--font-cuerpo);
+    }
+    .opcion-btn:hover:not(:disabled) {
+      border-color: rgba(200,146,42,.5);
+      background: rgba(200,146,42,.08);
+      transform: translateX(4px);
+    }
+    .opcion-btn.correcta {
+      border-color: #60C080;
+      background: rgba(60,160,80,.15);
+      animation: correcto .4s var(--ease-bounce);
+    }
+    .opcion-btn.incorrecta {
+      border-color: #E06060;
+      background: rgba(200,60,60,.15);
+    }
+    @keyframes correcto {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+    .opcion-letra {
+      width: 32px; height: 32px;
+      border-radius: .5rem;
+      background: rgba(200,146,42,.15);
+      border: 1px solid rgba(200,146,42,.3);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .85rem;
+      color: var(--color-dorado-claro);
+      flex-shrink: 0;
+      transition: all .2s;
+    }
+    .opcion-btn.correcta .opcion-letra  { background: #60C080; border-color: #60C080; color: #fff; }
+    .opcion-btn.incorrecta .opcion-letra{ background: #E06060; border-color: #E06060; color: #fff; }
+    .trivia-footer {
+      padding: 1.25rem 2rem;
+      border-top: 1px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: .75rem;
+    }
+    /* Pantalla de inicio */
+    .trivia-inicio { text-align: center; padding: 3rem 2rem; }
+    /* Pantalla de resultado */
+    .trivia-resultado { text-align: center; padding: 3rem 2rem; display: none; }
+    .puntaje-circulo {
+      width: 160px; height: 160px;
+      border-radius: 50%;
+      background: conic-gradient(var(--color-dorado) 0% var(--p, 0%), rgba(200,146,42,.15) var(--p, 0%) 100%);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1.5rem;
+      position: relative;
+    }
+    .puntaje-circulo::before {
+      content: '';
+      position: absolute;
+      inset: 12px;
+      background: var(--color-fondo-3);
+      border-radius: 50%;
+    }
+    .puntaje-circulo span { position: relative; z-index: 1; font-family: var(--font-titulo); font-size: 2.5rem; font-weight: 900; color: var(--color-dorado-claro); }
+    .temporizador {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      color: var(--color-dorado-claro);
+    }
+    .temporizador svg { width: 20px; height: 20px; }
+
+    @media(max-width:520px) {
+      .trivia-body { padding: 1.5rem 1rem; }
+      .pregunta-texto { font-size: 1.15rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="bg-texture" aria-hidden="true"></div>
+<div id="header-placeholder"></div>
+
+<div class="trivia-wrapper">
+  <div class="trivia-card">
+
+    <!-- Pantalla de INICIO -->
+    <div id="pantalla-inicio" class="trivia-inicio">
+      <div style="font-size:5rem;margin-bottom:1rem;">🏆</div>
+      <span class="etiqueta">¿Quién quiere ser millonario?</span>
+      <h1 style="font-size:2rem;margin:1rem 0 .75rem;">Trivia Arqueológica</h1>
+      <p style="color:var(--color-texto-2);max-width:400px;margin:0 auto 2rem;line-height:1.7;">
+        10 preguntas sobre los petroglifos, la historia precolombina y el Museo Piedra Pintada. ¿Cuántas puedes responder correctamente?
+      </p>
+      <div style="display:flex;gap:1.5rem;justify-content:center;margin-bottom:2rem;flex-wrap:wrap;">
+        <div style="text-align:center;">
+          <div style="font-family:var(--font-titulo);font-size:1.5rem;color:var(--color-dorado-claro);">10</div>
+          <div style="font-size:.75rem;color:var(--color-texto-3);">Preguntas</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-family:var(--font-titulo);font-size:1.5rem;color:var(--color-dorado-claro);">30s</div>
+          <div style="font-size:.75rem;color:var(--color-texto-3);">Por pregunta</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-family:var(--font-titulo);font-size:1.5rem;color:var(--color-dorado-claro);">1000</div>
+          <div style="font-size:.75rem;color:var(--color-texto-3);">Puntos máx.</div>
+        </div>
+      </div>
+      <button class="btn btn--primario btn--lg" id="btn-iniciar-trivia">🎮 Iniciar Trivia</button>
+    </div>
+
+    <!-- Pantalla de PREGUNTA -->
+    <div id="pantalla-pregunta" style="display:none;">
+      <div class="trivia-header">
+        <div>
+          <div style="font-size:.78rem;color:var(--color-texto-3);text-transform:uppercase;letter-spacing:.08em;">Pregunta</div>
+          <div style="font-family:var(--font-titulo);font-size:1.2rem;color:var(--color-dorado-claro);" id="num-pregunta">1 / 10</div>
+        </div>
+        <div class="barra-carga" style="flex:1;margin:0 1.5rem;" aria-label="Progreso de la trivia">
+          <div class="barra-carga__inner" id="barra-trivia" style="animation:none;background:var(--grad-dorado);"></div>
+        </div>
+        <div class="temporizador" aria-live="polite">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          <span id="contador-tiempo">30</span>s
+        </div>
+        <div style="font-family:var(--font-titulo);color:var(--color-dorado-claro);">⭐ <span id="puntaje-actual">0</span></div>
+      </div>
+
+      <div class="trivia-body">
+        <div class="pregunta-numero" id="pregunta-categoria">CATEGORÍA: PETROGLIFOS</div>
+        <div class="pregunta-texto" id="pregunta-texto">¿Cuántos petroglifos han sido catalogados en el Parque Piedra Pintada?</div>
+        <div class="opciones" id="contenedor-opciones" role="group" aria-label="Opciones de respuesta"></div>
+      </div>
+
+      <div class="trivia-footer">
+        <div id="feedback-texto" style="font-size:.85rem;min-height:1.2rem;" aria-live="polite"></div>
+        <button class="btn btn--primario" id="btn-siguiente-pregunta" disabled>Siguiente →</button>
+      </div>
+    </div>
+
+    <!-- Pantalla de RESULTADO -->
+    <div id="pantalla-resultado" class="trivia-resultado">
+      <div class="puntaje-circulo" id="circulo-puntaje">
+        <span id="puntaje-final">0%</span>
+      </div>
+      <h2 style="margin-bottom:.5rem;" id="resultado-titulo">¡Bien hecho!</h2>
+      <p style="color:var(--color-texto-2);margin-bottom:.5rem;">Respondiste correctamente <strong id="correctas-num" style="color:var(--color-dorado-claro);">0</strong> de 10 preguntas</p>
+      <p style="color:var(--color-texto-3);font-size:.85rem;margin-bottom:2rem;">Puntaje: <strong id="puntaje-num" style="color:var(--color-dorado-claro);">0</strong> / 1000 puntos</p>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+        <button class="btn btn--primario" id="btn-reintentar">🔄 Jugar de nuevo</button>
+        <a href="petroglifos.html" class="btn btn--contorno" id="btn-explorar-desde-trivia">🪨 Explorar petroglifos</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="footer-placeholder"></div>
+
+<script src="../js/componentes.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/app.js"></script>
+<script>
+'use strict';
+
+let PREGUNTAS = [];
+let respuestasUsuario = [];
+
+let preguntaActual = 0;
+let timer = null;
+let tiempoRestante = 30;
+let respondida = false;
+
+async function iniciarTrivia() {
+  document.getElementById('pantalla-inicio').style.display = 'none';
+  document.getElementById('pantalla-resultado').style.display = 'none';
+  
+  try {
+    const btn = document.getElementById('btn-iniciar-trivia');
+    const textOrg = btn.textContent;
+    btn.textContent = 'Cargando...';
+    const data = await window.api.trivia.obtenerPreguntas(10);
+    PREGUNTAS = data.map(q => ({
+      id: q.id,
+      pregunta: q.pregunta,
+      opciones: [q.opcion_a, q.opcion_b, q.opcion_c, q.opcion_d],
+      categoria: 'TRIVIA'
+    }));
+    btn.textContent = textOrg;
+  } catch (e) {
+    document.getElementById('pantalla-inicio').style.display = '';
+    return;
+  }
+
+  if (PREGUNTAS.length === 0) {
+    window.Museo?.mostrarToast('No hay preguntas disponibles.', 'aviso');
+    document.getElementById('pantalla-inicio').style.display = '';
+    return;
+  }
+
+  preguntaActual = 0; respuestasUsuario = []; respondida = false;
+  document.getElementById('puntaje-actual').textContent = '-';
+  document.getElementById('pantalla-pregunta').style.display = '';
+  mostrarPregunta();
+}
+
+function mostrarPregunta() {
+  respondida = false;
+  const p = PREGUNTAS[preguntaActual];
+  document.getElementById('num-pregunta').textContent = `${preguntaActual + 1} / ${PREGUNTAS.length}`;
+  document.getElementById('barra-trivia').style.width = `${((preguntaActual) / PREGUNTAS.length) * 100}%`;
+  document.getElementById('pregunta-categoria').textContent = `CATEGORÍA: ${p.categoria}`;
+  document.getElementById('pregunta-texto').textContent = p.pregunta;
+  document.getElementById('feedback-texto').textContent = '';
+  document.getElementById('btn-siguiente-pregunta').disabled = true;
+
+  const letras = ['A', 'B', 'C', 'D'];
+  document.getElementById('contenedor-opciones').innerHTML = p.opciones.map((op, i) => `
+    <button class="opcion-btn" onclick="responder(${i})" id="opcion-${i}" aria-label="Opción ${letras[i]}: ${op}">
+      <span class="opcion-letra">${letras[i]}</span>
+      <span>${op}</span>
+    </button>
+  `).join('');
+
+  iniciarTemporizador();
+}
+
+function iniciarTemporizador() {
+  clearInterval(timer);
+  tiempoRestante = 30;
+  document.getElementById('contador-tiempo').textContent = tiempoRestante;
+  timer = setInterval(() => {
+    tiempoRestante--;
+    document.getElementById('contador-tiempo').textContent = tiempoRestante;
+    if (tiempoRestante <= 5) document.getElementById('contador-tiempo').style.color = '#E06060';
+    else document.getElementById('contador-tiempo').style.color = '';
+    if (tiempoRestante <= 0) { clearInterval(timer); if (!respondida) responder(-1); }
+  }, 1000);
+}
+
+function responder(indice) {
+  if (respondida) return;
+  respondida = true;
+  clearInterval(timer);
+  const p = PREGUNTAS[preguntaActual];
+
+  const letras = ['A', 'B', 'C', 'D'];
+  const opcionElegida = indice >= 0 ? letras[indice] : null;
+  respuestasUsuario.push({ pregunta_id: p.id, opcion: opcionElegida });
+
+  document.querySelectorAll('.opcion-btn').forEach(btn => btn.disabled = true);
+  if (indice >= 0) {
+    document.getElementById(`opcion-${indice}`).style.borderColor = 'var(--color-dorado-claro)';
+    document.getElementById(`opcion-${indice}`).style.background = 'rgba(200,146,42,.15)';
+  }
+
+  document.getElementById('feedback-texto').innerHTML = `<span style="color:var(--color-texto-2);">Respuesta registrada.</span>`;
+  document.getElementById('btn-siguiente-pregunta').disabled = false;
+}
+
+document.getElementById('btn-siguiente-pregunta').addEventListener('click', () => {
+  preguntaActual++;
+  if (preguntaActual < PREGUNTAS.length) {
+    mostrarPregunta();
+  } else {
+    mostrarResultado();
+  }
+});
+
+async function mostrarResultado() {
+  document.getElementById('pantalla-pregunta').style.display = 'none';
+  document.getElementById('pantalla-resultado').style.display = 'block';
+  
+  document.getElementById('resultado-titulo').textContent = 'Calculando...';
+  document.getElementById('circulo-puntaje').style.display = 'none';
+  document.getElementById('correctas-num').textContent = '...';
+  document.getElementById('puntaje-num').textContent = '...';
+
+  try {
+    const data = await window.api.trivia.verificar(respuestasUsuario);
+    const { puntaje, total, detalle } = data;
+    
+    // Contar cuántas respuestas fueron correctas en el detalle
+    const correctas = detalle.filter(d => d.correcta).length;
+    const pct = Math.round((correctas / total) * 100);
+
+    document.getElementById('circulo-puntaje').style.display = 'flex';
+    document.getElementById('puntaje-final').textContent = pct + '%';
+    document.getElementById('correctas-num').textContent = correctas;
+    document.getElementById('puntaje-num').textContent = puntaje;
+    document.getElementById('circulo-puntaje').style.setProperty('--p', pct + '%');
+
+    const titulos = [
+      [0,  40,  '¡Sigue aprendiendo! 📚'],
+      [40, 70,  '¡Buen intento! 🌟'],
+      [70, 90,  '¡Excelente conocimiento! 🏆'],
+      [90, 101, '¡Experto en arqueología! 🎓'],
+    ];
+    const t = titulos.find(([min,max]) => pct >= min && pct < max);
+    document.getElementById('resultado-titulo').textContent = t?.[2] || '¡Bien hecho!';
+  } catch (error) {
+    console.error(error);
+    window.Museo?.mostrarToast('Error al verificar resultados.', 'error');
+    document.getElementById('resultado-titulo').textContent = 'Error';
+  }
+}
+
+document.getElementById('btn-iniciar-trivia').addEventListener('click', iniciarTrivia);
+document.getElementById('btn-reintentar').addEventListener('click', iniciarTrivia);
+</script>
+</body>
+</html>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reseñas de Visitantes — Museo Piedra Pintada</title>
+  <meta name="description" content="Lee las reseñas de quienes visitaron el Museo Arqueológico Piedra Pintada y comparte tu propia experiencia.">
+  <link rel="stylesheet" href="../css/estilos.css">
+  <style>
+    .resenas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap: 1.25rem; }
+    .resena-card {
+      background: var(--grad-card);
+      border: 1px solid var(--glass-border);
+      border-radius: 1.2rem;
+      padding: 1.5rem;
+      transition: transform .3s var(--ease-bounce), border-color .3s;
+    }
+    .resena-card:hover { transform: translateY(-4px); border-color: rgba(200,146,42,.35); }
+    .resena-header { display: flex; align-items: flex-start; gap: .85rem; margin-bottom: 1rem; }
+    .resena-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--grad-dorado); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; color: var(--color-texto-inv); font-weight: 700; font-family: var(--font-titulo); }
+    .resena-autor { font-weight: 600; font-size: .9rem; }
+    .resena-fecha { font-size: .75rem; color: var(--color-texto-3); }
+    .resena-texto { font-size: .88rem; color: var(--color-texto-2); line-height: 1.7; }
+    .resena-foto { margin-top: .85rem; border-radius: .75rem; overflow: hidden; }
+    .resena-foto img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
+    .promedio-card {
+      text-align: center;
+      background: var(--grad-card);
+      border: 1px solid var(--glass-border);
+      border-radius: 1.5rem;
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+    }
+    .promedio-num { font-family: var(--font-titulo); font-size: 5rem; font-weight: 900; background: var(--grad-dorado); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; }
+    .barra-dist { display: flex; align-items: center; gap: .75rem; margin-bottom: .4rem; }
+    .barra-dist span:first-child { font-size: .8rem; color: var(--color-texto-3); min-width: 50px; }
+    .barra-dist-track { flex: 1; height: 8px; background: rgba(200,146,42,.12); border-radius: 4px; overflow: hidden; }
+    .barra-dist-fill { height: 100%; background: var(--grad-dorado); border-radius: 4px; }
+    .barra-dist span:last-child { font-size: .75rem; color: var(--color-texto-3); min-width: 30px; text-align: right; }
+  </style>
+</head>
+<body>
+<div class="bg-texture" aria-hidden="true"></div>
+<div id="header-placeholder"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <nav class="breadcrumb"><a href="../index.html">Inicio</a><span class="breadcrumb__sep">›</span><span aria-current="page">Reseñas</span></nav>
+    <span class="etiqueta">Lo que dicen nuestros visitantes</span>
+    <h1>Reseñas y Comentarios</h1>
+    <div class="divisor divisor--left"></div>
+  </div>
+</section>
+
+<section class="section--sm">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:300px 1fr;gap:2.5rem;align-items:start;" id="resenas-layout">
+      <!-- Resumen calificaciones -->
+      <div>
+        <div class="promedio-card revelar">
+          <div class="promedio-num">4.8</div>
+          <div style="display:flex;justify-content:center;gap:3px;margin:.5rem 0;">
+            <span class="estrella">★</span><span class="estrella">★</span><span class="estrella">★</span><span class="estrella">★</span><span class="estrella" style="color:var(--color-dorado-claro);">★</span>
+          </div>
+          <div style="font-size:.82rem;color:var(--color-texto-3);">Basado en 127 reseñas</div>
+
+          <div style="margin-top:1.5rem;text-align:left;">
+            <div class="barra-dist"><span>5 ★</span><div class="barra-dist-track"><div class="barra-dist-fill" style="width:78%;"></div></div><span>78%</span></div>
+            <div class="barra-dist"><span>4 ★</span><div class="barra-dist-track"><div class="barra-dist-fill" style="width:15%;"></div></div><span>15%</span></div>
+            <div class="barra-dist"><span>3 ★</span><div class="barra-dist-track"><div class="barra-dist-fill" style="width:5%;"></div></div><span>5%</span></div>
+            <div class="barra-dist"><span>2 ★</span><div class="barra-dist-track"><div class="barra-dist-fill" style="width:1%;"></div></div><span>1%</span></div>
+            <div class="barra-dist"><span>1 ★</span><div class="barra-dist-track"><div class="barra-dist-fill" style="width:1%;"></div></div><span>1%</span></div>
+          </div>
+        </div>
+
+        <div style="background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1.2rem;padding:1.5rem;" class="revelar retraso-2">
+          <h3 style="font-size:1rem;color:var(--color-dorado-claro);margin-bottom:1rem;">¿Visitaste el museo?</h3>
+          <p style="font-size:.82rem;color:var(--color-texto-2);margin-bottom:1rem;">Comparte tu experiencia y ayuda a otros visitantes. Debes estar registrado.</p>
+          <a href="login.html" class="btn btn--primario w-full" id="btn-escribir-resena" style="justify-content:center;">✍️ Escribir reseña</a>
+        </div>
+      </div>
+
+      <!-- Lista reseñas -->
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+          <h2 style="font-size:1.2rem;">Últimas reseñas</h2>
+          <select class="form-select" style="width:auto;padding:.4rem .8rem;" id="ordenar-resenas" aria-label="Ordenar reseñas">
+            <option>Más recientes</option>
+            <option>Mejor puntuadas</option>
+            <option>Con fotos</option>
+          </select>
+        </div>
+        <div class="resenas-grid" id="grid-resenas"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Modal escribir reseña -->
+<div class="modal-overlay" id="modal-resena">
+  <div class="modal">
+    <div class="modal__cabecera">
+      <h2 class="modal__titulo">✍️ Escribir reseña</h2>
+      <button class="modal__cerrar" aria-label="Cerrar">✕</button>
+    </div>
+    <form id="form-resena" novalidate>
+      <div class="form-grupo">
+        <label class="form-etiqueta">Calificación *</label>
+        <div style="display:flex;gap:.5rem;font-size:2rem;cursor:pointer;" id="selector-estrellas" role="radiogroup" aria-label="Calificación">
+          <span data-val="1">☆</span><span data-val="2">☆</span><span data-val="3">☆</span><span data-val="4">☆</span><span data-val="5">☆</span>
+        </div>
+        <input type="hidden" id="valor-estrellas" value="0" required>
+      </div>
+      <div class="form-grupo">
+        <label class="form-etiqueta" for="resena-titulo">Título de tu reseña *</label>
+        <input type="text" id="resena-titulo" class="form-input" placeholder="Resumen de tu experiencia" required>
+        <div class="form-error">El título es obligatorio</div>
+      </div>
+      <div class="form-grupo">
+        <label class="form-etiqueta" for="resena-texto">Tu reseña *</label>
+        <textarea id="resena-texto" class="form-textarea" placeholder="Cuéntanos sobre tu visita..." required></textarea>
+        <div class="form-error">La reseña es obligatoria</div>
+      </div>
+      <div class="form-grupo">
+        <label class="form-etiqueta" for="resena-foto">Agregar foto (opcional)</label>
+        <input type="file" id="resena-foto" accept="image/*" style="display:none;">
+        <button type="button" class="btn btn--fantasma" onclick="document.getElementById('resena-foto').click()" id="btn-adjuntar-foto">📷 Adjuntar foto</button>
+        <div id="foto-preview" style="margin-top:.75rem;display:none;">
+          <img id="foto-preview-img" style="max-height:150px;border-radius:.5rem;border:1px solid var(--glass-border);" alt="Vista previa">
+        </div>
+      </div>
+      <button type="submit" class="btn btn--primario w-full" style="justify-content:center;">Publicar reseña</button>
+    </form>
+  </div>
+</div>
+
+<div id="footer-placeholder"></div>
+
+<script src="../js/componentes.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/app.js"></script>
+<script>
+'use strict';
+let RESENAS = [];
+
+const COLORES_AVATAR = ['#8B5E2A','#5C3D1E','#4A3728','#6B4C2A','#3A2B18','#7A5530'];
+
+const grid = document.getElementById('grid-resenas');
+function renderResenas() {
+  grid.innerHTML = RESENAS.map((r, i) => `
+    <article class="resena-card revelar" style="--i:${i}">
+      <div class="resena-header">
+        <div class="resena-avatar" style="background:${COLORES_AVATAR[i%COLORES_AVATAR.length]};">${r.inicial}</div>
+        <div>
+          <div class="resena-autor">${r.autor}</div>
+          <div style="display:flex;gap:1px;margin:.2rem 0 0;color:var(--color-dorado-claro);">${'★'.repeat(r.calif)}${'<span style="color:var(--color-texto-3)">☆</span>'.repeat(5-r.calif)}</div>
+          <div class="resena-fecha">${r.fecha}</div>
+        </div>
+      </div>
+      <p class="resena-texto">${r.texto}</p>
+      ${r.foto ? `<div class="resena-foto"><img src="${r.img}" alt="Foto de la visita de ${r.autor}" loading="lazy"></div>` : ''}
+    </article>
+  `).join('');
+
+  // Scroll reveal
+  const obs = new IntersectionObserver(en => en.forEach(e => { if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);} }), {threshold:.08});
+  grid.querySelectorAll('.revelar').forEach(el => obs.observe(el));
+}
+
+// Modal reseña
+document.getElementById('btn-escribir-resena').addEventListener('click', e => {
+  e.preventDefault();
+  window.Museo?.abrirModal('modal-resena');
+});
+
+// Selector estrellas
+let calif = 0;
+document.getElementById('selector-estrellas').addEventListener('click', e => {
+  const span = e.target.closest('[data-val]');
+  if (!span) return;
+  calif = parseInt(span.dataset.val);
+  document.getElementById('valor-estrellas').value = calif;
+  const spans = document.querySelectorAll('#selector-estrellas span');
+  spans.forEach((s, i) => { s.textContent = i < calif ? '★' : '☆'; s.style.color = i < calif ? 'var(--color-dorado-claro)' : 'var(--color-texto-3)'; });
+});
+
+// Preview foto
+document.getElementById('resena-foto').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    document.getElementById('foto-preview-img').src = ev.target.result;
+    document.getElementById('foto-preview').style.display = '';
+    document.getElementById('btn-adjuntar-foto').textContent = '✅ Foto adjuntada';
+  };
+  reader.readAsDataURL(file);
+});
+
+// Submit reseña
+document.getElementById('form-resena').addEventListener('submit', async e => {
+  e.preventDefault();
+  if (!window.Museo?.validarFormulario(e.target)) return;
+  if (!calif) { window.Museo?.mostrarToast('Selecciona una calificación', 'aviso'); return; }
+  
+  if (!window.api.getToken()) {
+    window.Museo?.mostrarToast('Debes iniciar sesión para publicar una reseña.', 'aviso');
+    setTimeout(() => window.location.href = 'login.html', 1500);
+    return;
+  }
+  
+  const btn = e.target.querySelector('button[type="submit"]');
+  const orgTxt = btn.textContent;
+  btn.textContent = 'Enviando...';
+  btn.disabled = true;
+
+  try {
+    await window.api.comentarios.crear({
+      texto: document.getElementById('resena-texto').value,
+      calificacion: calif,
+      petroglifo_id: null // Reseña general
+    });
+    window.Museo?.cerrarModal('modal-resena');
+    window.Museo?.mostrarToast('⭐ Reseña enviada. Estará visible después de moderación.', 'exito');
+    e.target.reset();
+  } catch (err) {
+    console.error(err);
+  } finally {
+    btn.textContent = orgTxt;
+    btn.disabled = false;
+  }
+});
+
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const data = await window.api.comentarios.obtenerAprobados();
+    RESENAS = data.map(c => ({
+      autor: c.autor_nombre || 'Visitante',
+      inicial: (c.autor_nombre || 'V').charAt(0).toUpperCase(),
+      calif: c.calificacion,
+      fecha: new Date(c.creado_en).toLocaleDateString('es-VE', {day:'numeric', month:'short', year:'numeric'}),
+      texto: c.texto,
+      foto: !!c.foto_url,
+      img: c.foto_url
+    }));
+  } catch(e) { console.error(e); }
+  renderResenas();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reservas Institucionales — Museo Piedra Pintada</title>
+  <meta name="description" content="Solicita una visita guiada institucional al Museo Arqueológico Piedra Pintada para colegios, universidades y organizaciones.">
+  <link rel="stylesheet" href="../css/estilos.css">
+  <style>
+    .reservas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+    .paso-reserva { display: flex; gap: 1rem; margin-bottom: 1.75rem; }
+    .paso-num { width: 40px; height: 40px; border-radius: 50%; background: var(--grad-dorado); color: var(--color-texto-inv); display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-family: var(--font-titulo); }
+    .paso-contenido h4 { font-size: 1rem; color: var(--color-dorado-claro); margin-bottom: .3rem; }
+    .paso-contenido p { font-size: .85rem; color: var(--color-texto-2); line-height: 1.6; }
+    @media(max-width:768px) { .reservas-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<div class="bg-texture" aria-hidden="true"></div>
+<div id="header-placeholder"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <nav class="breadcrumb"><a href="../index.html">Inicio</a><span class="breadcrumb__sep">›</span><span aria-current="page">Reservas</span></nav>
+    <span class="etiqueta">Visitas grupales</span>
+    <h1>Reservas Institucionales</h1>
+    <div class="divisor divisor--left"></div>
+    <p class="subtitulo" style="margin-top:.5rem;">Visitas guiadas para escuelas, universidades y organizaciones. Cupos limitados — reserva con anticipación.</p>
+  </div>
+</section>
+
+<section class="section--sm">
+  <div class="container">
+    <div class="reservas-grid">
+      <!-- Información -->
+      <div>
+        <div class="revelar" style="margin-bottom:2rem;">
+          <h2 style="margin-bottom:1rem;">¿Cómo funciona?</h2>
+          <div class="paso-reserva">
+            <div class="paso-num">1</div>
+            <div class="paso-contenido">
+              <h4>Completa el formulario</h4>
+              <p>Ingresa los datos de tu institución, fecha deseada y número de participantes.</p>
+            </div>
+          </div>
+          <div class="paso-reserva">
+            <div class="paso-num">2</div>
+            <div class="paso-contenido">
+              <h4>Revisión de disponibilidad</h4>
+              <p>El equipo del museo revisará tu solicitud en máximo 48 horas hábiles.</p>
+            </div>
+          </div>
+          <div class="paso-reserva">
+            <div class="paso-num">3</div>
+            <div class="paso-contenido">
+              <h4>Confirmación</h4>
+              <p>Recibirás un correo con la confirmación, instrucciones y recomendaciones para la visita.</p>
+            </div>
+          </div>
+          <div class="paso-reserva">
+            <div class="paso-num">4</div>
+            <div class="paso-contenido">
+              <h4>¡Disfruta la visita!</h4>
+              <p>Tu grupo tendrá un guía especializado y acceso completo al recorrido interactivo con QR y asistente de voz.</p>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1rem;padding:1.5rem;" class="revelar retraso-2">
+          <h3 style="font-size:1rem;color:var(--color-dorado-claro);margin-bottom:1rem;">Tarifas institucionales</h3>
+          <ul style="display:flex;flex-direction:column;gap:.65rem;">
+            <li style="display:flex;justify-content:space-between;font-size:.9rem;padding-bottom:.65rem;border-bottom:1px solid var(--glass-border);">
+              <span style="color:var(--color-texto-2);">Grupo escolar (hasta 30)</span>
+              <strong style="color:var(--color-dorado-claro);">Consultar</strong>
+            </li>
+            <li style="display:flex;justify-content:space-between;font-size:.9rem;padding-bottom:.65rem;border-bottom:1px solid var(--glass-border);">
+              <span style="color:var(--color-texto-2);">Grupo universitario</span>
+              <strong style="color:var(--color-dorado-claro);">Consultar</strong>
+            </li>
+            <li style="display:flex;justify-content:space-between;font-size:.9rem;">
+              <span style="color:var(--color-texto-2);">Grupos mayores de 30</span>
+              <strong style="color:var(--color-dorado-claro);">Precio especial</strong>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Formulario -->
+      <div class="revelar retraso-2">
+        <div style="background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1.5rem;padding:2rem;">
+          <h2 style="margin-bottom:1.5rem;font-size:1.4rem;">Solicitar reserva</h2>
+
+          <form id="form-reserva" novalidate>
+            <div class="form-grupo">
+              <label class="form-etiqueta" for="res-institucion">Nombre de la institución *</label>
+              <input type="text" id="res-institucion" class="form-input" placeholder="Ej. Colegio San José" required>
+              <div class="form-error">El nombre de la institución es obligatorio</div>
+            </div>
+            <div class="form-grupo">
+              <label class="form-etiqueta" for="res-contacto">Nombre del responsable *</label>
+              <input type="text" id="res-contacto" class="form-input" placeholder="Tu nombre completo" required>
+              <div class="form-error">El nombre del responsable es obligatorio</div>
+            </div>
+            <div class="form-grupo">
+              <label class="form-etiqueta" for="res-email">Correo electrónico *</label>
+              <input type="email" id="res-email" class="form-input" placeholder="contacto@institucion.edu" required>
+              <div class="form-error">Ingresa un correo válido</div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+              <div class="form-grupo">
+                <label class="form-etiqueta" for="res-fecha">Fecha deseada *</label>
+                <input type="date" id="res-fecha" class="form-input" required>
+                <div class="form-error">Selecciona una fecha</div>
+              </div>
+              <div class="form-grupo">
+                <label class="form-etiqueta" for="res-personas">Nº de personas *</label>
+                <input type="number" id="res-personas" class="form-input" min="5" max="200" placeholder="Ej. 30" required>
+                <div class="form-error">Mínimo 5 personas</div>
+              </div>
+            </div>
+            <div class="form-grupo">
+              <label class="form-etiqueta" for="res-tipo">Tipo de institución</label>
+              <select id="res-tipo" class="form-select">
+                <option value="">Selecciona...</option>
+                <option>Escuela primaria</option>
+                <option>Liceo</option>
+                <option>Universidad</option>
+                <option>Organización</option>
+                <option>Empresa</option>
+                <option>Otro</option>
+              </select>
+            </div>
+            <div class="form-grupo">
+              <label class="form-etiqueta" for="res-notas">Notas adicionales</label>
+              <textarea id="res-notas" class="form-textarea" placeholder="Requerimientos especiales, accesibilidad, idioma preferido..." style="min-height:100px;"></textarea>
+            </div>
+
+            <!-- Estado de la solicitud (si ya tiene) -->
+            <div id="estado-solicitud" style="display:none;padding:1rem;border-radius:.75rem;margin-bottom:1rem;border:1px solid;"></div>
+
+            <button type="submit" class="btn btn--primario w-full" id="btn-enviar-reserva" style="justify-content:center;">
+              📅 Enviar solicitud de reserva
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="footer-placeholder"></div>
+
+<script src="../js/componentes.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/app.js"></script>
+<script>
+'use strict';
+// Fecha mínima = mañana
+const manana = new Date(); manana.setDate(manana.getDate()+1);
+document.getElementById('res-fecha').min = manana.toISOString().split('T')[0];
+
+document.getElementById('form-reserva').addEventListener('submit', async e => {
+  e.preventDefault();
+  if (!window.Museo?.validarFormulario(e.target)) return;
+  const btn = document.getElementById('btn-enviar-reserva');
+  const orgTxt = btn.textContent;
+  btn.textContent = 'Enviando solicitud...'; btn.disabled = true;
+  
+  if (!window.api.getToken()) {
+    window.Museo?.mostrarToast('Debes iniciar sesión para reservar.', 'aviso');
+    setTimeout(() => window.location.href = 'login.html', 1500);
+    return;
+  }
+  
+  try {
+    await window.api.reservas.crear({
+      institucion: document.getElementById('res-institucion').value,
+      responsable_nombre: document.getElementById('res-contacto').value,
+      responsable_email: document.getElementById('res-email').value,
+      fecha_visita: document.getElementById('res-fecha').value,
+      numero_personas: parseInt(document.getElementById('res-personas').value, 10),
+      tipo_institucion: document.getElementById('res-tipo').value || 'Otro',
+      notas: document.getElementById('res-notas').value || ''
+    });
+    
+    btn.textContent = '✅ Solicitud enviada'; btn.classList.remove('btn--primario'); btn.classList.add('btn--contorno');
+    const estado = document.getElementById('estado-solicitud');
+    estado.style.display = '';
+    estado.style.background = 'rgba(60,160,80,.08)';
+    estado.style.borderColor = 'rgba(60,160,80,.3)';
+    estado.innerHTML = `<strong style="color:#80D090;">✅ Solicitud recibida</strong><br><span style="font-size:.85rem;color:var(--color-texto-2);">Te contactaremos en máximo 48 horas hábiles para confirmar la disponibilidad.</span>`;
+    window.Museo?.mostrarToast('📅 Solicitud de reserva enviada correctamente', 'exito');
+  } catch(err) {
+    console.error(err);
+    btn.textContent = orgTxt; btn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>

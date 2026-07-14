@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catálogo de Petroglifos — Museo Arqueológico Piedra Pintada</title>
+  <meta name="description" content="Explora el catálogo completo de más de 150 petroglifos del Museo Arqueológico Piedra Pintada. Filtra por categoría, busca por nombre y descubre la historia de cada grabado rupestre.">
+  <link rel="stylesheet" href="../css/estilos.css">
+  <style>
+    .catalogo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .catalogo-controles {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    .filtros-chips {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+    }
+    .vista-btns {
+      display: flex;
+      gap: .25rem;
+      background: var(--grad-card);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: .25rem;
+    }
+    .vista-btn {
+      padding: .4rem .7rem;
+      border: none;
+      background: none;
+      border-radius: 5px;
+      cursor: pointer;
+      color: var(--color-texto-3);
+      transition: all .2s;
+    }
+    .vista-btn.activo {
+      background: var(--color-piedra-2);
+      color: var(--color-dorado-claro);
+    }
+    .petroglifo-card {
+      background: var(--grad-card);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform .3s var(--ease-bounce), box-shadow .3s, border-color .3s;
+      text-decoration: none;
+      display: block;
+    }
+    .petroglifo-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg), var(--shadow-gold);
+      border-color: rgba(200,146,42,.4);
+    }
+    .petroglifo-card__img {
+      aspect-ratio: 4/3;
+      overflow: hidden;
+      position: relative;
+    }
+    .petroglifo-card__img img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform .5s var(--ease-out);
+    }
+    .petroglifo-card:hover .petroglifo-card__img img { transform: scale(1.08); }
+    .petroglifo-card__overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(12,8,4,.85) 0%, transparent 50%);
+    }
+    .petroglifo-card__num {
+      position: absolute;
+      top: .75rem;
+      right: .75rem;
+      background: rgba(12,8,4,.7);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--glass-border);
+      border-radius: 9999px;
+      padding: .2rem .6rem;
+      font-size: .7rem;
+      color: var(--color-dorado-claro);
+      font-family: var(--font-mono);
+    }
+    .petroglifo-card__body { padding: 1.2rem; }
+    .petroglifo-card__nombre {
+      font-family: var(--font-titulo);
+      font-size: 1.05rem;
+      margin-bottom: .4rem;
+      color: var(--color-texto);
+    }
+    .petroglifo-card__desc {
+      font-size: .82rem;
+      color: var(--color-texto-2);
+      line-height: 1.55;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .petroglifo-card__pie {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .75rem 1.2rem;
+      border-top: 1px solid var(--glass-border);
+    }
+    .petroglifo-card__estacion {
+      font-size: .78rem;
+      color: var(--color-texto-3);
+    }
+    /* Vista lista */
+    .catalogo-grid.lista { grid-template-columns: 1fr; }
+    .catalogo-grid.lista .petroglifo-card {
+      display: flex;
+      flex-direction: row;
+    }
+    .catalogo-grid.lista .petroglifo-card__img {
+      width: 200px;
+      flex-shrink: 0;
+      aspect-ratio: auto;
+    }
+    .catalogo-grid.lista .petroglifo-card__body { flex: 1; }
+    .catalogo-grid.lista .petroglifo-card__desc { -webkit-line-clamp: 3; }
+    /* Sin resultados */
+    .sin-resultados {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--color-texto-3);
+    }
+    .sin-resultados span { font-size: 4rem; display: block; margin-bottom: 1rem; }
+
+    @media(max-width:600px){
+      .catalogo-grid.lista .petroglifo-card { flex-direction: column; }
+      .catalogo-grid.lista .petroglifo-card__img { width: 100%; aspect-ratio: 16/9; }
+    }
+  </style>
+</head>
+<body>
+<div class="bg-texture" aria-hidden="true"></div>
+<div id="header-placeholder"></div>
+
+<!-- Hero -->
+<section class="page-hero" aria-labelledby="titulo-catalogo">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Ruta de navegación">
+      <a href="../index.html">Inicio</a>
+      <span class="breadcrumb__sep" aria-hidden="true">›</span>
+      <span aria-current="page">Petroglifos</span>
+    </nav>
+    <span class="etiqueta">Colección completa</span>
+    <h1 id="titulo-catalogo">Catálogo de Petroglifos</h1>
+    <div class="divisor divisor--left"></div>
+    <p class="subtitulo" style="margin-top:.5rem;">Más de 150 grabados rupestres catalogados. Cada uno, una ventana hacia la cosmovisión de nuestros ancestros.</p>
+  </div>
+</section>
+
+<section class="section--sm">
+  <div class="container">
+    <!-- Controles -->
+    <div class="catalogo-controles">
+      <!-- Buscador -->
+      <div class="buscador" style="flex:1;max-width:380px;">
+        <span class="buscador__icono" aria-hidden="true">🔍</span>
+        <input type="search" class="form-input" id="buscador-petroglifos" placeholder="Buscar petroglifo..." aria-label="Buscar petroglifo">
+      </div>
+
+      <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+        <!-- Chips filtro -->
+        <div class="filtros-chips" id="filtros-chips" role="group" aria-label="Filtrar por categoría">
+          <button class="chip activo" data-filtro="todos">Todos (150)</button>
+          <button class="chip" data-filtro="antropomorfo">Antropomorfos</button>
+          <button class="chip" data-filtro="zoomorfo">Zoomorfos</button>
+          <button class="chip" data-filtro="geometrico">Geométricos</button>
+          <button class="chip" data-filtro="astral">Astrales</button>
+        </div>
+
+        <!-- Vista -->
+        <div class="vista-btns" role="group" aria-label="Cambiar vista">
+          <button class="vista-btn activo" id="btn-vista-grid" aria-label="Vista cuadrícula" title="Vista cuadrícula">⊞</button>
+          <button class="vista-btn" id="btn-vista-lista" aria-label="Vista lista" title="Vista lista">☰</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grid de petroglifos -->
+    <div class="catalogo-grid" id="grid-petroglifos" aria-label="Catálogo de petroglifos">
+
+      <!-- Los datos se generan por JS -->
+
+    </div>
+
+    <!-- Paginación -->
+    <nav class="paginacion" aria-label="Paginación del catálogo">
+      <button class="paginacion__btn" id="pag-anterior" aria-label="Página anterior">‹</button>
+      <button class="paginacion__btn activo" aria-current="page">1</button>
+      <button class="paginacion__btn">2</button>
+      <button class="paginacion__btn">3</button>
+      <span style="color:var(--color-texto-3);padding:.5rem;">…</span>
+      <button class="paginacion__btn">15</button>
+      <button class="paginacion__btn" id="pag-siguiente" aria-label="Página siguiente">›</button>
+    </nav>
+  </div>
+</section>
+
+<div id="footer-placeholder"></div>
+
+<script src="../js/componentes.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/app.js"></script>
+<script>
+'use strict';
+
+let PETROGLIFOS = [];
+
+const COLORES_CAT = {
+  antropomorfo: 'badge--dorado',
+  zoomorfo:     'badge--verde',
+  geometrico:   'badge--gris',
+  astral:       'badge--rojo',
+};
+
+const grid = document.getElementById('grid-petroglifos');
+let vistaActual = 'grid';
+let filtroActual = 'todos';
+let busquedaActual = '';
+
+function renderPetroglifos() {
+  const filtrados = PETROGLIFOS.filter(p => {
+    const coincideCat = filtroActual === 'todos' || p.categoria === filtroActual;
+    const coincideBusq = !busquedaActual ||
+      p.nombre.toLowerCase().includes(busquedaActual) ||
+      p.desc.toLowerCase().includes(busquedaActual);
+    return coincideCat && coincideBusq;
+  });
+
+  if (!filtrados.length) {
+    grid.innerHTML = `<div class="sin-resultados"><span>🔍</span><p>No se encontraron petroglifos con ese criterio.</p></div>`;
+    return;
+  }
+
+  grid.innerHTML = filtrados.map(p => `
+    <a href="petroglifo-detalle.html?id=${p.id}" class="petroglifo-card revelar" data-categoria="${p.categoria}" id="card-petroglifo-${p.id}">
+      <div class="petroglifo-card__img">
+        <img src="${p.imagen_url || '../assets/img/petroglifo-01.png'}" alt="${p.nombre}" loading="lazy">
+        <div class="petroglifo-card__overlay" aria-hidden="true"></div>
+        <span class="petroglifo-card__num">${p.codigo_qr}</span>
+        <div style="position:absolute;bottom:.75rem;left:.75rem;">
+          <span class="badge ${COLORES_CAT[p.categoria]}">${p.categoria}</span>
+        </div>
+      </div>
+      <div class="petroglifo-card__body">
+        <div class="petroglifo-card__nombre">${p.nombre}</div>
+        <div class="petroglifo-card__desc">${p.descripcion}</div>
+      </div>
+      <div class="petroglifo-card__pie">
+        <span class="petroglifo-card__estacion">📍 ${p.estacion_nombre || 'Sin estación'}</span>
+        <span class="btn btn--contorno btn--sm">Ver detalle →</span>
+      </div>
+    </a>
+  `).join('');
+
+  // Re-activar scroll reveal
+  window.Museo && iniciarScrollReveal();
+}
+
+function iniciarScrollReveal() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.revelar:not(.visible)').forEach(el => obs.observe(el));
+}
+
+// Buscador
+document.getElementById('buscador-petroglifos').addEventListener('input', e => {
+  busquedaActual = e.target.value.toLowerCase().trim();
+  renderPetroglifos();
+});
+
+// Chips de filtro
+document.getElementById('filtros-chips').addEventListener('click', e => {
+  const chip = e.target.closest('.chip');
+  if (!chip) return;
+  document.querySelectorAll('#filtros-chips .chip').forEach(c => c.classList.remove('activo'));
+  chip.classList.add('activo');
+  filtroActual = chip.dataset.filtro;
+  renderPetroglifos();
+});
+
+// Cambio de vista
+document.getElementById('btn-vista-grid').addEventListener('click', () => {
+  grid.classList.remove('lista');
+  document.getElementById('btn-vista-grid').classList.add('activo');
+  document.getElementById('btn-vista-lista').classList.remove('activo');
+});
+document.getElementById('btn-vista-lista').addEventListener('click', () => {
+  grid.classList.add('lista');
+  document.getElementById('btn-vista-lista').classList.add('activo');
+  document.getElementById('btn-vista-grid').classList.remove('activo');
+});
+
+// Iniciar
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    PETROGLIFOS = await window.api.petroglifos.obtenerTodos();
+    document.querySelector('.chip[data-filtro="todos"]').textContent = `Todos (${PETROGLIFOS.length})`;
+  } catch (e) {
+    console.error(e);
+  }
+  renderPetroglifos();
+});
+</script>
+</body>
+</html>

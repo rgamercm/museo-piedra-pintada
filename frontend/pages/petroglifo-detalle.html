@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalle de Petroglifo — Museo Arqueológico Piedra Pintada</title>
+  <meta name="description" content="Información detallada del petroglifo: descripción, imagen, texto del asistente de voz y código QR asociado.">
+  <link rel="stylesheet" href="../css/estilos.css">
+  <style>
+    .detalle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+    .imagen-principal {
+      border-radius: 1.5rem;
+      overflow: hidden;
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--shadow-lg), var(--shadow-gold);
+      position: sticky;
+      top: calc(var(--header-h) + 1.5rem);
+    }
+    .imagen-principal img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+    .qr-display {
+      background: white;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .75rem;
+    }
+    .qr-display__codigo {
+      font-family: var(--font-mono);
+      font-size: 2rem;
+      color: #1a1208;
+      font-weight: 700;
+      letter-spacing: .1em;
+    }
+    .qr-display__lbl { font-size: .75rem; color: #555; text-transform: uppercase; letter-spacing: .1em; }
+    .qr-cuadro {
+      width: 120px;
+      height: 120px;
+      border: 3px solid #1a1208;
+      border-radius: .5rem;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      grid-template-rows: repeat(7, 1fr);
+      gap: 2px;
+      padding: 6px;
+      background: white;
+    }
+    .qr-px { background: #1a1208; border-radius: 1px; }
+    .asistente-panel {
+      background: var(--grad-card);
+      border: 1px solid var(--glass-border);
+      border-radius: 1.2rem;
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+    }
+    .asistente-panel__header {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin-bottom: 1rem;
+    }
+    .asistente-avatar {
+      width: 48px;
+      height: 48px;
+      background: var(--grad-dorado);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    .wave-bar {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      height: 30px;
+    }
+    .wave-bar span {
+      width: 4px;
+      background: var(--color-dorado);
+      border-radius: 2px;
+      animation: onda 1s ease-in-out infinite;
+    }
+    .wave-bar span:nth-child(2) { animation-delay: .15s; }
+    .wave-bar span:nth-child(3) { animation-delay: .3s; }
+    .wave-bar span:nth-child(4) { animation-delay: .45s; }
+    .wave-bar span:nth-child(5) { animation-delay: .6s; }
+    @keyframes onda {
+      0%, 100% { height: 6px; }
+      50% { height: 24px; }
+    }
+    .wave-bar.pausado span { animation-play-state: paused; height: 6px; }
+    .meta-lista { display: flex; flex-direction: column; gap: .65rem; }
+    .meta-item { display: flex; align-items: center; gap: .75rem; font-size: .9rem; }
+    .meta-item span:first-child { color: var(--color-texto-3); min-width: 100px; }
+    .meta-item strong { color: var(--color-dorado-claro); }
+    @media(max-width:768px) {
+      .detalle-grid { grid-template-columns: 1fr; }
+      .imagen-principal { position: static; }
+    }
+  </style>
+</head>
+<body>
+<div class="bg-texture" aria-hidden="true"></div>
+<div id="header-placeholder"></div>
+
+<section class="page-hero" aria-labelledby="titulo-petroglifo">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Ruta de navegación">
+      <a href="../index.html">Inicio</a>
+      <span class="breadcrumb__sep">›</span>
+      <a href="petroglifos.html">Petroglifos</a>
+      <span class="breadcrumb__sep">›</span>
+      <span aria-current="page" id="breadcrumb-nombre">El Guardián</span>
+    </nav>
+    <span class="etiqueta" id="detalle-categoria">Antropomorfo</span>
+    <h1 id="titulo-petroglifo">El Guardián</h1>
+    <div class="divisor divisor--left"></div>
+    <p class="subtitulo" style="margin-top:.5rem;" id="detalle-estacion">📍 Estación 3 · QR-003</p>
+  </div>
+</section>
+
+<section class="section--sm">
+  <div class="container">
+    <div class="detalle-grid">
+      <!-- Columna izquierda: imagen + QR -->
+      <div>
+        <div class="imagen-principal revelar">
+          <img id="detalle-img" src="../assets/img/petroglifo-01.png" alt="El Guardián — Petroglifo antropomorfo">
+        </div>
+
+        <div style="margin-top:1.5rem;background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1.2rem;padding:1.5rem;">
+          <div style="font-family:var(--font-titulo);font-size:1rem;color:var(--color-dorado-claro);margin-bottom:1rem;">Código QR de la estación</div>
+          <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;">
+            <div class="qr-display">
+              <!-- QR decorativo SVG simplificado -->
+              <div style="width:100px;height:100px;background:#f5f5f5;border-radius:.5rem;display:flex;align-items:center;justify-content:center;">
+                <svg viewBox="0 0 21 21" width="80" height="80" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="7" height="7" x="0" y="0" fill="#1a1208"/>
+                  <rect width="5" height="5" x="1" y="1" fill="white"/>
+                  <rect width="3" height="3" x="2" y="2" fill="#1a1208"/>
+                  <rect width="7" height="7" x="14" y="0" fill="#1a1208"/>
+                  <rect width="5" height="5" x="15" y="1" fill="white"/>
+                  <rect width="3" height="3" x="16" y="2" fill="#1a1208"/>
+                  <rect width="7" height="7" x="0" y="14" fill="#1a1208"/>
+                  <rect width="5" height="5" x="1" y="15" fill="white"/>
+                  <rect width="3" height="3" x="2" y="16" fill="#1a1208"/>
+                  <rect width="1" height="1" x="9" y="0" fill="#1a1208"/>
+                  <rect width="1" height="1" x="11" y="0" fill="#1a1208"/>
+                  <rect width="1" height="1" x="8" y="2" fill="#1a1208"/>
+                  <rect width="1" height="1" x="10" y="3" fill="#1a1208"/>
+                  <rect width="1" height="1" x="9" y="5" fill="#1a1208"/>
+                  <rect width="3" height="3" x="9" y="9" fill="#1a1208"/>
+                  <rect width="1" height="1" x="14" y="9" fill="#1a1208"/>
+                  <rect width="1" height="1" x="16" y="10" fill="#1a1208"/>
+                  <rect width="1" height="1" x="18" y="11" fill="#1a1208"/>
+                  <rect width="1" height="1" x="14" y="14" fill="#1a1208"/>
+                  <rect width="1" height="1" x="16" y="16" fill="#1a1208"/>
+                  <rect width="1" height="1" x="18" y="18" fill="#1a1208"/>
+                  <rect width="1" height="1" x="20" y="20" fill="#1a1208"/>
+                </svg>
+              </div>
+              <div class="qr-display__codigo">QR-003</div>
+              <div class="qr-display__lbl">Escanear en el parque</div>
+            </div>
+            <div style="flex:1;">
+              <p style="font-size:.85rem;color:var(--color-texto-2);line-height:1.7;">Escanea este código en la estación física para activar el asistente de voz y escuchar la historia completa del petroglifo.</p>
+              <a href="recorrido.html" class="btn btn--primario btn--sm" style="margin-top:1rem;" id="btn-ir-recorrido">🗺️ Ir al recorrido</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Columna derecha: info + asistente -->
+      <div class="revelar retraso-2">
+        <!-- Asistente de voz -->
+        <div class="asistente-panel">
+          <div class="asistente-panel__header">
+            <div class="asistente-avatar" aria-hidden="true">🎙️</div>
+            <div>
+              <div style="font-family:var(--font-titulo);font-size:.95rem;color:var(--color-dorado-claro);">Asistente Arqueológico</div>
+              <div style="font-size:.78rem;color:var(--color-texto-3);">Voz en español · Web Speech API</div>
+            </div>
+            <div class="wave-bar pausado" id="barra-onda" aria-hidden="true" style="margin-left:auto;">
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+          <p id="texto-asistente" style="font-size:.9rem;color:var(--color-texto-2);line-height:1.75;font-style:italic;border-left:3px solid rgba(200,146,42,.4);padding-left:1rem;">
+            "Ante ti se encuentra El Guardián, una de las figuras más imponentes del sitio. Con más de dos metros de altura, esta figura humanoide porta un elaborado tocado ceremonial que indica su alto rango espiritual dentro de la comunidad precolombina. Su postura erguida y los brazos extendidos sugieren un ritual de invocación o bienvenida..."
+          </p>
+          <div style="margin-top:1.25rem;display:flex;gap:.75rem;flex-wrap:wrap;">
+            <button class="btn btn--primario" id="btn-escuchar" aria-live="polite">
+              🔊 Escuchar descripción
+            </button>
+            <button class="btn btn--fantasma" id="btn-pausar" style="display:none;">
+              ⏸ Pausar
+            </button>
+          </div>
+        </div>
+
+        <!-- Descripción completa -->
+        <div style="margin-bottom:1.5rem;">
+          <h2 style="font-size:1.3rem;margin-bottom:.75rem;">Descripción</h2>
+          <p id="detalle-desc" style="color:var(--color-texto-2);line-height:1.8;">
+            El Guardián es el petroglifo más reconocido del Parque Piedra Pintada. Tallado en la superficie de una roca granítica de gran tamaño, representa una figura humanoide de proporciones monumentales. Sus rasgos faciales simplificados y el elaborado tocado sugieren que se trata de una deidad o chamán de alto rango.
+          </p>
+          <p style="color:var(--color-texto-2);line-height:1.8;margin-top:1rem;">
+            Los investigadores han datado esta obra entre el 800 y el 1200 d.C., basándose en el estilo de tallado y los patrones decorativos comparados con otros sitios de la región del Orinoco Medio.
+          </p>
+        </div>
+
+        <!-- Metadatos -->
+        <div style="background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1rem;padding:1.5rem;margin-bottom:1.5rem;">
+          <h3 style="font-size:1rem;margin-bottom:1rem;color:var(--color-dorado-claro);">Ficha técnica</h3>
+          <ul class="meta-lista">
+            <li class="meta-item"><span>Categoría</span><strong id="meta-cat">Antropomorfo</strong></li>
+            <li class="meta-item"><span>Estación</span><strong id="meta-estacion">Nº 3 del recorrido</strong></li>
+            <li class="meta-item"><span>Dimensiones</span><strong>2.3 m × 1.8 m</strong></li>
+            <li class="meta-item"><span>Material</span><strong>Granito local</strong></li>
+            <li class="meta-item"><span>Técnica</span><strong>Percusión y abrasión</strong></li>
+            <li class="meta-item"><span>Datación aprox.</span><strong>800 – 1200 d.C.</strong></li>
+            <li class="meta-item"><span>Código QR</span><strong id="meta-qr">QR-003</strong></li>
+          </ul>
+        </div>
+
+        <!-- Navegación entre petroglifos -->
+        <div style="display:flex;gap:1rem;justify-content:space-between;">
+          <a href="petroglifo-detalle.html?id=3" class="btn btn--contorno" id="btn-anterior-petroglifo">← Petroglifo anterior</a>
+          <a href="petroglifos.html" class="btn btn--fantasma" id="btn-volver-catalogo">Ver catálogo</a>
+          <a href="petroglifo-detalle.html?id=2" class="btn btn--contorno" id="btn-siguiente-petroglifo">Siguiente →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="footer-placeholder"></div>
+
+<script src="../js/componentes.js"></script>
+<script src="../js/app.js"></script>
+<script>
+'use strict';
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const params = new URLSearchParams(window.location.search);
+  const id = parseInt(params.get('id')) || 1;
+
+  try {
+    const petroglifo = await window.api.petroglifos.obtenerPorId(id);
+    
+    // Si no existe, podemos redirigir o mostrar un error
+    if (!petroglifo) {
+      document.getElementById('titulo-petroglifo').textContent = 'Petroglifo no encontrado';
+      return;
+    }
+
+    // Llenar el DOM
+    document.getElementById('breadcrumb-nombre').textContent = petroglifo.nombre;
+    document.getElementById('titulo-petroglifo').textContent = petroglifo.nombre;
+    document.getElementById('detalle-categoria').textContent = petroglifo.categoria || 'Sin categoría';
+    
+    // Obtener estación si la tiene
+    let textoEstacion = 'Sin estación asignada';
+    if (petroglifo.estaciones && petroglifo.estaciones.length > 0) {
+      const est = petroglifo.estaciones[0]; // asumimos la primera
+      textoEstacion = `Est. ${est.orden || est.id} · ${petroglifo.codigo_qr || 'Sin QR'}`;
+    } else if (petroglifo.codigo_qr) {
+      textoEstacion = petroglifo.codigo_qr;
+    }
+    
+    document.getElementById('detalle-estacion').textContent = '📍 ' + textoEstacion;
+    document.getElementById('detalle-img').alt = petroglifo.nombre;
+    if (petroglifo.imagen_url) {
+      document.getElementById('detalle-img').src = petroglifo.imagen_url;
+    }
+    
+    document.getElementById('texto-asistente').textContent = `"${petroglifo.texto_asistente || 'Sin descripción de asistente.'}"`;
+    document.getElementById('detalle-desc').textContent = petroglifo.descripcion || 'Sin descripción detallada.';
+    
+    document.getElementById('meta-cat').textContent = petroglifo.categoria || 'N/A';
+    document.getElementById('meta-estacion').textContent = textoEstacion;
+    document.getElementById('meta-qr').textContent = petroglifo.codigo_qr || 'N/A';
+    
+    const qrDisplay = document.querySelector('.qr-display__codigo');
+    if (qrDisplay) qrDisplay.textContent = petroglifo.codigo_qr || 'N/A';
+
+    // Enlaces anterior/siguiente (asumimos id-1 y id+1 de forma simple, 
+    // en un caso real se consultaría la base de datos por el adyacente)
+    const prevBtn = document.getElementById('btn-anterior-petroglifo');
+    const nextBtn = document.getElementById('btn-siguiente-petroglifo');
+    if (id > 1) {
+      prevBtn.href = `petroglifo-detalle.html?id=${id - 1}`;
+    } else {
+      prevBtn.style.visibility = 'hidden';
+    }
+    nextBtn.href = `petroglifo-detalle.html?id=${id + 1}`;
+
+    // Asistente de voz
+    let utterance = null;
+    let hablando = false;
+
+    document.getElementById('btn-escuchar').addEventListener('click', () => {
+      if (!('speechSynthesis' in window)) {
+        window.Museo?.mostrarToast('Tu navegador no soporta síntesis de voz', 'aviso');
+        return;
+      }
+      window.speechSynthesis.cancel();
+      utterance = new SpeechSynthesisUtterance(petroglifo.texto_asistente || '');
+      utterance.lang = 'es-ES';
+      utterance.rate = 0.9;
+      utterance.pitch = 1;
+
+      const voces = window.speechSynthesis.getVoices().filter(v => v.lang.startsWith('es'));
+      if (voces.length) utterance.voice = voces[0];
+
+      utterance.onstart  = () => { hablando=true; document.getElementById('barra-onda').classList.remove('pausado'); document.getElementById('btn-pausar').style.display=''; };
+      utterance.onend    = () => { hablando=false; document.getElementById('barra-onda').classList.add('pausado'); document.getElementById('btn-pausar').style.display='none'; };
+      utterance.onerror  = () => window.Museo?.mostrarToast('Error al reproducir voz', 'error');
+
+      window.speechSynthesis.speak(utterance);
+    });
+
+    document.getElementById('btn-pausar').addEventListener('click', () => {
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+        document.getElementById('btn-pausar').textContent = '⏸ Pausar';
+        document.getElementById('barra-onda').classList.remove('pausado');
+      } else {
+        window.speechSynthesis.pause();
+        document.getElementById('btn-pausar').textContent = '▶ Reanudar';
+        document.getElementById('barra-onda').classList.add('pausado');
+      }
+    });
+
+  } catch (error) {
+    console.error('Error al cargar petroglifo:', error);
+    document.getElementById('titulo-petroglifo').textContent = 'Error al cargar';
+  }
+});
+</script>
+</body>
+</html>

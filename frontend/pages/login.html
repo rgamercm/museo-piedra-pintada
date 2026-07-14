@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login / Registro — Museo Piedra Pintada</title>
+  <meta name="description" content="Inicia sesión o regístrate para acceder a todas las funciones del Museo Arqueológico Piedra Pintada.">
+  <link rel="stylesheet" href="../css/estilos.css">
+  <style>
+    .auth-wrapper {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: calc(var(--header-h) + 2rem) 1rem 2rem;
+      position: relative;
+    }
+    .auth-fondo {
+      position: fixed;
+      inset: 0;
+      background: url('../assets/img/hero.png') center/cover;
+      opacity: .12;
+      z-index: 0;
+    }
+    .auth-card {
+      position: relative;
+      z-index: 1;
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-radius: 2rem;
+      width: 100%;
+      max-width: 480px;
+      padding: 2.5rem;
+      box-shadow: var(--shadow-lg), var(--shadow-gold);
+    }
+    .auth-logo {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .auth-logo .logo__icono {
+      width: 56px; height: 56px;
+      font-size: 1.8rem;
+      margin: 0 auto 1rem;
+    }
+    .auth-tabs {
+      display: flex;
+      background: rgba(26,18,8,.6);
+      border-radius: 1rem;
+      padding: .25rem;
+      margin-bottom: 2rem;
+      gap: .25rem;
+    }
+    .auth-tab {
+      flex: 1;
+      padding: .65rem;
+      border: none;
+      border-radius: .75rem;
+      background: none;
+      color: var(--color-texto-2);
+      font-size: .9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      font-family: var(--font-cuerpo);
+    }
+    .auth-tab.activo {
+      background: var(--grad-dorado);
+      color: var(--color-texto-inv);
+    }
+    .divider-texto {
+      text-align: center;
+      position: relative;
+      color: var(--color-texto-3);
+      font-size: .8rem;
+      margin: 1.5rem 0;
+    }
+    .divider-texto::before, .divider-texto::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 38%;
+      height: 1px;
+      background: var(--glass-border);
+    }
+    .divider-texto::before { left: 0; }
+    .divider-texto::after  { right: 0; }
+  </style>
+</head>
+<body>
+<div class="auth-fondo" aria-hidden="true"></div>
+<div id="header-placeholder"></div>
+
+<div class="auth-wrapper">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="logo__icono flex-center" style="display:flex;align-items:center;justify-content:center;">🪨</div>
+      <div style="font-family:var(--font-titulo);font-size:1.1rem;color:var(--color-dorado-claro);">Piedra Pintada</div>
+      <div style="font-size:.78rem;color:var(--color-texto-3);letter-spacing:.08em;text-transform:uppercase;">Museo Arqueológico</div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="auth-tabs" role="tablist">
+      <button class="auth-tab activo" id="tab-login" role="tab" aria-selected="true" aria-controls="panel-login">Iniciar Sesión</button>
+      <button class="auth-tab" id="tab-registro" role="tab" aria-selected="false" aria-controls="panel-registro">Registrarse</button>
+    </div>
+
+    <!-- Panel Login -->
+    <div id="panel-login" role="tabpanel" aria-labelledby="tab-login">
+      <form id="form-login" novalidate>
+        <div class="form-grupo">
+          <label class="form-etiqueta" for="login-email">Correo electrónico</label>
+          <input type="email" id="login-email" class="form-input" placeholder="tu@correo.com" required autocomplete="email">
+          <div class="form-error">Ingresa un correo electrónico válido</div>
+        </div>
+        <div class="form-grupo">
+          <label class="form-etiqueta" for="login-password">Contraseña</label>
+          <div style="position:relative;">
+            <input type="password" id="login-password" class="form-input" placeholder="••••••••" required autocomplete="current-password" style="padding-right:3rem;">
+            <button type="button" id="toggle-pass-login" style="position:absolute;right:.75rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--color-texto-3);cursor:pointer;font-size:1.1rem;" aria-label="Mostrar contraseña">👁</button>
+          </div>
+          <div class="form-error">La contraseña es obligatoria</div>
+        </div>
+        <div style="text-align:right;margin-bottom:1.25rem;">
+          <a href="#" style="font-size:.82rem;color:var(--color-dorado);">¿Olvidaste tu contraseña?</a>
+        </div>
+        <button type="submit" class="btn btn--primario w-full" id="btn-login-submit" style="justify-content:center;">
+          Ingresar al museo →
+        </button>
+      </form>
+
+      <div class="divider-texto">o continúa como</div>
+
+      <div style="display:flex;flex-direction:column;gap:.75rem;">
+        <a href="../index.html" class="btn btn--fantasma w-full" id="btn-como-visitante" style="justify-content:center;">
+          👤 Visitante (sin registrarse)
+        </a>
+      </div>
+    </div>
+
+    <!-- Panel Registro -->
+    <div id="panel-registro" role="tabpanel" aria-labelledby="tab-registro" style="display:none;">
+      <form id="form-registro" novalidate>
+        <div class="form-grupo">
+          <label class="form-etiqueta" for="reg-nombre">Nombre completo</label>
+          <input type="text" id="reg-nombre" class="form-input" placeholder="Tu nombre" required autocomplete="name">
+          <div class="form-error">El nombre es obligatorio</div>
+        </div>
+        <div class="form-grupo">
+          <label class="form-etiqueta" for="reg-email">Correo electrónico</label>
+          <input type="email" id="reg-email" class="form-input" placeholder="tu@correo.com" required autocomplete="email">
+          <div class="form-error">Ingresa un correo electrónico válido</div>
+        </div>
+        <div class="form-grupo">
+          <label class="form-etiqueta" for="reg-tipo">Tipo de cuenta</label>
+          <select id="reg-tipo" class="form-select" required>
+            <option value="">Selecciona una opción</option>
+            <option value="registrado">Visitante registrado</option>
+            <option value="institucion">Institución educativa</option>
+          </select>
+          <div class="form-error">Selecciona el tipo de cuenta</div>
+        </div>
+        <div class="form-grupo">
+          <label class="form-etiqueta" for="reg-password">Contraseña</label>
+          <input type="password" id="reg-password" class="form-input" placeholder="Mínimo 8 caracteres" required minlength="8" autocomplete="new-password">
+          <div class="form-error">La contraseña debe tener al menos 8 caracteres</div>
+        </div>
+        <!-- Indicador de fortaleza -->
+        <div style="margin-bottom:1.25rem;">
+          <div style="display:flex;gap:.3rem;margin-bottom:.25rem;" id="strength-bars">
+            <div style="height:4px;flex:1;border-radius:2px;background:rgba(200,146,42,.15);" class="sbar"></div>
+            <div style="height:4px;flex:1;border-radius:2px;background:rgba(200,146,42,.15);" class="sbar"></div>
+            <div style="height:4px;flex:1;border-radius:2px;background:rgba(200,146,42,.15);" class="sbar"></div>
+            <div style="height:4px;flex:1;border-radius:2px;background:rgba(200,146,42,.15);" class="sbar"></div>
+          </div>
+          <div style="font-size:.75rem;color:var(--color-texto-3);" id="strength-label">Escribe una contraseña</div>
+        </div>
+        <button type="submit" class="btn btn--primario w-full" id="btn-registro-submit" style="justify-content:center;">
+          Crear cuenta →
+        </button>
+      </form>
+    </div>
+
+    <p style="text-align:center;font-size:.78rem;color:var(--color-texto-3);margin-top:1.5rem;">
+      Al continuar, aceptas los <a href="#" style="color:var(--color-dorado);">términos de uso</a> y la <a href="#" style="color:var(--color-dorado);">política de privacidad</a>.
+    </p>
+  </div>
+</div>
+
+<script src="../js/componentes.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/app.js"></script>
+<script>
+'use strict';
+// Tabs
+document.getElementById('tab-login').addEventListener('click', () => {
+  document.getElementById('tab-login').classList.add('activo');
+  document.getElementById('tab-registro').classList.remove('activo');
+  document.getElementById('panel-login').style.display = '';
+  document.getElementById('panel-registro').style.display = 'none';
+});
+document.getElementById('tab-registro').addEventListener('click', () => {
+  document.getElementById('tab-registro').classList.add('activo');
+  document.getElementById('tab-login').classList.remove('activo');
+  document.getElementById('panel-registro').style.display = '';
+  document.getElementById('panel-login').style.display = 'none';
+});
+
+// Mostrar/ocultar contraseña
+document.getElementById('toggle-pass-login').addEventListener('click', () => {
+  const inp = document.getElementById('login-password');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+});
+
+// Fortaleza de contraseña
+document.getElementById('reg-password').addEventListener('input', e => {
+  const val = e.target.value;
+  const bars = document.querySelectorAll('.sbar');
+  const colores = ['#E06060','#E0A040','#60C080','#4090E0'];
+  const niveles = [val.length >= 8, /[A-Z]/.test(val), /[0-9]/.test(val), /[^A-Za-z0-9]/.test(val)];
+  const nivel = niveles.filter(Boolean).length;
+  bars.forEach((b, i) => { b.style.background = i < nivel ? colores[nivel-1] : 'rgba(200,146,42,.15)'; });
+  const etiquetas = ['','Débil','Moderada','Fuerte','Muy fuerte'];
+  document.getElementById('strength-label').textContent = etiquetas[nivel] || 'Escribe una contraseña';
+});
+
+// Submit login
+document.getElementById('form-login').addEventListener('submit', async e => {
+  e.preventDefault();
+  if (!window.Museo?.validarFormulario(e.target)) return;
+  const btn = document.getElementById('btn-login-submit');
+  btn.textContent = 'Iniciando sesión...'; btn.disabled = true;
+  try {
+    const data = await window.api.auth.login(document.getElementById('login-email').value, document.getElementById('login-password').value);
+    localStorage.setItem('museo_token', data.token);
+    window.Museo?.mostrarToast('✅ Sesión iniciada correctamente', 'exito');
+    if (data.usuario.rol === 'admin') {
+      setTimeout(() => { window.location.href = 'admin/dashboard.html'; }, 1000);
+    } else {
+      setTimeout(() => { window.location.href = '../index.html'; }, 1000);
+    }
+  } catch(err) {
+    console.error(err);
+    btn.textContent = 'Ingresar al museo →'; btn.disabled = false;
+  }
+});
+
+// Submit registro (demo - TODO endpoint if needed)
+document.getElementById('form-registro').addEventListener('submit', async e => {
+  e.preventDefault();
+  if (!window.Museo?.validarFormulario(e.target)) return;
+  const btn = document.getElementById('btn-registro-submit');
+  btn.textContent = 'Creando cuenta...'; btn.disabled = true;
+  await window.Museo?.simularCarga(1500);
+  window.Museo?.mostrarToast('🎉 Cuenta creada exitosamente. ¡Bienvenido!', 'exito');
+  setTimeout(() => { window.location.href = '../index.html'; }, 1200);
+});
+</script>
+</body>
+</html>

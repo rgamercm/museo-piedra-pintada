@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapa del Parque — Museo Piedra Pintada</title>
+  <meta name="description" content="Mapa interactivo del Parque Arqueológico Piedra Pintada con todas las estaciones. Descárgalo para usarlo sin conexión.">
+  <link rel="stylesheet" href="../css/estilos.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    #mapa-parque { width: 100%; height: 70vh; min-height: 450px; border-radius: 1.5rem; border: 1px solid var(--glass-border); }
+    .mapa-controles {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .leyenda {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .leyenda-item { display: flex; align-items: center; gap: .4rem; font-size: .82rem; color: var(--color-texto-2); }
+    .leyenda-punto { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  </style>
+</head>
+<body>
+<div class="bg-texture" aria-hidden="true"></div>
+<div id="header-placeholder"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <nav class="breadcrumb"><a href="../index.html">Inicio</a><span class="breadcrumb__sep">›</span><span aria-current="page">Mapa</span></nav>
+    <span class="etiqueta">Orientación en el parque</span>
+    <h1>Mapa del Parque Arqueológico</h1>
+    <div class="divisor divisor--left"></div>
+    <p class="subtitulo" style="margin-top:.5rem;">12 estaciones georreferenciadas. Descarga el mapa para usarlo sin señal durante el recorrido.</p>
+  </div>
+</section>
+
+<section class="section--sm">
+  <div class="container">
+    <div class="mapa-controles">
+      <div class="leyenda">
+        <div class="leyenda-item"><div class="leyenda-punto" style="background:#60C080;"></div>Completadas</div>
+        <div class="leyenda-item"><div class="leyenda-punto" style="background:#E8B84B;"></div>Actual</div>
+        <div class="leyenda-item"><div class="leyenda-punto" style="background:#8B5E2A;"></div>Pendientes</div>
+        <div class="leyenda-item"><div class="leyenda-punto" style="background:#4080FF;"></div>Tu posición</div>
+      </div>
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
+        <button class="btn btn--contorno btn--sm" id="btn-mi-pos-mapa">📍 Mi ubicación</button>
+        <button class="btn btn--primario btn--sm" id="btn-offline-mapa">
+          💾 Descargar mapa offline
+        </button>
+      </div>
+    </div>
+
+    <div id="mapa-parque"></div>
+
+    <!-- Info offline -->
+    <div style="margin-top:1rem;padding:1rem 1.25rem;background:rgba(200,146,42,.06);border:1px solid rgba(200,146,42,.18);border-radius:.75rem;display:flex;align-items:center;gap:.75rem;" id="offline-status">
+      <span style="font-size:1.3rem;">💾</span>
+      <div>
+        <div style="font-size:.85rem;font-weight:600;color:var(--color-dorado-claro);">Modo offline disponible</div>
+        <div style="font-size:.78rem;color:var(--color-texto-2);">Descarga el mapa para usar el recorrido sin conexión a internet.</div>
+      </div>
+      <button class="btn btn--primario btn--sm" style="margin-left:auto;" id="btn-descargar-mapa-2">Descargar</button>
+    </div>
+
+    <!-- Lista de estaciones -->
+    <div style="margin-top:2.5rem;">
+      <h2 style="margin-bottom:1.25rem;font-size:1.3rem;">Estaciones del recorrido</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;" id="grid-estaciones-mapa"></div>
+    </div>
+  </div>
+</section>
+
+<div id="footer-placeholder"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="../js/componentes.js"></script>
+<script src="../js/app.js"></script>
+<script>
+'use strict';
+// Mapa base
+const mapa = L.map('mapa-parque').setView([7.4225, -65.029], 15);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '© OpenStreetMap © CARTO', maxZoom: 19
+}).addTo(mapa);
+
+// Cargar desde el API
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const estaciones = await window.api.estaciones.obtenerTodas();
+    // Reordenar por si acaso (por orden de recorrido)
+    estaciones.sort((a, b) => a.orden - b.orden);
+    
+    // Aquí podríamos validar si el usuario las ha completado mirando localStorage, 
+    // pero por ahora mapeamos el estado a 'false' como en el diseño original.
+    const historial = JSON.parse(localStorage.getItem('museo_historial') || '[]');
+    
+    estaciones.forEach(est => {
+      est.completada = historial.includes(est.petroglifo_id);
+      if (!est.lat || !est.lng) return; // Saltarse las que no tienen coordenadas
+      
+      const color = est.completada ? '#60C080' : '#8B5E2A';
+      const icono = L.divIcon({
+        className: '',
+        html: `<div style="width:30px;height:30px;border-radius:50%;background:${color};border:2px solid rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:${est.completada?'#1a1a1a':'white'};box-shadow:0 2px 8px rgba(0,0,0,.6);">${est.orden || est.id}</div>`,
+        iconSize:[30,30], iconAnchor:[15,15]
+      });
+      L.marker([est.lat,est.lng],{icon:icono}).addTo(mapa)
+        .bindPopup(`<b>${est.nombre}</b><br><a href="recorrido.html" style="color:#C8922A;">Ir al recorrido →</a>`);
+    });
+    
+    const validas = estaciones.filter(e => e.lat && e.lng);
+    if (validas.length > 1) {
+      L.polyline(validas.map(e=>[e.lat,e.lng]), {color:'rgba(200,146,42,0.4)',weight:3,dashArray:'6,6'}).addTo(mapa);
+      if (validas.length > 0) {
+         mapa.setView([validas[0].lat, validas[0].lng], 16);
+      }
+    }
+
+    // Grid estaciones
+    const grid = document.getElementById('grid-estaciones-mapa');
+    grid.innerHTML = estaciones.map(est => `
+      <button onclick="mapa.setView([${est.lat || 7.4225},${est.lng || -65.029}],18)"
+        style="background:var(--grad-card);border:1px solid ${est.completada?'rgba(60,160,80,.3)':'var(--glass-border)'};border-radius:.75rem;padding:.85rem;text-align:left;cursor:pointer;transition:all .2s;width:100%;font-family:inherit;"
+        onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform=''"
+        id="est-mapa-btn-${est.id}">
+        <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.25rem;">
+          <div style="width:24px;height:24px;border-radius:50%;background:${est.completada?'rgba(60,160,80,.3)':'rgba(200,146,42,.15)'};border:1px solid ${est.completada?'rgba(60,160,80,.5)':'rgba(200,146,42,.3)'};display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:${est.completada?'#80D090':'var(--color-dorado-claro)'};flex-shrink:0;">${est.completada?'✓':(est.orden || est.id)}</div>
+          <span style="font-size:.85rem;font-weight:600;color:var(--color-texto);">${est.nombre}</span>
+        </div>
+        <div style="font-size:.72rem;color:var(--color-texto-3);">${est.completada?'✅ Visitada':'⏳ Pendiente'}</div>
+      </button>
+    `).join('');
+  } catch(e) {
+    console.error('Error al cargar mapa:', e);
+  }
+});
+
+// Mi ubicación
+document.getElementById('btn-mi-pos-mapa').addEventListener('click', () => {
+  if (!navigator.geolocation) { window.Museo?.mostrarToast('GPS no disponible', 'aviso'); return; }
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      const {latitude:lat,longitude:lng} = pos.coords;
+      mapa.setView([lat,lng],17);
+      L.circle([lat,lng],{radius:8,color:'#4080FF',fillOpacity:.6}).addTo(mapa);
+      window.Museo?.mostrarToast('📍 Ubicación actualizada', 'exito');
+    },
+    () => window.Museo?.mostrarToast('Activa el GPS para ver tu ubicación', 'aviso')
+  );
+});
+
+// Descargar offline
+function descargarOffline() {
+  window.Museo?.mostrarToast('💾 Descargando mapa... (simulado en prototipo)', 'info');
+  setTimeout(() => {
+    document.getElementById('offline-status').innerHTML = `
+      <span style="font-size:1.3rem;">✅</span>
+      <div>
+        <div style="font-size:.85rem;font-weight:600;color:#80D090;">Mapa descargado</div>
+        <div style="font-size:.78rem;color:var(--color-texto-2);">Puedes usar el recorrido sin internet.</div>
+      </div>
+    `;
+    window.Museo?.mostrarToast('✅ Mapa guardado para uso offline', 'exito');
+  }, 2000);
+}
+document.getElementById('btn-offline-mapa').addEventListener('click', descargarOffline);
+document.getElementById('btn-descargar-mapa-2').addEventListener('click', descargarOffline);
+</script>
+</body>
+</html>
