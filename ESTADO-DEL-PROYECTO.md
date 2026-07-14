@@ -106,7 +106,7 @@ Corren con **pg-mem** (PostgreSQL en memoria): **no hace falta tener PostgreSQL 
 
 ## 6. Lo que queda (solo despliegue)
 
-- [ ] **E1** · Subir a GitHub (borra `backend/.env` antes; revisa `git status`)
+- [x] **E1** · Subir a GitHub (borra `backend/.env` antes; revisa `git status`)
 - [ ] **E3** · Supabase: crear el proyecto, pegar `schema.sql` y `seed.sql` en el **SQL Editor**, crear el bucket público `fotos`
 - [ ] **E4/E5** · Vercel: importar el repo y configurar las 5 variables de entorno
 - [ ] **E6** · Verificar HTTPS y CORS
