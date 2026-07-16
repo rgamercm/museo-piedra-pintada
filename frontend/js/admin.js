@@ -66,19 +66,23 @@ async function cargarPetroglifos() {
     const tbody = document.getElementById('tbody-petroglifos');
     tbody.innerHTML = '';
     
-    petroglifos.forEach(p => {
-      tbody.innerHTML += `
-        <tr>
-          <td style="color:var(--color-texto-3);">#${p.id}</td>
-          <td>${p.nombre}</td>
-          <td><span class="badge badge--dorado">${p.categoria}</span></td>
-          <td><div style="display:flex;gap:.5rem;">
-            <button class="btn btn--contorno btn--sm" onclick="abrirModalPetroglifo(${p.id})">Editar</button>
-            <button class="btn btn--peligro btn--sm" onclick="eliminarPetroglifo(${p.id})">Eliminar</button>
-          </div></td>
-        </tr>
-      `;
-    });
+    if (petroglifos.length === 0) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="4">No hay petroglifos registrados.</td></tr>';
+    } else {
+      petroglifos.forEach(p => {
+        tbody.innerHTML += `
+          <tr>
+            <td style="color:var(--color-texto-3);">#${p.id}</td>
+            <td>${p.nombre}</td>
+            <td><span class="badge badge--dorado">${p.categoria}</span></td>
+            <td><div style="display:flex;gap:.5rem;">
+              <button class="btn btn--contorno btn--sm" onclick="abrirModalPetroglifo(${p.id})">Editar</button>
+              <button class="btn btn--peligro btn--sm" onclick="eliminarPetroglifo(${p.id})">Eliminar</button>
+            </div></td>
+          </tr>
+        `;
+      });
+    }
     
     cargarEstaciones();
   } catch (e) {
@@ -93,21 +97,25 @@ async function cargarEstaciones() {
     const tbody = document.getElementById('tbody-estaciones');
     tbody.innerHTML = '';
     
-    estaciones.forEach(e => {
-      tbody.innerHTML += `
-        <tr>
-          <td style="color:var(--color-texto-3);">#${e.id}</td>
-          <td>${e.nombre}</td>
-          <td>${e.orden}</td>
-          <td>${e.petroglifo_id || '-'}</td>
-          <td>${e.lat ? e.lat + ', ' + e.lng : '-'}</td>
-          <td><div style="display:flex;gap:.5rem;">
-            <button class="btn btn--contorno btn--sm" onclick="abrirModalEstacion(${e.id})">Editar</button>
-            <button class="btn btn--peligro btn--sm" onclick="eliminarEstacion(${e.id})">Eliminar</button>
-          </div></td>
-        </tr>
-      `;
-    });
+    if (estaciones.length === 0) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="6">No hay estaciones registradas.</td></tr>';
+    } else {
+      estaciones.forEach(e => {
+        tbody.innerHTML += `
+          <tr>
+            <td style="color:var(--color-texto-3);">#${e.id}</td>
+            <td>${e.nombre}</td>
+            <td>${e.orden}</td>
+            <td>${e.petroglifo_id || '-'}</td>
+            <td>${e.lat ? e.lat + ', ' + e.lng : '-'}</td>
+            <td><div style="display:flex;gap:.5rem;">
+              <button class="btn btn--contorno btn--sm" onclick="abrirModalEstacion(${e.id})">Editar</button>
+              <button class="btn btn--peligro btn--sm" onclick="eliminarEstacion(${e.id})">Eliminar</button>
+            </div></td>
+          </tr>
+        `;
+      });
+    }
   } catch (e) {
     console.error(e);
   }
@@ -450,21 +458,25 @@ async function cargarNoticiasAdmin() {
     const tbody = document.getElementById('tbody-noticias');
     tbody.innerHTML = '';
     
-    noticias.forEach(n => {
-      let badge = n.activa ? '<span class="badge badge--verde">Publicada</span>' : '<span class="badge badge--rojo">Borrador</span>';
-      tbody.innerHTML += `
-        <tr>
-          <td>${n.titulo}</td>
-          <td><span class="badge badge--dorado">${n.categoria}</span></td>
-          <td>${formatearFecha(n.creado_en)}</td>
-          <td>${badge}</td>
-          <td><div style="display:flex;gap:.5rem;">
-            <button class="btn btn--contorno btn--sm" onclick="abrirModalNoticia(${n.id})">Editar</button>
-            <button class="btn btn--peligro btn--sm" onclick="eliminarNoticia(${n.id})">Eliminar</button>
-          </div></td>
-        </tr>
-      `;
-    });
+    if (noticias.length === 0) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="5">No hay noticias registradas.</td></tr>';
+    } else {
+      noticias.forEach(n => {
+        let badge = n.activa ? '<span class="badge badge--verde">Publicada</span>' : '<span class="badge badge--rojo">Borrador</span>';
+        tbody.innerHTML += `
+          <tr>
+            <td>${n.titulo}</td>
+            <td><span class="badge badge--dorado">${n.categoria}</span></td>
+            <td>${formatearFecha(n.creado_en)}</td>
+            <td>${badge}</td>
+            <td><div style="display:flex;gap:.5rem;">
+              <button class="btn btn--contorno btn--sm" onclick="abrirModalNoticia(${n.id})">Editar</button>
+              <button class="btn btn--peligro btn--sm" onclick="eliminarNoticia(${n.id})">Eliminar</button>
+            </div></td>
+          </tr>
+        `;
+      });
+    }
   } catch (e) {
     console.error(e);
   }
@@ -535,26 +547,29 @@ async function eliminarNoticia(id) {
 // ==========================================
 async function cargarTriviaAdmin() {
   try {
-    const preguntas = await window.api.trivia.obtenerTodas();
-    estadoGlobal.trivia = preguntas;
+    const trivia = await window.api.trivia.obtenerTodas();
+    estadoGlobal.trivia = trivia;
     const tbody = document.getElementById('tbody-trivia');
     tbody.innerHTML = '';
     
-    preguntas.forEach(p => {
-      let badge = p.activa ? '<span class="badge badge--verde">Fácil</span>' : '<span class="badge badge--rojo">Inactiva</span>';
-      tbody.innerHTML += `
-        <tr>
-          <td style="color:var(--color-texto-3);">${p.id}</td>
-          <td style="max-width:300px;">${p.pregunta}</td>
-          <td>${p.respuesta_correcta}</td>
-          <td>${badge}</td>
-          <td><div style="display:flex;gap:.5rem;">
-            <button class="btn btn--contorno btn--sm" onclick="abrirModalTrivia(${p.id})">Editar</button>
-            <button class="btn btn--peligro btn--sm" onclick="eliminarTrivia(${p.id})">Eliminar</button>
-          </div></td>
-        </tr>
-      `;
-    });
+    if (trivia.length === 0) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="5">No hay preguntas de trivia.</td></tr>';
+    } else {
+      trivia.forEach(t => {
+        tbody.innerHTML += `
+          <tr>
+            <td style="color:var(--color-texto-3);">#${t.id}</td>
+            <td>${t.pregunta}</td>
+            <td>Opción ${t.respuesta_correcta}</td>
+            <td><span class="badge ${t.activa ? 'badge--verde' : 'badge--rojo'}">${t.activa ? 'Activa' : 'Inactiva'}</span></td>
+            <td><div style="display:flex;gap:.5rem;">
+              <button class="btn btn--contorno btn--sm" onclick="abrirModalTrivia(${t.id})">Editar</button>
+              <button class="btn btn--peligro btn--sm" onclick="eliminarTrivia(${t.id})">Eliminar</button>
+            </div></td>
+          </tr>
+        `;
+      });
+    }
   } catch (e) {
     console.error(e);
   }
