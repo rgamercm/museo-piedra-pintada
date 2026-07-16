@@ -434,9 +434,12 @@ document.getElementById('btn-narrar').addEventListener('click', () => {
   if (!est) return;
   if (!('speechSynthesis' in window)) { window.Museo?.mostrarToast('Síntesis de voz no disponible', 'aviso'); return; }
   window.speechSynthesis.cancel();
-  const texto = `Estás en la estación ${est.id}: ${est.nombre}. ${est.qr}. Este petroglifo es uno de los más importantes del recorrido.`;
+  // Usa el texto real del asistente del petroglifo; si no hay, un texto de respaldo.
+  const texto = (est.petroglifo && est.petroglifo.texto_asistente)
+    ? est.petroglifo.texto_asistente
+    : `Estás en la estación ${est.id}: ${est.nombre}, código ${est.qr}.`;
   const utt = new SpeechSynthesisUtterance(texto);
-  utt.lang = 'es-ES'; utt.rate = 0.9;
+  utt.lang = 'es-ES'; utt.rate = 0.95;
   const voces = window.speechSynthesis.getVoices().filter(v => v.lang.startsWith('es'));
   if (voces.length) utt.voice = voces[0];
   utt.onstart = () => { document.getElementById('est-estado-voz').textContent = '🔊 Narrando...'; document.getElementById('btn-narrar').textContent = '⏹ Detener'; };

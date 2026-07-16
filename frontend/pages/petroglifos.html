@@ -177,11 +177,10 @@
       <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
         <!-- Chips filtro -->
         <div class="filtros-chips" id="filtros-chips" role="group" aria-label="Filtrar por categoría">
-          <button class="chip activo" data-filtro="todos">Todos (150)</button>
-          <button class="chip" data-filtro="antropomorfo">Antropomorfos</button>
-          <button class="chip" data-filtro="zoomorfo">Zoomorfos</button>
-          <button class="chip" data-filtro="geometrico">Geométricos</button>
-          <button class="chip" data-filtro="astral">Astrales</button>
+          <button class="chip activo" data-filtro="todos">Todos</button>
+          <button class="chip" data-filtro="Erosionado">Erosionados</button>
+          <button class="chip" data-filtro="Bien conservado">Bien conservados</button>
+          <button class="chip" data-filtro="Vandalizado">Vandalizados</button>
         </div>
 
         <!-- Vista -->
@@ -223,11 +222,11 @@
 let PETROGLIFOS = [];
 
 const COLORES_CAT = {
-  antropomorfo: 'badge--dorado',
-  zoomorfo:     'badge--verde',
-  geometrico:   'badge--gris',
-  astral:       'badge--rojo',
+  'Erosionado':      'badge--dorado',
+  'Bien conservado': 'badge--verde',
+  'Vandalizado':     'badge--rojo',
 };
+function colorCategoria(cat) { return COLORES_CAT[cat] || 'badge--gris'; }
 
 const grid = document.getElementById('grid-petroglifos');
 let vistaActual = 'grid';
@@ -255,7 +254,7 @@ function renderPetroglifos() {
         <div class="petroglifo-card__overlay" aria-hidden="true"></div>
         <span class="petroglifo-card__num">${p.codigo_qr}</span>
         <div style="position:absolute;bottom:.75rem;left:.75rem;">
-          <span class="badge ${COLORES_CAT[p.categoria]}">${p.categoria}</span>
+          <span class="badge ${colorCategoria(p.categoria)}">${p.categoria}</span>
         </div>
       </div>
       <div class="petroglifo-card__body">

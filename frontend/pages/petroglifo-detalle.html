@@ -136,39 +136,17 @@
           <div style="font-family:var(--font-titulo);font-size:1rem;color:var(--color-dorado-claro);margin-bottom:1rem;">Código QR de la estación</div>
           <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;">
             <div class="qr-display">
-              <!-- QR decorativo SVG simplificado -->
-              <div style="width:100px;height:100px;background:#f5f5f5;border-radius:.5rem;display:flex;align-items:center;justify-content:center;">
-                <svg viewBox="0 0 21 21" width="80" height="80" xmlns="http://www.w3.org/2000/svg">
-                  <rect width="7" height="7" x="0" y="0" fill="#1a1208"/>
-                  <rect width="5" height="5" x="1" y="1" fill="white"/>
-                  <rect width="3" height="3" x="2" y="2" fill="#1a1208"/>
-                  <rect width="7" height="7" x="14" y="0" fill="#1a1208"/>
-                  <rect width="5" height="5" x="15" y="1" fill="white"/>
-                  <rect width="3" height="3" x="16" y="2" fill="#1a1208"/>
-                  <rect width="7" height="7" x="0" y="14" fill="#1a1208"/>
-                  <rect width="5" height="5" x="1" y="15" fill="white"/>
-                  <rect width="3" height="3" x="2" y="16" fill="#1a1208"/>
-                  <rect width="1" height="1" x="9" y="0" fill="#1a1208"/>
-                  <rect width="1" height="1" x="11" y="0" fill="#1a1208"/>
-                  <rect width="1" height="1" x="8" y="2" fill="#1a1208"/>
-                  <rect width="1" height="1" x="10" y="3" fill="#1a1208"/>
-                  <rect width="1" height="1" x="9" y="5" fill="#1a1208"/>
-                  <rect width="3" height="3" x="9" y="9" fill="#1a1208"/>
-                  <rect width="1" height="1" x="14" y="9" fill="#1a1208"/>
-                  <rect width="1" height="1" x="16" y="10" fill="#1a1208"/>
-                  <rect width="1" height="1" x="18" y="11" fill="#1a1208"/>
-                  <rect width="1" height="1" x="14" y="14" fill="#1a1208"/>
-                  <rect width="1" height="1" x="16" y="16" fill="#1a1208"/>
-                  <rect width="1" height="1" x="18" y="18" fill="#1a1208"/>
-                  <rect width="1" height="1" x="20" y="20" fill="#1a1208"/>
-                </svg>
-              </div>
-              <div class="qr-display__codigo">QR-003</div>
+              <!-- QR real generado por qr-voz.js -->
+              <div id="qr-real" style="background:#fff;border-radius:.5rem;padding:8px;display:inline-block;"></div>
+              <div class="qr-display__codigo">—</div>
               <div class="qr-display__lbl">Escanear en el parque</div>
             </div>
-            <div style="flex:1;">
-              <p style="font-size:.85rem;color:var(--color-texto-2);line-height:1.7;">Escanea este código en la estación física para activar el asistente de voz y escuchar la historia completa del petroglifo.</p>
-              <a href="recorrido.html" class="btn btn--primario btn--sm" style="margin-top:1rem;" id="btn-ir-recorrido">🗺️ Ir al recorrido</a>
+            <div style="flex:1;min-width:200px;">
+              <p style="font-size:.85rem;color:var(--color-texto-2);line-height:1.7;">Escanea este código en la piedra física para abrir esta ficha y escuchar la historia narrada por el asistente de voz.</p>
+              <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem;">
+                <button class="btn btn--contorno btn--sm" id="btn-imprimir-qr">🖨️ Imprimir QR</button>
+                <a href="recorrido.html" class="btn btn--primario btn--sm" id="btn-ir-recorrido">🗺️ Ir al recorrido</a>
+              </div>
             </div>
           </div>
         </div>
@@ -205,11 +183,9 @@
         <div style="margin-bottom:1.5rem;">
           <h2 style="font-size:1.3rem;margin-bottom:.75rem;">Descripción</h2>
           <p id="detalle-desc" style="color:var(--color-texto-2);line-height:1.8;">
-            El Guardián es el petroglifo más reconocido del Parque Piedra Pintada. Tallado en la superficie de una roca granítica de gran tamaño, representa una figura humanoide de proporciones monumentales. Sus rasgos faciales simplificados y el elaborado tocado sugieren que se trata de una deidad o chamán de alto rango.
+            Cargando descripción…
           </p>
-          <p style="color:var(--color-texto-2);line-height:1.8;margin-top:1rem;">
-            Los investigadores han datado esta obra entre el 800 y el 1200 d.C., basándose en el estilo de tallado y los patrones decorativos comparados con otros sitios de la región del Orinoco Medio.
-          </p>
+          <div id="ficha-tecnica"></div>
         </div>
 
         <!-- Metadatos -->
@@ -239,17 +215,23 @@
 
 <div id="footer-placeholder"></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="../js/componentes.js?v=1.2"></script>
+<script src="../js/qr-voz.js?v=1.2"></script>
 <script src="../js/app.js?v=1.2"></script>
 <script>
 'use strict';
 
 document.addEventListener('DOMContentLoaded', async () => {
   const params = new URLSearchParams(window.location.search);
+  const qrParam = params.get('qr');
   const id = parseInt(params.get('id')) || 1;
 
   try {
-    const petroglifo = await window.api.petroglifos.obtenerPorId(id);
+    // Prioridad: si viene ?qr=... (QR escaneado), buscamos por código.
+    const petroglifo = qrParam
+      ? await window.api.petroglifos.obtenerPorQr(qrParam)
+      : await window.api.petroglifos.obtenerPorId(id);
     
     // Si no existe, podemos redirigir o mostrar un error
     if (!petroglifo) {
@@ -286,6 +268,34 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     const qrDisplay = document.querySelector('.qr-display__codigo');
     if (qrDisplay) qrDisplay.textContent = petroglifo.codigo_qr || 'N/A';
+
+    // ── QR real escaneable ──
+    if (petroglifo.codigo_qr && window.MuseoQR) {
+      window.MuseoQR.generarQR('qr-real', petroglifo.codigo_qr, 130);
+    }
+    document.getElementById('btn-imprimir-qr')?.addEventListener('click', () => {
+      window.MuseoQR?.imprimirQR(petroglifo.codigo_qr, petroglifo.nombre);
+    });
+
+    // Ficha técnica (si viene de los datos reales)
+    const ficha = [
+      ['Código de roca', petroglifo.codigo_roca],
+      ['Coordenadas', (petroglifo.latitud && petroglifo.longitud) ? `${petroglifo.latitud}, ${petroglifo.longitud}` : null],
+      ['Altitud', petroglifo.altitud_m ? `${petroglifo.altitud_m} m` : null],
+      ['Caras grabadas', petroglifo.cantidad_caras],
+      ['Estado', petroglifo.estado_conservacion],
+      ['Orientación', petroglifo.orientacion],
+    ].filter(([, v]) => v);
+    const fichaEl = document.getElementById('ficha-tecnica');
+    if (fichaEl && ficha.length) {
+      fichaEl.innerHTML = '<h3 style="font-family:var(--font-titulo);color:var(--color-dorado-claro);font-size:1rem;margin:1.5rem 0 .75rem;">Ficha técnica</h3>' +
+        ficha.map(([k, v]) => `<div style="display:flex;justify-content:space-between;gap:1rem;padding:.4rem 0;border-bottom:1px solid var(--glass-border);font-size:.88rem;"><span style="color:var(--color-texto-3);">${k}</span><span style="color:var(--color-texto);text-align:right;">${v}</span></div>`).join('');
+    }
+
+    // Si llegó por QR escaneado, narrar automáticamente tras un instante.
+    if (qrParam && window.MuseoVoz) {
+      setTimeout(() => document.getElementById('btn-escuchar')?.click(), 800);
+    }
 
     // Enlaces anterior/siguiente (asumimos id-1 y id+1 de forma simple, 
     // en un caso real se consultaría la base de datos por el adyacente)

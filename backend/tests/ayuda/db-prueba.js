@@ -38,6 +38,7 @@ function iniciarBDPrueba() {
   });
 
   mem.public.none(adaptar(leerSQL('schema.sql')));
+  mem.public.none(adaptar(leerSQL('migracion-petroglifos.sql')));
   mem.public.none(adaptar(leerSQL('seed.sql')));
 
   // Adaptador que emula el driver `pg`: soporta consultas parametrizadas ($1, $2...)

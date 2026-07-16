@@ -59,31 +59,49 @@ async function cargarResumen() {
 // ==========================================
 // SECCIÓN: PETROGLIFOS
 // ==========================================
+function _escapar(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+function pintarFilasPetroglifos(lista) {
+  const tbody = document.getElementById('tbody-petroglifos');
+  if (!tbody) return;
+  if (!lista.length) {
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="5">No se encontraron petroglifos.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = lista.map(p => `
+    <tr>
+      <td style="color:var(--color-texto-3);">#${p.id}</td>
+      <td><code style="color:var(--color-dorado-claro);">${_escapar(p.codigo_qr)}</code></td>
+      <td>${_escapar(p.nombre)}</td>
+      <td><span class="badge badge--dorado">${_escapar(p.categoria || '—')}</span></td>
+      <td><div style="display:flex;gap:.4rem;flex-wrap:wrap;">
+        <button class="btn btn--contorno btn--sm" onclick="abrirModalPetroglifo(${p.id})">Editar</button>
+        <button class="btn btn--contorno btn--sm" onclick="window.MuseoQR?.imprimirQR('${_escapar(p.codigo_qr)}','${_escapar(p.nombre)}')">🖨️ QR</button>
+        <button class="btn btn--peligro btn--sm" onclick="eliminarPetroglifo(${p.id})">Eliminar</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+function filtrarPetroglifos(q) {
+  const t = (q || '').toLowerCase().trim();
+  const lista = !t ? estadoGlobal.petroglifos : estadoGlobal.petroglifos.filter(p =>
+    (p.nombre || '').toLowerCase().includes(t) ||
+    (p.codigo_qr || '').toLowerCase().includes(t) ||
+    (p.categoria || '').toLowerCase().includes(t)
+  );
+  pintarFilasPetroglifos(lista);
+}
+window.filtrarPetroglifos = filtrarPetroglifos;
+
 async function cargarPetroglifos() {
   try {
     const petroglifos = await window.api.petroglifos.obtenerTodos();
     estadoGlobal.petroglifos = petroglifos;
-    const tbody = document.getElementById('tbody-petroglifos');
-    tbody.innerHTML = '';
-    
-    if (petroglifos.length === 0) {
-      tbody.innerHTML = '<tr class="empty-row"><td colspan="4">No hay petroglifos registrados.</td></tr>';
-    } else {
-      petroglifos.forEach(p => {
-        tbody.innerHTML += `
-          <tr>
-            <td style="color:var(--color-texto-3);">#${p.id}</td>
-            <td>${p.nombre}</td>
-            <td><span class="badge badge--dorado">${p.categoria}</span></td>
-            <td><div style="display:flex;gap:.5rem;">
-              <button class="btn btn--contorno btn--sm" onclick="abrirModalPetroglifo(${p.id})">Editar</button>
-              <button class="btn btn--peligro btn--sm" onclick="eliminarPetroglifo(${p.id})">Eliminar</button>
-            </div></td>
-          </tr>
-        `;
-      });
-    }
-    
+    const conteo = document.getElementById('conteo-petroglifos');
+    if (conteo) conteo.textContent = `(${petroglifos.length})`;
+    pintarFilasPetroglifos(petroglifos);
     cargarEstaciones();
   } catch (e) {
     console.error(e);
@@ -138,6 +156,20 @@ function abrirModalPetroglifo(id = null) {
       document.getElementById('petroglifo-texto_asistente').value = p.texto_asistente;
       document.getElementById('petroglifo-imagen_url').value = p.imagen_url || '';
       document.getElementById('petroglifo-imagen').value = '';
+      // Ficha técnica
+      const set = (campo, val) => { const el = document.getElementById('petroglifo-'+campo); if (el) el.value = val ?? ''; };
+      set('codigo_roca', p.codigo_roca);
+      set('fecha_registro', p.fecha_registro);
+      set('latitud', p.latitud);
+      set('longitud', p.longitud);
+      set('altitud_m', p.altitud_m);
+      set('cantidad_caras', p.cantidad_caras);
+      set('profundidad_surco', p.profundidad_surco);
+      set('forma_surco', p.forma_surco);
+      set('exposicion_solar', p.exposicion_solar);
+      set('orientacion', p.orientacion);
+      set('estado_conservacion', p.estado_conservacion);
+      set('notas', p.notas);
       
       const imgPreview = document.getElementById('petroglifo-imagen-preview');
       if (p.imagen_url) {
@@ -169,13 +201,26 @@ document.getElementById('form-petroglifo')?.addEventListener('submit', async (e)
     let petroglifoId = id ? parseInt(id) : null;
     const isNew = !petroglifoId;
 
+    const val = (campo) => { const el = document.getElementById('petroglifo-'+campo); return el && el.value !== '' ? el.value : null; };
     const datos = {
       nombre: document.getElementById('petroglifo-nombre').value,
       categoria: document.getElementById('petroglifo-categoria').value,
       codigo_qr: document.getElementById('petroglifo-codigo_qr').value,
       descripcion: document.getElementById('petroglifo-descripcion').value,
       texto_asistente: document.getElementById('petroglifo-texto_asistente').value,
-      imagen_url: imagenUrl || null
+      imagen_url: imagenUrl || null,
+      codigo_roca: val('codigo_roca'),
+      fecha_registro: val('fecha_registro'),
+      latitud: val('latitud'),
+      longitud: val('longitud'),
+      altitud_m: val('altitud_m'),
+      cantidad_caras: val('cantidad_caras'),
+      profundidad_surco: val('profundidad_surco'),
+      forma_surco: val('forma_surco'),
+      exposicion_solar: val('exposicion_solar'),
+      orientacion: val('orientacion'),
+      estado_conservacion: val('estado_conservacion'),
+      notas: val('notas')
     };
 
     if (isNew) {

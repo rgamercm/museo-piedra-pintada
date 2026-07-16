@@ -327,11 +327,11 @@
 
     <div class="hero__stats">
       <div class="hero__stat">
-        <span class="hero__stat-num" data-contador="150">0</span>
+        <span class="hero__stat-num" id="hero-stat-petroglifos" data-contador="110">0</span>
         <span class="hero__stat-lbl">Petroglifos</span>
       </div>
       <div class="hero__stat">
-        <span class="hero__stat-num" data-contador="12">0</span>
+        <span class="hero__stat-num" id="hero-stat-estaciones" data-contador="104">0</span>
         <span class="hero__stat-lbl">Estaciones</span>
       </div>
       <div class="hero__stat">
@@ -764,6 +764,20 @@
       }
     } catch (e) {
       console.error('Error al cargar visitas:', e);
+    }
+
+    // Cifras reales de petroglifos y estaciones desde la API
+    try {
+      const [petros, estaciones] = await Promise.all([
+        window.api.petroglifos.obtenerTodos(),
+        window.api.estaciones.obtenerTodas().catch(() => [])
+      ]);
+      const pEl = document.getElementById('hero-stat-petroglifos');
+      const eEl = document.getElementById('hero-stat-estaciones');
+      if (pEl && Array.isArray(petros)) { pEl.setAttribute('data-contador', petros.length); pEl.innerText = petros.length; }
+      if (eEl && Array.isArray(estaciones)) { eEl.setAttribute('data-contador', estaciones.length); eEl.innerText = estaciones.length; }
+    } catch (e) {
+      console.error('Error al cargar cifras:', e);
     }
   });
 </script>
