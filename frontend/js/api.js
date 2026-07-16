@@ -123,13 +123,13 @@ const api = {
 
   preguntas: {
     obtenerPublicadas: () => api.request('/preguntas'),
-    obtenerAdmin: () => api.request('/preguntas/todas', { headers: api.getHeaders(true) }),
+    obtenerAdmin: () => api.request('/preguntas/pendientes', { headers: api.getHeaders(true) }),
     crear: (pregunta) => api.request('/preguntas', {
       method: 'POST',
-      headers: api.getHeaders(true), // opcional según backend
+      headers: api.getHeaders(true),
       body: JSON.stringify({ pregunta })
     }),
-    responder: (id, respuesta) => api.request(`/preguntas/${id}/respuesta`, { method: 'PUT', headers: api.getHeaders(true), body: JSON.stringify({ respuesta }) }),
+    responder: (id, respuesta) => api.request(`/preguntas/${id}/responder`, { method: 'PATCH', headers: api.getHeaders(true), body: JSON.stringify({ respuesta }) }),
     eliminar: (id) => api.request(`/preguntas/${id}`, { method: 'DELETE', headers: api.getHeaders(true) })
   },
 
