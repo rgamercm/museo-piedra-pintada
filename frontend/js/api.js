@@ -45,6 +45,11 @@ const api = {
       headers: api.getHeaders(),
       body: JSON.stringify({ correo, contrasena })
     }),
+    registro: (datos) => api.request('/auth/registro', {
+      method: 'POST',
+      headers: api.getHeaders(),
+      body: JSON.stringify(datos)
+    }),
     perfil: () => api.request('/auth/perfil', {
       headers: api.getHeaders(true)
     })

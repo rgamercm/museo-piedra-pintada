@@ -1067,3 +1067,21 @@ h6 { font-size: var(--text-base); }
   pointer-events: none;
   z-index: 0;
 }
+
+/* ── Chip de sesión en el header (indicador de login) ─────── */
+.sesion-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .4rem .8rem;
+  border-radius: 2rem;
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--color-dorado-claro);
+  background: rgba(200, 146, 42, .12);
+  border: 1px solid rgba(200, 146, 42, .35);
+  white-space: nowrap;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

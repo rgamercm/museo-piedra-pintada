@@ -78,7 +78,7 @@ function generarHeader() {
       <ul class="nav__lista">${navLinks}</ul>
     </nav>
 
-    <div class="header__acciones">
+    <div class="header__acciones" id="header-acciones">
       <a href="${base}pages/reservas.html" class="btn btn--contorno btn--sm" id="btn-reservar">Reservar visita</a>
       <a href="${base}pages/login.html"    class="btn btn--primario btn--sm" id="btn-login">Ingresar</a>
       <button class="hamburguesa" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-movil">
@@ -90,13 +90,74 @@ function generarHeader() {
 
 <nav class="nav-movil" id="nav-movil" aria-label="Menú móvil">
   ${navMovilLinks}
-  <div style="display:flex;gap:1rem;margin-top:1rem;flex-wrap:wrap;justify-content:center;">
+  <div id="nav-movil-acciones" style="display:flex;gap:1rem;margin-top:1rem;flex-wrap:wrap;justify-content:center;">
     <a href="${base}pages/reservas.html" class="btn btn--contorno">Reservar visita</a>
     <a href="${base}pages/login.html"    class="btn btn--primario">Ingresar</a>
   </div>
 </nav>
   `;
 }
+
+/* ── Estado de sesión en el header ───────────────────────── */
+function obtenerUsuarioSesion() {
+  try {
+    const crudo = localStorage.getItem('museo_usuario');
+    return crudo ? JSON.parse(crudo) : null;
+  } catch { return null; }
+}
+
+function cerrarSesion() {
+  localStorage.removeItem('museo_token');
+  localStorage.removeItem('museo_usuario');
+  sessionStorage.removeItem('museo_token');
+  window.Museo?.mostrarToast('Sesión cerrada', 'info');
+  const base = calcularBase();
+  setTimeout(() => { window.location.href = `${base}index.html`; }, 600);
+}
+window.cerrarSesion = cerrarSesion;
+
+/* Rellena las acciones del header según haya o no sesión iniciada. */
+function pintarEstadoSesion() {
+  const base = calcularBase();
+  const usuario = obtenerUsuarioSesion();
+  const token = localStorage.getItem('museo_token') || sessionStorage.getItem('museo_token');
+  const acciones = document.getElementById('header-acciones');
+  const accionesMovil = document.getElementById('nav-movil-acciones');
+  if (!acciones) return;
+
+  const hamburguesaHTML = `
+      <button class="hamburguesa" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-movil">
+        <span></span><span></span><span></span>
+      </button>`;
+
+  if (usuario && token) {
+    const esAdmin = usuario.rol === 'admin';
+    const primerNombre = (usuario.nombre || 'Usuario').split(' ')[0];
+    const enlaceAdmin = esAdmin
+      ? `<a href="${base}pages/admin/dashboard.html" class="btn btn--contorno btn--sm">🔒 Panel</a>`
+      : '';
+
+    acciones.innerHTML = `
+      <span class="sesion-chip" title="${usuario.correo || ''}">👤 ${primerNombre}</span>
+      ${enlaceAdmin}
+      <button class="btn btn--primario btn--sm" onclick="cerrarSesion()">Cerrar sesión</button>
+      ${hamburguesaHTML}`;
+
+    if (accionesMovil) {
+      accionesMovil.innerHTML = `
+        <span class="sesion-chip">👤 ${primerNombre}</span>
+        ${esAdmin ? `<a href="${base}pages/admin/dashboard.html" class="btn btn--contorno">🔒 Panel Admin</a>` : ''}
+        <a href="${base}pages/reservas.html" class="btn btn--contorno">Reservar visita</a>
+        <button class="btn btn--primario" onclick="cerrarSesion()">Cerrar sesión</button>`;
+    }
+  } else {
+    acciones.innerHTML = `
+      <a href="${base}pages/reservas.html" class="btn btn--contorno btn--sm" id="btn-reservar">Reservar visita</a>
+      <a href="${base}pages/login.html"    class="btn btn--primario btn--sm" id="btn-login">Ingresar</a>
+      ${hamburguesaHTML}`;
+  }
+}
+window.initHeader = pintarEstadoSesion;
 
 function generarFooter() {
   const base = calcularBase();

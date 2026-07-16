@@ -21,20 +21,23 @@ if (header) {
   onScroll();
 }
 
-// Menú hamburguesa
-if (hamburguesa && navMovil) {
-  hamburguesa.addEventListener('click', () => {
-    const abierto = navMovil.classList.toggle('abierto');
-    hamburguesa.classList.toggle('activo', abierto);
+// Menú hamburguesa — delegación (el header se inyecta y re-renderiza dinámicamente)
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.hamburguesa');
+  if (btn) {
+    const nav = document.querySelector('.nav-movil');
+    if (!nav) return;
+    const abierto = nav.classList.toggle('abierto');
+    btn.classList.toggle('activo', abierto);
     document.body.classList.toggle('overflow-hidden', abierto);
-    hamburguesa.setAttribute('aria-expanded', abierto);
-  });
-
-  // Cerrar al hacer clic en enlace del menú móvil
-  navMovil.querySelectorAll('a').forEach(a =>
-    a.addEventListener('click', cerrarMenuMovil)
-  );
-}
+    btn.setAttribute('aria-expanded', abierto);
+    return;
+  }
+  // Cerrar al hacer clic en un enlace del menú móvil
+  if (e.target.closest('.nav-movil a')) {
+    cerrarMenuMovil();
+  }
+});
 
 function cerrarMenuMovil() {
   if (!navMovil) return;

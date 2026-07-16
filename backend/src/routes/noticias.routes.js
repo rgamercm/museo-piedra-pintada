@@ -22,7 +22,7 @@ router.post(
   [
     body('titulo').trim().notEmpty().withMessage('El título es obligatorio.').isLength({ max: 300 }),
     body('contenido').trim().notEmpty().withMessage('El contenido es obligatorio.'),
-    body('imagen_url').optional({ checkFalsy: true }).isURL().withMessage('URL de imagen inválida.'),
+    body('imagen_url').optional({ checkFalsy: true }).isLength({ max: 500 }).withMessage('La URL de imagen es demasiado larga.'),
     body('categoria').optional().trim().isLength({ max: 50 }),
     body('activa').optional().isBoolean().withMessage('Debe ser booleano.')
   ],
@@ -39,7 +39,7 @@ router.put(
     param('id').isInt().withMessage('ID inválido'),
     body('titulo').trim().notEmpty().withMessage('El título es obligatorio.').isLength({ max: 300 }),
     body('contenido').trim().notEmpty().withMessage('El contenido es obligatorio.'),
-    body('imagen_url').optional({ checkFalsy: true }).isURL().withMessage('URL de imagen inválida.'),
+    body('imagen_url').optional({ checkFalsy: true }).isLength({ max: 500 }).withMessage('La URL de imagen es demasiado larga.'),
     body('categoria').optional().trim().isLength({ max: 50 }),
     body('activa').optional().isBoolean().withMessage('Debe ser booleano.')
   ],

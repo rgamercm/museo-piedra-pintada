@@ -23,7 +23,7 @@ router.post(
     body('nombre').trim().notEmpty().withMessage('El nombre es obligatorio.').isLength({ max: 200 }),
     body('descripcion').trim().notEmpty().withMessage('La descripción es obligatoria.'),
     body('texto_asistente').trim().notEmpty().withMessage('El texto del asistente es obligatorio.'),
-    body('imagen_url').optional({ checkFalsy: true }).isURL().withMessage('URL de imagen inválida.'),
+    body('imagen_url').optional({ checkFalsy: true }).isLength({ max: 500 }).withMessage('La URL de imagen es demasiado larga.'),
     body('codigo_qr').trim().notEmpty().withMessage('El código QR es obligatorio.'),
     body('categoria').optional().trim().isLength({ max: 100 })
   ],
@@ -41,7 +41,7 @@ router.put(
     body('nombre').trim().notEmpty().withMessage('El nombre es obligatorio.').isLength({ max: 200 }),
     body('descripcion').trim().notEmpty().withMessage('La descripción es obligatoria.'),
     body('texto_asistente').trim().notEmpty().withMessage('El texto del asistente es obligatorio.'),
-    body('imagen_url').optional({ checkFalsy: true }).isURL().withMessage('URL de imagen inválida.'),
+    body('imagen_url').optional({ checkFalsy: true }).isLength({ max: 500 }).withMessage('La URL de imagen es demasiado larga.'),
     body('codigo_qr').trim().notEmpty().withMessage('El código QR es obligatorio.'),
     body('categoria').optional().trim().isLength({ max: 100 })
   ],

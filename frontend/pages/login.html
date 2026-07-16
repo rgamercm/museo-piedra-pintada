@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login / Registro — Museo Piedra Pintada</title>
   <meta name="description" content="Inicia sesión o regístrate para acceder a todas las funciones del Museo Arqueológico Piedra Pintada.">
-  <link rel="stylesheet" href="../css/estilos.css">
+  <link rel="stylesheet" href="../css/estilos.css?v=1.2">
   <style>
     .auth-wrapper {
       min-height: 100vh;
@@ -187,9 +187,9 @@
   </div>
 </div>
 
-<script src="../js/componentes.js"></script>
-<script src="../js/api.js"></script>
-<script src="../js/app.js"></script>
+<script src="../js/componentes.js?v=1.2"></script>
+<script src="../js/api.js?v=1.2"></script>
+<script src="../js/app.js?v=1.2"></script>
 <script>
 'use strict';
 // Tabs
@@ -233,6 +233,7 @@ document.getElementById('form-login').addEventListener('submit', async e => {
   try {
     const data = await window.api.auth.login(document.getElementById('login-email').value, document.getElementById('login-password').value);
     localStorage.setItem('museo_token', data.token);
+    localStorage.setItem('museo_usuario', JSON.stringify(data.usuario));
     window.Museo?.mostrarToast('✅ Sesión iniciada correctamente', 'exito');
     if (data.usuario.rol === 'admin') {
       setTimeout(() => { window.location.href = 'admin/dashboard.html'; }, 1000);
@@ -245,15 +246,35 @@ document.getElementById('form-login').addEventListener('submit', async e => {
   }
 });
 
-// Submit registro (demo - TODO endpoint if needed)
+// Submit registro — llamada real a la API
 document.getElementById('form-registro').addEventListener('submit', async e => {
   e.preventDefault();
   if (!window.Museo?.validarFormulario(e.target)) return;
   const btn = document.getElementById('btn-registro-submit');
   btn.textContent = 'Creando cuenta...'; btn.disabled = true;
-  await window.Museo?.simularCarga(1500);
-  window.Museo?.mostrarToast('🎉 Cuenta creada exitosamente. ¡Bienvenido!', 'exito');
-  setTimeout(() => { window.location.href = '../index.html'; }, 1200);
+
+  const rol = document.getElementById('reg-tipo').value;
+  const datos = {
+    nombre: document.getElementById('reg-nombre').value,
+    correo: document.getElementById('reg-email').value,
+    contrasena: document.getElementById('reg-password').value,
+    rol
+  };
+  // Si es institución, pedimos el nombre de la institución (usamos el nombre completo como respaldo)
+  if (rol === 'institucion') {
+    datos.institucion_nombre = document.getElementById('reg-nombre').value;
+  }
+
+  try {
+    const data = await window.api.auth.registro(datos);
+    localStorage.setItem('museo_token', data.token);
+    localStorage.setItem('museo_usuario', JSON.stringify(data.usuario));
+    window.Museo?.mostrarToast('🎉 Cuenta creada. ¡Bienvenido!', 'exito');
+    setTimeout(() => { window.location.href = '../index.html'; }, 1200);
+  } catch (err) {
+    console.error(err);
+    btn.textContent = 'Crear cuenta →'; btn.disabled = false;
+  }
 });
 </script>
 </body>
