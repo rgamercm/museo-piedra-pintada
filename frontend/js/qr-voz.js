@@ -44,7 +44,7 @@ function generarQR(destino, codigoQr, tamano = 220) {
     text: urlDeQr(codigoQr),
     width: tamano,
     height: tamano,
-    colorDark: '#1a1208',
+    colorDark: '#0D2049',
     colorLight: '#ffffff',
     correctLevel: window.QRCode.CorrectLevel.H,
   });
@@ -64,7 +64,7 @@ function imprimirQR(codigoQr, nombre) {
     <html><head><title>QR ${codigoQr}</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>
     <style>
-      body{font-family:Georgia,serif;text-align:center;padding:24px;color:#1a1208;}
+      body{font-family:Georgia,serif;text-align:center;padding:24px;color:#0D2049;}
       h1{font-size:20px;margin:0 0 4px;} p{margin:4px 0;color:#555;font-size:13px;}
       #qr{display:flex;justify-content:center;margin:18px 0;}
       .codigo{font-size:26px;font-weight:bold;letter-spacing:2px;margin-top:8px;}
@@ -80,7 +80,7 @@ function imprimirQR(codigoQr, nombre) {
       <script>
         new QRCode(document.getElementById('qr'), {
           text: ${JSON.stringify(url)}, width: 240, height: 240,
-          colorDark:'#1a1208', colorLight:'#ffffff', correctLevel: QRCode.CorrectLevel.H
+          colorDark:'#0D2049', colorLight:'#ffffff', correctLevel: QRCode.CorrectLevel.H
         });
       <\/script>
     </body></html>`);
