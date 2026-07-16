@@ -67,7 +67,7 @@ const api = {
 
   noticias: {
     obtenerTodas: () => api.request('/noticias'),
-    obtenerAdmin: () => api.request('/noticias/todas', { headers: api.getHeaders(true) }),
+    obtenerAdmin: () => api.request('/noticias', { headers: api.getHeaders(true) }),
     crear: (datos) => api.request('/noticias', { method: 'POST', headers: api.getHeaders(true), body: JSON.stringify(datos) }),
     editar: (id, datos) => api.request(`/noticias/${id}`, { method: 'PUT', headers: api.getHeaders(true), body: JSON.stringify(datos) }),
     eliminar: (id) => api.request(`/noticias/${id}`, { method: 'DELETE', headers: api.getHeaders(true) })
@@ -93,13 +93,13 @@ const api = {
 
   comentarios: {
     obtenerAprobados: () => api.request('/comentarios'),
-    obtenerAdmin: (estado) => api.request(`/comentarios?estado=${estado}`, { headers: api.getHeaders(true) }),
+    obtenerAdmin: () => api.request('/comentarios/pendientes', { headers: api.getHeaders(true) }),
     crear: (datos) => api.request('/comentarios', {
       method: 'POST',
       headers: api.getHeaders(true),
       body: JSON.stringify(datos)
     }),
-    cambiarEstado: (id, estado) => api.request(`/comentarios/${id}/estado`, { method: 'PATCH', headers: api.getHeaders(true), body: JSON.stringify({ estado }) })
+    cambiarEstado: (id, estado) => api.request(`/comentarios/${id}/moderar`, { method: 'PATCH', headers: api.getHeaders(true), body: JSON.stringify({ estado_moderacion: estado }) })
   },
 
   fotos: {
