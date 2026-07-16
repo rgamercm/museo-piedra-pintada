@@ -184,8 +184,17 @@
           <input type="text" id="petroglifo-nombre" class="form-input" placeholder="Nombre" required>
           <input type="text" id="petroglifo-categoria" class="form-input" placeholder="Categoría (ej: Zoomorfo)" required>
           <input type="text" id="petroglifo-codigo_qr" class="form-input" placeholder="Código QR">
+          
+          <div style="display:flex; flex-direction:column; gap:.5rem;">
+            <label style="font-size:.85rem; color:var(--color-texto-2);">Imagen del petroglifo (opcional):</label>
+            <input type="file" id="petroglifo-imagen" class="form-input" accept="image/*">
+            <input type="hidden" id="petroglifo-imagen_url">
+            <img id="petroglifo-imagen-preview" src="" style="max-width:100%; border-radius:.5rem; display:none; margin-top:.5rem;" alt="Previsualización">
+          </div>
+
           <textarea id="petroglifo-descripcion" class="form-textarea" placeholder="Descripción" required></textarea>
           <textarea id="petroglifo-texto_asistente" class="form-textarea" placeholder="Texto para asistente de voz"></textarea>
+
           <div style="display:flex; gap:1rem; margin-top:1rem;">
             <button type="submit" class="btn btn--primario">Guardar</button>
             <button type="button" class="btn btn--contorno" onclick="cerrarModalPetroglifo()">Cancelar</button>

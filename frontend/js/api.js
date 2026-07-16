@@ -102,6 +102,25 @@ const api = {
     cambiarEstado: (id, estado) => api.request(`/comentarios/${id}/estado`, { method: 'PATCH', headers: api.getHeaders(true), body: JSON.stringify({ estado }) })
   },
 
+  fotos: {
+    subir: async (file, petroglifo_id, comentario_id) => {
+      const formData = new FormData();
+      formData.append('imagen', file);
+      if (petroglifo_id) formData.append('petroglifo_id', petroglifo_id);
+      if (comentario_id) formData.append('comentario_id', comentario_id);
+      
+      const token = api.getToken();
+      const res = await fetch(`${API_URL}/fotos`, {
+        method: 'POST',
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+        body: formData
+      });
+      const data = await res.json();
+      if (!data.ok) throw new Error(data.error || 'Error al subir foto');
+      return data.datos;
+    }
+  },
+
   preguntas: {
     obtenerPublicadas: () => api.request('/preguntas'),
     obtenerAdmin: () => api.request('/preguntas/todas', { headers: api.getHeaders(true) }),

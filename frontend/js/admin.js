@@ -128,7 +128,21 @@ function abrirModalPetroglifo(id = null) {
       document.getElementById('petroglifo-codigo_qr').value = p.codigo_qr || '';
       document.getElementById('petroglifo-descripcion').value = p.descripcion;
       document.getElementById('petroglifo-texto_asistente').value = p.texto_asistente;
+      document.getElementById('petroglifo-imagen_url').value = p.imagen_url || '';
+      document.getElementById('petroglifo-imagen').value = '';
+      
+      const imgPreview = document.getElementById('petroglifo-imagen-preview');
+      if (p.imagen_url) {
+        imgPreview.src = p.imagen_url;
+        imgPreview.style.display = 'block';
+      } else {
+        imgPreview.style.display = 'none';
+        imgPreview.src = '';
+      }
     }
+  } else {
+    document.getElementById('petroglifo-imagen_url').value = '';
+    document.getElementById('petroglifo-imagen-preview').style.display = 'none';
   }
   modal.style.display = 'flex';
 }
@@ -140,22 +154,43 @@ function cerrarModalPetroglifo() {
 document.getElementById('form-petroglifo')?.addEventListener('submit', async (e) => {
   e.preventDefault();
   const id = document.getElementById('petroglifo-id').value;
-  const datos = {
-    nombre: document.getElementById('petroglifo-nombre').value,
-    categoria: document.getElementById('petroglifo-categoria').value,
-    codigo_qr: document.getElementById('petroglifo-codigo_qr').value,
-    descripcion: document.getElementById('petroglifo-descripcion').value,
-    texto_asistente: document.getElementById('petroglifo-texto_asistente').value,
-  };
-  
+  const imagenInput = document.getElementById('petroglifo-imagen');
+  let imagenUrl = document.getElementById('petroglifo-imagen_url').value;
+
   try {
-    if (id) {
-      await window.api.petroglifos.editar(id, datos);
-      window.Museo?.mostrarToast('Petroglifo actualizado', 'exito');
-    } else {
-      await window.api.petroglifos.crear(datos);
+    let petroglifoId = id ? parseInt(id) : null;
+    const isNew = !petroglifoId;
+
+    const datos = {
+      nombre: document.getElementById('petroglifo-nombre').value,
+      categoria: document.getElementById('petroglifo-categoria').value,
+      codigo_qr: document.getElementById('petroglifo-codigo_qr').value,
+      descripcion: document.getElementById('petroglifo-descripcion').value,
+      texto_asistente: document.getElementById('petroglifo-texto_asistente').value,
+      imagen_url: imagenUrl || null
+    };
+
+    if (isNew) {
+      // Crear petroglifo primero para tener un ID
+      const nuevoPetroglifo = await window.api.petroglifos.crear(datos);
+      petroglifoId = nuevoPetroglifo.id;
+    }
+
+    // Si hay una imagen seleccionada, subirla
+    if (imagenInput.files && imagenInput.files[0]) {
+      window.Museo?.mostrarToast('Subiendo imagen...', 'info');
+      const resFoto = await window.api.fotos.subir(imagenInput.files[0], petroglifoId, null);
+      datos.imagen_url = resFoto.url;
+    }
+
+    if (!isNew || (imagenInput.files && imagenInput.files[0])) {
+      // Editar si no es nuevo o si es nuevo y le pusimos imagen
+      await window.api.petroglifos.editar(petroglifoId, datos);
+      window.Museo?.mostrarToast(isNew ? 'Petroglifo creado' : 'Petroglifo actualizado', 'exito');
+    } else if (isNew) {
       window.Museo?.mostrarToast('Petroglifo creado', 'exito');
     }
+
     cerrarModalPetroglifo();
     cargarPetroglifos();
   } catch (error) {
