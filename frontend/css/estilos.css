@@ -1112,3 +1112,183 @@ h6 { font-size: var(--text-base); }
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* ============================================================
+   MEJORAS ESTÉTICAS PREMIUM — v3.0
+   ============================================================ */
+
+/* ── 1. FONDO ANIMADO: esferas de luz en movimiento ────────── */
+.bg-texture {
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(122, 186, 88, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(10, 79, 147, 0.10) 0%, transparent 40%),
+    radial-gradient(ellipse at 60% 80%, rgba(122, 186, 88, 0.04) 0%, transparent 45%),
+    radial-gradient(ellipse at 10% 10%, rgba(10, 79, 147, 0.07) 0%, transparent 35%);
+  animation: orbes-fondo 18s ease-in-out infinite alternate;
+}
+@keyframes orbes-fondo {
+  0%   { opacity: 0.8;  transform: scale(1);    }
+  50%  { opacity: 1;    transform: scale(1.04); }
+  100% { opacity: 0.85; transform: scale(1);    }
+}
+
+/* ── 2. SHIMMER en botones primarios ────────────────────────── */
+.btn--primario {
+  position: relative;
+  overflow: hidden;
+}
+.btn--primario::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.22) 50%,
+    transparent 80%
+  );
+  animation: shimmer-btn 3.5s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes shimmer-btn {
+  0%   { left: -100%; }
+  50%  { left: 160%;  }
+  100% { left: 160%;  }
+}
+
+/* ── 3. HOVER 3D en tarjetas de acceso rápido ───────────────── */
+.acceso-card {
+  perspective: 800px;
+  transform-style: preserve-3d;
+  transition: transform .35s var(--ease-bounce),
+              box-shadow .35s var(--ease-out),
+              border-color .35s var(--ease-out);
+  position: relative;
+  overflow: hidden;
+}
+.acceso-card:hover {
+  transform: translateY(-10px) rotateX(4deg) rotateY(-3deg);
+  box-shadow: var(--shadow-lg),
+              0 0 40px rgba(122, 186, 88, 0.22),
+              0 24px 48px rgba(0, 0, 0, 0.35);
+  border-color: rgba(122, 186, 88, 0.55);
+}
+.acceso-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--grad-dorado);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .35s var(--ease-out);
+  border-radius: var(--radius-full) var(--radius-full) 0 0;
+}
+.acceso-card:hover::after {
+  transform: scaleX(1);
+}
+
+/* ── 4. DIVISOR PULSANTE ────────────────────────────────────── */
+.divisor {
+  animation: divisor-glow 2.8s ease-in-out infinite;
+}
+@keyframes divisor-glow {
+  0%, 100% { box-shadow: 0 0 6px rgba(122, 186, 88, 0.30); }
+  50%       { box-shadow: 0 0 18px rgba(122, 186, 88, 0.65), 0 0 35px rgba(122, 186, 88, 0.20); }
+}
+
+/* ── 5. GLOW EN STAT-CARDS al hover ────────────────────────── */
+.stat-card {
+  transition: transform .3s var(--ease-bounce),
+              box-shadow .3s var(--ease-out),
+              border-color .3s var(--ease-out);
+}
+.stat-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: var(--shadow-lg),
+              0 0 30px rgba(122, 186, 88, 0.18);
+  border-color: rgba(122, 186, 88, 0.42);
+}
+
+/* ── 6. PAGE-HERO DRAMÁTICO: orbe de luz ───────────────────── */
+.page-hero {
+  overflow: hidden;
+}
+.page-hero::after {
+  content: '';
+  position: absolute;
+  top: -60px;
+  right: -80px;
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, rgba(122, 186, 88, 0.09) 0%, transparent 65%);
+  pointer-events: none;
+  animation: orbe-hero 6s ease-in-out infinite alternate;
+  border-radius: 50%;
+}
+@keyframes orbe-hero {
+  0%   { transform: translate(0, 0) scale(1);    opacity: 0.7; }
+  100% { transform: translate(-30px, 20px) scale(1.15); opacity: 1; }
+}
+
+/* ── 7. TARJETAS GENERALES: acento superior al hover ──────── */
+.tarjeta {
+  position: relative;
+}
+.tarjeta::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--grad-dorado);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .35s var(--ease-out);
+  border-radius: var(--radius-full) var(--radius-full) 0 0;
+  z-index: 1;
+}
+.tarjeta:hover::before {
+  transform: scaleX(1);
+}
+
+/* ── 8. GLOW MEJORADO EN BOTONES ─────────────────────────── */
+.btn--contorno:hover {
+  box-shadow: 0 0 20px rgba(122, 186, 88, 0.25),
+              0 4px 16px rgba(0, 0, 0, 0.3);
+}
+.btn--primario:hover {
+  box-shadow: 0 6px 28px rgba(122, 186, 88, 0.55),
+              0 0 45px rgba(122, 186, 88, 0.18);
+}
+
+/* ── 9. SCROLL REVEAL con escala sutil ──────────────────────── */
+.revelar {
+  opacity: 0;
+  transform: translateY(24px) scale(0.98);
+  transition: opacity .6s var(--ease-out),
+              transform .6s var(--ease-out);
+}
+.revelar.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* ── 10. HEADER: sombra de luz al hacer scroll ──────────────── */
+.header.scrolled {
+  box-shadow: 0 4px 24px rgba(122, 186, 88, 0.18),
+              0 2px 8px rgba(0, 0, 0, 0.40);
+}
+
+/* ── 11. ETIQUETA: brillo sutil al hover ────────────────────── */
+.etiqueta {
+  transition: box-shadow .3s var(--ease-out),
+              background .3s var(--ease-out);
+}
+.etiqueta:hover {
+  background: rgba(122, 186, 88, 0.18);
+  box-shadow: 0 0 12px rgba(122, 186, 88, 0.25);
+}
+
