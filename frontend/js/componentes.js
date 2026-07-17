@@ -68,9 +68,9 @@ function generarHeader() {
   <div class="container header__inner">
     <div style="display: flex; align-items: center; gap: 1rem;">
       <a href="${base}index.html" aria-label="Ir al inicio" style="display: flex; align-items: center; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
-        <img src="${base}assets/img/logo-museo.png" alt="Logo Museo Piedra Pintada" style="height: 46px; width: auto; object-fit: contain;">
+        <img src="${base}assets/img/logo-museo.png" alt="Logo Museo Piedra Pintada" style="height: 58px; width: auto; object-fit: contain;">
       </a>
-      <img src="${base}assets/img/logo-carabobo.png" alt="Logo Carabobo Te Quiero" style="height: 46px; width: auto; object-fit: contain;">
+      <img src="${base}assets/img/logo-carabobo.png" alt="Logo Carabobo Te Quiero" style="height: 58px; width: auto; object-fit: contain;">
       
       <div class="logo__texto" style="border-left: 1px solid var(--glass-border); padding-left: 1rem;">
         <span class="logo__nombre">Piedra Pintada</span>
