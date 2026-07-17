@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Detalle de Petroglifo — Museo Arqueológico Piedra Pintada</title>
   <meta name="description" content="Información detallada del petroglifo: descripción, imagen, texto del asistente de voz y código QR asociado.">
-  <link rel="stylesheet" href="../css/estilos.css?v=2.1">
+  <link rel="stylesheet" href="../css/estilos.css?v=2.2">
   <style>
     .detalle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
     .imagen-principal {
@@ -144,8 +144,8 @@
             <div style="flex:1;min-width:200px;">
               <p style="font-size:.85rem;color:var(--color-texto-2);line-height:1.7;">Escanea este código en la piedra física para abrir esta ficha y escuchar la historia narrada por el asistente de voz.</p>
               <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem;">
-                <button class="btn btn--contorno btn--sm" id="btn-imprimir-qr">? Imprimir QR</button>
-                <a href="recorrido.html" class="btn btn--primario btn--sm" id="btn-ir-recorrido">? Ir al recorrido</a>
+                <button class="btn btn--contorno btn--sm" id="btn-imprimir-qr">Imprimir QR</button>
+                <a href="recorrido.html" class="btn btn--primario btn--sm" id="btn-ir-recorrido">Ir al recorrido</a>
               </div>
             </div>
           </div>
@@ -157,7 +157,7 @@
         <!-- Asistente de voz -->
         <div class="asistente-panel">
           <div class="asistente-panel__header">
-            <div class="asistente-avatar" aria-hidden="true">?</div>
+            <div class="asistente-avatar" aria-hidden="true"></div>
             <div>
               <div style="font-family:var(--font-titulo);font-size:.95rem;color:var(--color-dorado-claro);">Asistente Arqueológico</div>
               <div style="font-size:.78rem;color:var(--color-texto-3);">Voz en español · Web Speech API</div>
@@ -204,7 +204,7 @@
 
         <!-- Navegación entre petroglifos -->
         <div style="display:flex;gap:1rem;justify-content:space-between;">
-          <a href="petroglifo-detalle.html?id=3" class="btn btn--contorno" id="btn-anterior-petroglifo">? Petroglifo anterior</a>
+          <a href="petroglifo-detalle.html?id=3" class="btn btn--contorno" id="btn-anterior-petroglifo">Petroglifo anterior</a>
           <a href="petroglifos.html" class="btn btn--fantasma" id="btn-volver-catalogo">Ver catálogo</a>
           <a href="petroglifo-detalle.html?id=2" class="btn btn--contorno" id="btn-siguiente-petroglifo">Siguiente ?</a>
         </div>
@@ -216,7 +216,7 @@
 <div id="footer-placeholder"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="../js/componentes.js?v=2.1"></script>
+<script src="../js/componentes.js?v=2.2"></script>
 <script src="../js/qr-voz.js?v=1.3"></script>
 <script src="../js/app.js?v=1.3"></script>
 <script>
