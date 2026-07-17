@@ -348,6 +348,16 @@ h6 { font-size: var(--text-base); }
   gap: var(--sp-3);
 }
 
+/* En móvil: ocultar botones de acción del header, solo mostrar hamburguesa */
+@media (max-width: 768px) {
+  .header__acciones .btn:not(:last-child) {
+    display: none;
+  }
+  .header__acciones {
+    gap: var(--sp-2);
+  }
+}
+
 /* Botón hamburguesa */
 .hamburguesa {
   display: none;
@@ -377,14 +387,18 @@ h6 { font-size: var(--text-base); }
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(12, 8, 4, 0.97);
+  background: rgba(10, 26, 60, 0.98);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   z-index: 999;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--sp-4);
+  gap: var(--sp-3);
   opacity: 0;
   transition: opacity var(--dur-media) var(--ease-out);
+  overflow-y: auto;
+  padding: var(--sp-8) var(--sp-6);
 }
 .nav-movil.abierto {
   display: flex;
@@ -392,11 +406,24 @@ h6 { font-size: var(--text-base); }
 }
 .nav-movil__enlace {
   font-family: var(--font-titulo);
-  font-size: var(--text-2xl);
+  font-size: var(--text-xl);
   color: var(--color-texto-2);
-  transition: color var(--dur-rapida) var(--ease-out);
+  transition: color var(--dur-rapida) var(--ease-out),
+              transform var(--dur-rapida) var(--ease-bounce);
+  padding: var(--sp-2) var(--sp-6);
+  border-radius: var(--radius-md);
+  width: 100%;
+  text-align: center;
+  border-bottom: 1px solid rgba(122, 186, 88, 0.12);
 }
-.nav-movil__enlace:hover { color: var(--color-dorado-claro); }
+.nav-movil__enlace:hover {
+  color: var(--color-dorado-claro);
+  background: var(--glass-hover);
+  transform: translateX(4px);
+}
+.nav-movil__enlace:last-of-type {
+  border-bottom: none;
+}
 
 /* ── Botones ─────────────────────────────────────────────── */
 .btn {
@@ -653,11 +680,11 @@ h6 { font-size: var(--text-base); }
 .hero__fondo {
   position: absolute;
   inset: 0;
-  background-image: url('../assets/img/hero.png');
+  background-image: url('../assets/img/museo-exterior.png');
   background-size: cover;
-  background-position: center;
-  transform: scale(1.05);
-  transition: transform 8s ease-out;
+  background-position: center center;
+  transform: scale(1.02);
+  transition: transform 10s ease-out;
 }
 .hero__fondo::after {
   content: '';
@@ -666,6 +693,14 @@ h6 { font-size: var(--text-base); }
   background: var(--grad-hero);
 }
 .hero.cargado .hero__fondo { transform: scale(1); }
+
+/* Ajuste imagen hero en móvil */
+@media (max-width: 768px) {
+  .hero__fondo {
+    background-position: center center;
+    background-size: cover;
+  }
+}
 
 .hero__particulas {
   position: absolute;
@@ -1032,6 +1067,15 @@ h6 { font-size: var(--text-base); }
 @media (max-width: 1024px) {
   .grid-4 { grid-template-columns: repeat(2, 1fr); }
   .footer__grid { grid-template-columns: 1fr 1fr; }
+
+  /* Ocultar nav en tablets, mostrar hamburguesa */
+  .nav { display: none; }
+  .hamburguesa { display: flex; }
+
+  /* En tablets, ocultar los botones del header también */
+  .header__acciones .btn { display: none; }
+  .header__acciones .hamburguesa { display: flex; }
+  .header__acciones { gap: var(--sp-2); }
 }
 
 @media (max-width: 768px) {
