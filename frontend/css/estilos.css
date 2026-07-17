@@ -100,8 +100,13 @@
   --header-h:     72px;
 }
 
-/* ── Reset & Base ────────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* ── Reset y Base ────────────────────────────────────────── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Century Gothic', sans-serif !important;
+}
 
 html {
   scroll-behavior: smooth;
@@ -110,11 +115,9 @@ html {
 }
 
 body {
-  font-family: var(--font-cuerpo);
   background-color: var(--color-fondo);
   color: var(--color-texto);
-  line-height: 1.7;
-  min-height: 100vh;
+  line-height: 1.6;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }

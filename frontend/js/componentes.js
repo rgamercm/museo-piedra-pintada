@@ -138,19 +138,19 @@ function pintarEstadoSesion() {
     const esAdmin = usuario.rol === 'admin';
     const primerNombre = (usuario.nombre || 'Usuario').split(' ')[0];
     const enlaceAdmin = esAdmin
-      ? `<a href="${base}pages/admin/dashboard.html" class="btn btn--contorno btn--sm">🔒 Panel</a>`
+      ? `<a href="${base}pages/admin/dashboard.html" class="btn btn--contorno btn--sm">Panel</a>`
       : '';
 
     acciones.innerHTML = `
-      <span class="sesion-chip" title="${usuario.correo || ''}" style="color: var(--color-fondo); border-color: rgba(13,32,73,0.3);">👤 ${primerNombre}</span>
+      <span class="sesion-chip" title="${usuario.correo || ''}" style="color: var(--color-fondo); border-color: rgba(13,32,73,0.3);">${primerNombre}</span>
       ${enlaceAdmin ? enlaceAdmin.replace('btn--contorno', 'btn--fantasma') : ''}
       <button class="btn btn--fantasma btn--sm" style="background: var(--color-fondo);" onclick="cerrarSesion()">Cerrar sesión</button>
       ${hamburguesaHTML}`;
 
     if (accionesMovil) {
       accionesMovil.innerHTML = `
-        <span class="sesion-chip">👤 ${primerNombre}</span>
-        ${esAdmin ? `<a href="${base}pages/admin/dashboard.html" class="btn btn--contorno">🔒 Panel Admin</a>` : ''}
+        <span class="sesion-chip">${primerNombre}</span>
+        ${esAdmin ? `<a href="${base}pages/admin/dashboard.html" class="btn btn--contorno">Panel Admin</a>` : ''}
         <a href="${base}pages/reservas.html" class="btn btn--contorno">Reservar visita</a>
         <button class="btn btn--primario" onclick="cerrarSesion()">Cerrar sesión</button>`;
     }
@@ -172,7 +172,7 @@ function generarFooter() {
     <div class="footer__grid">
       <div>
         <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;">
-          <div class="logo__icono" aria-hidden="true">🪨</div>
+          <div class="logo__icono" aria-hidden="true"></div>
           <div class="logo__texto">
             <span class="logo__nombre">Piedra Pintada</span>
             <span class="logo__subtitulo">Museo Arqueológico</span>
@@ -205,15 +205,15 @@ function generarFooter() {
       <div>
         <h3 class="footer__titulo">Contacto</h3>
         <ul class="footer__lista">
-          <li><span class="footer__enlace">📍 Parque Piedra Pintada, Venezuela</span></li>
-          <li><span class="footer__enlace">📞 +58 XXX-XXXXXXX</span></li>
-          <li><span class="footer__enlace">✉️ contacto@piedrapintada.ve</span></li>
+          <li><span class="footer__enlace">Parque Piedra Pintada, Venezuela</span></li>
+          <li><span class="footer__enlace">+58 XXX-XXXXXXX</span></li>
+          <li><span class="footer__enlace">contacto@piedrapintada.ve</span></li>
         </ul>
       </div>
     </div>
     <div class="footer__base">
       <span>© 2026 Museo Arqueológico Piedra Pintada · Todos los derechos reservados</span>
-      <span>Hecho con ❤️ para preservar nuestra historia</span>
+      <span>Hecho con amor para preservar nuestra historia</span>
     </div>
   </div>
 </footer>
