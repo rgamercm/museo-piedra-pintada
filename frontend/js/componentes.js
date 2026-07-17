@@ -72,6 +72,10 @@ function generarHeader() {
         <span class="logo__nombre">Piedra Pintada</span>
         <span class="logo__subtitulo">Museo Arqueológico</span>
       </div>
+      <div class="logo__imagenes" style="display: flex; gap: 0.75rem; margin-left: 0.75rem; align-items: center; border-left: 1px solid var(--glass-border); padding-left: 0.75rem;">
+        <img src="${base}assets/img/logo-museo.png" alt="Logo Museo Piedra Pintada" style="height: 42px; width: auto; object-fit: contain;">
+        <img src="${base}assets/img/logo-carabobo.png" alt="Logo Carabobo Te Quiero" style="height: 42px; width: auto; object-fit: contain;">
+      </div>
     </a>
 
     <nav class="nav" aria-label="Navegación principal">

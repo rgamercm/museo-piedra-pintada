@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Museo Arqueológico Piedra Pintada — Inicio</title>
-  <meta name="description" content="Descubre el Museo Arqueológico Piedra Pintada: petroglifos únicos, recorridos interactivos con QR y asistente de voz, trivia arqueológica y más. Patrimonio precolombino de Venezuela.">
+  <meta name="description"
+    content="Descubre el Museo Arqueológico Piedra Pintada: petroglifos únicos, recorridos interactivos con QR y asistente de voz, trivia arqueológica y más. Patrimonio precolombino de Venezuela.">
   <meta name="keywords" content="museo, petroglifos, arqueología, Venezuela, piedra pintada, arte rupestre">
   <meta property="og:title" content="Museo Arqueológico Piedra Pintada">
   <meta property="og:description" content="Patrimonio arqueológico precolombino de Venezuela.">
@@ -16,15 +18,29 @@
     .particula {
       position: absolute;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(122, 186, 88,0.6) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(122, 186, 88, 0.6) 0%, transparent 70%);
       animation: flotar linear infinite;
       pointer-events: none;
     }
+
     @keyframes flotar {
-      0%   { transform: translateY(100vh) scale(0); opacity: 0; }
-      10%  { opacity: 1; }
-      90%  { opacity: 1; }
-      100% { transform: translateY(-20vh) scale(1); opacity: 0; }
+      0% {
+        transform: translateY(100vh) scale(0);
+        opacity: 0;
+      }
+
+      10% {
+        opacity: 1;
+      }
+
+      90% {
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(-20vh) scale(1);
+        opacity: 0;
+      }
     }
 
     /* ── Hero ────────────────────────────────────────────── */
@@ -32,8 +48,8 @@
       display: inline-flex;
       align-items: center;
       gap: .5rem;
-      background: rgba(122, 186, 88,0.12);
-      border: 1px solid rgba(122, 186, 88,0.30);
+      background: rgba(122, 186, 88, 0.12);
+      border: 1px solid rgba(122, 186, 88, 0.30);
       border-radius: 9999px;
       padding: .4rem 1.2rem;
       font-size: .8rem;
@@ -43,18 +59,21 @@
       margin-bottom: 1.5rem;
       animation: entrar-abajo .8s var(--ease-out) both;
     }
+
     .hero__titulo {
       font-size: clamp(2.5rem, 7vw, 5rem);
       line-height: 1.05;
       margin-bottom: 1.5rem;
       animation: entrar-abajo .9s .1s var(--ease-out) both;
     }
+
     .hero__titulo span {
       background: var(--grad-dorado);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
+
     .hero__subtitulo {
       font-size: clamp(1rem, 2vw, 1.3rem);
       color: var(--color-texto-2);
@@ -63,12 +82,14 @@
       line-height: 1.7;
       animation: entrar-abajo 1s .2s var(--ease-out) both;
     }
+
     .hero__acciones {
       display: flex;
       gap: 1rem;
       flex-wrap: wrap;
       animation: entrar-abajo 1s .3s var(--ease-out) both;
     }
+
     .hero__stats {
       display: flex;
       gap: 2.5rem;
@@ -76,7 +97,12 @@
       flex-wrap: wrap;
       animation: entrar-abajo 1s .4s var(--ease-out) both;
     }
-    .hero__stat { display: flex; flex-direction: column; }
+
+    .hero__stat {
+      display: flex;
+      flex-direction: column;
+    }
+
     .hero__stat-num {
       font-family: var(--font-titulo);
       font-size: 2rem;
@@ -84,12 +110,14 @@
       color: var(--color-dorado-claro);
       line-height: 1;
     }
+
     .hero__stat-lbl {
       font-size: .75rem;
       color: var(--color-texto-3);
       letter-spacing: .08em;
       text-transform: uppercase;
     }
+
     .hero__scroll {
       position: absolute;
       bottom: 2rem;
@@ -107,23 +135,51 @@
       cursor: pointer;
       text-decoration: none;
     }
+
     .hero__scroll-flecha {
       width: 24px;
       height: 24px;
-      border-right: 2px solid rgba(122, 186, 88,0.4);
-      border-bottom: 2px solid rgba(122, 186, 88,0.4);
+      border-right: 2px solid rgba(122, 186, 88, 0.4);
+      border-bottom: 2px solid rgba(122, 186, 88, 0.4);
       transform: rotate(45deg);
       animation: rebotar 1.5s ease-in-out infinite;
     }
+
     @keyframes rebotar {
-      0%, 100% { transform: rotate(45deg) translateY(0); }
-      50% { transform: rotate(45deg) translateY(6px); }
+
+      0%,
+      100% {
+        transform: rotate(45deg) translateY(0);
+      }
+
+      50% {
+        transform: rotate(45deg) translateY(6px);
+      }
     }
+
     @keyframes entrar-abajo {
-      from { opacity: 0; transform: translateY(30px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
-    @keyframes pulsar { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+
+    @keyframes pulsar {
+
+      0%,
+      100% {
+        opacity: 0.6;
+      }
+
+      50% {
+        opacity: 1;
+      }
+    }
 
     /* Imagen flotante derecha */
     .hero__imagen-wrapper {
@@ -135,17 +191,31 @@
       animation: entrar-derecha 1s .2s var(--ease-out) both;
       display: none;
     }
+
     @keyframes entrar-derecha {
-      from { opacity: 0; transform: translateY(-50%) translateX(40px); }
-      to   { opacity: 1; transform: translateY(-50%) translateX(0); }
+      from {
+        opacity: 0;
+        transform: translateY(-50%) translateX(40px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(-50%) translateX(0);
+      }
     }
-    @media (min-width: 1024px) { .hero__imagen-wrapper { display: block; } }
+
+    @media (min-width: 1024px) {
+      .hero__imagen-wrapper {
+        display: block;
+      }
+    }
 
     .hero__imagen-wrapper img {
       border-radius: 1.5rem;
-      box-shadow: 0 20px 80px rgba(0,0,0,0.7), 0 0 60px rgba(122, 186, 88,0.15);
-      border: 1px solid rgba(122, 186, 88,0.20);
+      box-shadow: 0 20px 80px rgba(0, 0, 0, 0.7), 0 0 60px rgba(122, 186, 88, 0.15);
+      border: 1px solid rgba(122, 186, 88, 0.20);
     }
+
     .hero__imagen-badge {
       position: absolute;
       bottom: -1rem;
@@ -160,8 +230,15 @@
       gap: .75rem;
       box-shadow: var(--shadow-lg);
     }
-    .hero__imagen-badge-icon { font-size: 1.8rem; }
-    .hero__imagen-badge-texto { font-size: .8rem; }
+
+    .hero__imagen-badge-icon {
+      font-size: 1.8rem;
+    }
+
+    .hero__imagen-badge-texto {
+      font-size: .8rem;
+    }
+
     .hero__imagen-badge-num {
       font-family: var(--font-titulo);
       font-size: 1.3rem;
@@ -179,6 +256,7 @@
       position: relative;
       z-index: 10;
     }
+
     .acceso-card {
       background: var(--color-fondo-3);
       border: 1px solid var(--glass-border);
@@ -189,28 +267,35 @@
       text-decoration: none;
       display: block;
       transition: transform .3s var(--ease-bounce),
-                  box-shadow .3s var(--ease-out),
-                  border-color .3s var(--ease-out);
+        box-shadow .3s var(--ease-out),
+        border-color .3s var(--ease-out);
       backdrop-filter: var(--glass-blur);
     }
+
     .acceso-card:hover {
       transform: translateY(-6px);
-      box-shadow: var(--shadow-lg), 0 0 30px rgba(122, 186, 88,0.15);
-      border-color: rgba(122, 186, 88,0.40);
+      box-shadow: var(--shadow-lg), 0 0 30px rgba(122, 186, 88, 0.15);
+      border-color: rgba(122, 186, 88, 0.40);
     }
+
     .acceso-card__icono {
       font-size: 2.5rem;
       margin-bottom: .75rem;
       display: block;
       transition: transform .3s var(--ease-bounce);
     }
-    .acceso-card:hover .acceso-card__icono { transform: scale(1.15) rotate(-5deg); }
+
+    .acceso-card:hover .acceso-card__icono {
+      transform: scale(1.15) rotate(-5deg);
+    }
+
     .acceso-card__titulo {
       font-family: var(--font-titulo);
       font-size: 1rem;
       color: var(--color-dorado-claro);
       margin-bottom: .35rem;
     }
+
     .acceso-card__desc {
       font-size: .8rem;
       color: var(--color-texto-3);
@@ -222,16 +307,39 @@
       width: 100%;
       border-collapse: collapse;
     }
+
     .horario-tabla tr {
       border-bottom: 1px solid var(--glass-border);
       transition: background .2s;
     }
-    .horario-tabla tr:last-child { border-bottom: none; }
-    .horario-tabla tr:hover { background: var(--glass-hover); }
-    .horario-tabla td { padding: .9rem 1rem; font-size: .9rem; }
-    .horario-tabla td:first-child { color: var(--color-texto-2); font-weight: 500; }
-    .horario-tabla td:last-child { color: var(--color-dorado-claro); text-align: right; }
-    .horario-cerrado { color: var(--color-texto-3) !important; text-decoration: line-through; }
+
+    .horario-tabla tr:last-child {
+      border-bottom: none;
+    }
+
+    .horario-tabla tr:hover {
+      background: var(--glass-hover);
+    }
+
+    .horario-tabla td {
+      padding: .9rem 1rem;
+      font-size: .9rem;
+    }
+
+    .horario-tabla td:first-child {
+      color: var(--color-texto-2);
+      font-weight: 500;
+    }
+
+    .horario-tabla td:last-child {
+      color: var(--color-dorado-claro);
+      text-align: right;
+    }
+
+    .horario-cerrado {
+      color: var(--color-texto-3) !important;
+      text-decoration: line-through;
+    }
 
     /* ── Visita en números ───────────────────────────────── */
     .numeros-grid {
@@ -257,6 +365,7 @@
       position: relative;
       overflow: hidden;
     }
+
     .cta::before {
       content: '';
       position: absolute;
@@ -265,521 +374,568 @@
       transform: translateX(-50%);
       width: 600px;
       height: 600px;
-      background: radial-gradient(circle, rgba(122, 186, 88,0.08) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(122, 186, 88, 0.08) 0%, transparent 70%);
       pointer-events: none;
     }
-    .cta h2 { position: relative; z-index: 1; margin-bottom: 1rem; }
-    .cta p  { position: relative; z-index: 1; color: var(--color-texto-2); max-width: 500px; margin: 0 auto 2rem; }
-    .cta .acciones { position: relative; z-index: 1; }
+
+    .cta h2 {
+      position: relative;
+      z-index: 1;
+      margin-bottom: 1rem;
+    }
+
+    .cta p {
+      position: relative;
+      z-index: 1;
+      color: var(--color-texto-2);
+      max-width: 500px;
+      margin: 0 auto 2rem;
+    }
+
+    .cta .acciones {
+      position: relative;
+      z-index: 1;
+    }
 
     @media (max-width: 768px) {
-      .hero__stats { gap: 1.5rem; }
-      .cta { padding: 3rem 1.5rem; }
+      .hero__stats {
+        gap: 1.5rem;
+      }
+
+      .cta {
+        padding: 3rem 1.5rem;
+      }
     }
   </style>
 </head>
+
 <body>
 
-<div class="bg-texture" aria-hidden="true"></div>
+  <div class="bg-texture" aria-hidden="true"></div>
 
-<!-- Header inyectado por JS -->
-<div id="header-placeholder"></div>
+  <!-- Header inyectado por JS -->
+  <div id="header-placeholder"></div>
 
-<!-- ═══════════════════════════════════════════════════════════
+  <!-- ═══════════════════════════════════════════════════════════
      HERO
 ════════════════════════════════════════════════════════════ -->
-<section class="hero" id="inicio" aria-label="Sección principal">
-  <div class="hero__fondo" id="hero-fondo" aria-hidden="true"></div>
-  <div class="hero__particulas" id="particulas" aria-hidden="true"></div>
+  <section class="hero" id="inicio" aria-label="Sección principal">
+    <div class="hero__fondo" id="hero-fondo" aria-hidden="true"></div>
+    <div class="hero__particulas" id="particulas" aria-hidden="true"></div>
 
-  <!-- Imagen decorativa derecha -->
-  <div class="hero__imagen-wrapper" aria-hidden="true">
-    <img src="assets/img/petroglifo-01.png" alt="" loading="lazy">
-    <div class="hero__imagen-badge">
-      <span class="hero__imagen-badge-icon">🏛️</span>
-      <div>
-        <div class="hero__imagen-badge-num" data-contador="847">0</div>
-        <div class="hero__imagen-badge-texto" style="color:var(--color-texto-2);font-size:.75rem;">Visitantes este mes</div>
+    <!-- Imagen decorativa derecha -->
+    <div class="hero__imagen-wrapper" aria-hidden="true">
+      <img src="assets/img/petroglifo-01.png" alt="" loading="lazy">
+      <div class="hero__imagen-badge">
+        <span class="hero__imagen-badge-icon">🏛️</span>
+        <div>
+          <div class="hero__imagen-badge-num" data-contador="847">0</div>
+          <div class="hero__imagen-badge-texto" style="color:var(--color-texto-2);font-size:.75rem;">Visitantes este mes
+          </div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="container hero__contenido">
-    <span class="hero__badge">🪨 Patrimonio Arqueológico de Venezuela</span>
+    <div class="container hero__contenido">
+      <span class="hero__badge">🪨 Patrimonio Arqueológico de Venezuela</span>
 
-    <h1 class="hero__titulo">
-      Voces de Piedra,<br>
-      <span>Memorias Eternas</span>
-    </h1>
+      <h1 class="hero__titulo">
+        Voces de Piedra,<br>
+        <span>Memorias Eternas</span>
+      </h1>
 
-    <p class="hero__subtitulo">
-      Explora el Museo Arqueológico Piedra Pintada: petroglifos únicos en el mundo, recorridos guiados con QR y asistente de voz, y una ventana viva hacia nuestra historia precolombina.
-    </p>
+      <p class="hero__subtitulo">
+        Explora el Museo Arqueológico Piedra Pintada: petroglifos únicos en el mundo, recorridos guiados con QR y
+        asistente de voz, y una ventana viva hacia nuestra historia precolombina.
+      </p>
 
-    <div class="hero__acciones">
-      <a href="pages/recorrido.html" class="btn btn--primario btn--lg" id="btn-iniciar-recorrido">
-        🗺️ Iniciar Recorrido
-      </a>
-      <a href="pages/informacion.html" class="btn btn--contorno btn--lg" id="btn-mas-info">
-        Más información
-      </a>
+      <div class="hero__acciones">
+        <a href="pages/recorrido.html" class="btn btn--primario btn--lg" id="btn-iniciar-recorrido">
+          🗺️ Iniciar Recorrido
+        </a>
+        <a href="pages/informacion.html" class="btn btn--contorno btn--lg" id="btn-mas-info">
+          Más información
+        </a>
+      </div>
+
+      <div class="hero__stats">
+        <div class="hero__stat">
+          <span class="hero__stat-num" id="hero-stat-petroglifos" data-contador="110">0</span>
+          <span class="hero__stat-lbl">Petroglifos</span>
+        </div>
+        <div class="hero__stat">
+          <span class="hero__stat-num" id="hero-stat-estaciones" data-contador="104">0</span>
+          <span class="hero__stat-lbl">Estaciones</span>
+        </div>
+        <div class="hero__stat">
+          <span class="hero__stat-num" data-contador="3000">0</span>
+          <span class="hero__stat-lbl">Años de historia</span>
+        </div>
+        <div class="hero__stat">
+          <span class="hero__stat-num" data-contador="10250">0</span>
+          <span class="hero__stat-lbl">Visitantes al año</span>
+        </div>
+      </div>
     </div>
 
-    <div class="hero__stats">
-      <div class="hero__stat">
-        <span class="hero__stat-num" id="hero-stat-petroglifos" data-contador="110">0</span>
-        <span class="hero__stat-lbl">Petroglifos</span>
-      </div>
-      <div class="hero__stat">
-        <span class="hero__stat-num" id="hero-stat-estaciones" data-contador="104">0</span>
-        <span class="hero__stat-lbl">Estaciones</span>
-      </div>
-      <div class="hero__stat">
-        <span class="hero__stat-num" data-contador="3000">0</span>
-        <span class="hero__stat-lbl">Años de historia</span>
-      </div>
-      <div class="hero__stat">
-        <span class="hero__stat-num" data-contador="10250">0</span>
-        <span class="hero__stat-lbl">Visitantes al año</span>
-      </div>
-    </div>
-  </div>
+    <a href="#accesos" class="hero__scroll" aria-label="Desplazar hacia abajo">
+      <span>Explorar</span>
+      <div class="hero__scroll-flecha" aria-hidden="true"></div>
+    </a>
+  </section>
 
-  <a href="#accesos" class="hero__scroll" aria-label="Desplazar hacia abajo">
-    <span>Explorar</span>
-    <div class="hero__scroll-flecha" aria-hidden="true"></div>
-  </a>
-</section>
-
-<!-- ═══════════════════════════════════════════════════════════
+  <!-- ═══════════════════════════════════════════════════════════
      ACCESOS RÁPIDOS
 ════════════════════════════════════════════════════════════ -->
-<section id="accesos" aria-label="Accesos rápidos">
-  <div class="container section--sm">
-    <div class="accesos">
-      <a href="pages/recorrido.html" class="acceso-card revelar retraso-1" id="acceso-recorrido">
-        <span class="acceso-card__icono">🗺️</span>
-        <div class="acceso-card__titulo">Recorrido Interactivo</div>
-        <div class="acceso-card__desc">Guía con QR y asistente de voz</div>
-      </a>
-      <a href="pages/petroglifos.html" class="acceso-card revelar retraso-2" id="acceso-petroglifos">
-        <span class="acceso-card__icono">🪨</span>
-        <div class="acceso-card__titulo">Catálogo de Petroglifos</div>
-        <div class="acceso-card__desc">Explora más de 150 grabados rupestres</div>
-      </a>
-      <a href="pages/trivia.html" class="acceso-card revelar retraso-3" id="acceso-trivia">
-        <span class="acceso-card__icono">🎮</span>
-        <div class="acceso-card__titulo">Trivia Arqueológica</div>
-        <div class="acceso-card__desc">Pon a prueba tu conocimiento</div>
-      </a>
-      <a href="pages/mapa.html" class="acceso-card revelar retraso-4" id="acceso-mapa">
-        <span class="acceso-card__icono">🌿</span>
-        <div class="acceso-card__titulo">Mapa del Parque</div>
-        <div class="acceso-card__desc">Descarga para usar sin señal</div>
-      </a>
-      <a href="pages/reservas.html" class="acceso-card revelar retraso-5" id="acceso-reservas">
-        <span class="acceso-card__icono">🏛️</span>
-        <div class="acceso-card__titulo">Reservas Institucionales</div>
-        <div class="acceso-card__desc">Visitas guiadas para grupos</div>
-      </a>
+  <section id="accesos" aria-label="Accesos rápidos">
+    <div class="container section--sm">
+      <div class="accesos">
+        <a href="pages/recorrido.html" class="acceso-card revelar retraso-1" id="acceso-recorrido">
+          <span class="acceso-card__icono">🗺️</span>
+          <div class="acceso-card__titulo">Recorrido Interactivo</div>
+          <div class="acceso-card__desc">Guía con QR y asistente de voz</div>
+        </a>
+        <a href="pages/petroglifos.html" class="acceso-card revelar retraso-2" id="acceso-petroglifos">
+          <span class="acceso-card__icono">🪨</span>
+          <div class="acceso-card__titulo">Catálogo de Petroglifos</div>
+          <div class="acceso-card__desc">Explora más de 150 grabados rupestres</div>
+        </a>
+        <a href="pages/trivia.html" class="acceso-card revelar retraso-3" id="acceso-trivia">
+          <span class="acceso-card__icono">🎮</span>
+          <div class="acceso-card__titulo">Trivia Arqueológica</div>
+          <div class="acceso-card__desc">Pon a prueba tu conocimiento</div>
+        </a>
+        <a href="pages/mapa.html" class="acceso-card revelar retraso-4" id="acceso-mapa">
+          <span class="acceso-card__icono">🌿</span>
+          <div class="acceso-card__titulo">Mapa del Parque</div>
+          <div class="acceso-card__desc">Descarga para usar sin señal</div>
+        </a>
+        <a href="pages/reservas.html" class="acceso-card revelar retraso-5" id="acceso-reservas">
+          <span class="acceso-card__icono">🏛️</span>
+          <div class="acceso-card__titulo">Reservas Institucionales</div>
+          <div class="acceso-card__desc">Visitas guiadas para grupos</div>
+        </a>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ═══════════════════════════════════════════════════════════
+  <!-- ═══════════════════════════════════════════════════════════
      SECCIÓN: VISITAS EN NÚMEROS
 ════════════════════════════════════════════════════════════ -->
-<section class="section" aria-labelledby="titulo-numeros">
-  <div class="container">
-    <div class="seccion-titulo revelar">
-      <span class="etiqueta">El museo en cifras</span>
-      <h2 id="titulo-numeros">Un legado vivo</h2>
-      <div class="divisor"></div>
-      <p>Cada número cuenta la historia de quienes han venido a conocer el pasado precolombino de Venezuela.</p>
-    </div>
+  <section class="section" aria-labelledby="titulo-numeros">
+    <div class="container">
+      <div class="seccion-titulo revelar">
+        <span class="etiqueta">El museo en cifras</span>
+        <h2 id="titulo-numeros">Un legado vivo</h2>
+        <div class="divisor"></div>
+        <p>Cada número cuenta la historia de quienes han venido a conocer el pasado precolombino de Venezuela.</p>
+      </div>
 
-    <div class="numeros-grid">
-      <div class="stat-card revelar retraso-1">
-        <div class="stat-numero" data-contador="150">0</div>
-        <div class="stat-label">Petroglifos catalogados</div>
-      </div>
-      <div class="stat-card revelar retraso-2">
-        <div class="stat-numero" data-contador="12">0</div>
-        <div class="stat-label">Estaciones del recorrido</div>
-      </div>
-      <div class="stat-card revelar retraso-3">
-        <div class="stat-numero" data-contador="10250">0</div>
-        <div class="stat-label">Visitantes anuales</div>
-      </div>
-      <div class="stat-card revelar retraso-4">
-        <div class="stat-numero" data-contador="3000">0</div>
-        <div class="stat-label">Años de antigüedad</div>
+      <div class="numeros-grid">
+        <div class="stat-card revelar retraso-1">
+          <div class="stat-numero" data-contador="150">0</div>
+          <div class="stat-label">Petroglifos catalogados</div>
+        </div>
+        <div class="stat-card revelar retraso-2">
+          <div class="stat-numero" data-contador="12">0</div>
+          <div class="stat-label">Estaciones del recorrido</div>
+        </div>
+        <div class="stat-card revelar retraso-3">
+          <div class="stat-numero" data-contador="10250">0</div>
+          <div class="stat-label">Visitantes anuales</div>
+        </div>
+        <div class="stat-card revelar retraso-4">
+          <div class="stat-numero" data-contador="3000">0</div>
+          <div class="stat-label">Años de antigüedad</div>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ═══════════════════════════════════════════════════════════
+  <!-- ═══════════════════════════════════════════════════════════
      SECCIÓN: PETROGLIFOS DESTACADOS
 ════════════════════════════════════════════════════════════ -->
-<section class="section" style="background: var(--color-fondo-2);" aria-labelledby="titulo-petroglifos">
-  <div class="container">
-    <div class="seccion-titulo revelar">
-      <span class="etiqueta">Colección destacada</span>
-      <h2 id="titulo-petroglifos">Petroglifos Destacados</h2>
-      <div class="divisor"></div>
-      <p>Grabados en roca que narran la cosmogonía de los pueblos originarios que habitaron estas tierras hace miles de años.</p>
-    </div>
+  <section class="section" style="background: var(--color-fondo-2);" aria-labelledby="titulo-petroglifos">
+    <div class="container">
+      <div class="seccion-titulo revelar">
+        <span class="etiqueta">Colección destacada</span>
+        <h2 id="titulo-petroglifos">Petroglifos Destacados</h2>
+        <div class="divisor"></div>
+        <p>Grabados en roca que narran la cosmogonía de los pueblos originarios que habitaron estas tierras hace miles
+          de años.</p>
+      </div>
 
-    <div class="petroglifos-grid">
-      <!-- Tarjeta 1 -->
-      <article class="tarjeta revelar retraso-1" data-categoria="antropomorfo">
-        <div class="tarjeta__imagen">
-          <img src="assets/img/petroglifo-01.png" alt="Petroglifo antropomorfo El Guardián" loading="lazy">
-          <div style="position:absolute;top:.75rem;left:.75rem;">
-            <span class="badge badge--dorado">Antropomorfo</span>
+      <div class="petroglifos-grid">
+        <!-- Tarjeta 1 -->
+        <article class="tarjeta revelar retraso-1" data-categoria="antropomorfo">
+          <div class="tarjeta__imagen">
+            <img src="assets/img/petroglifo-01.png" alt="Petroglifo antropomorfo El Guardián" loading="lazy">
+            <div style="position:absolute;top:.75rem;left:.75rem;">
+              <span class="badge badge--dorado">Antropomorfo</span>
+            </div>
           </div>
-        </div>
-        <div class="tarjeta__cuerpo">
-          <h3 class="tarjeta__titulo">El Guardián</h3>
-          <p class="tarjeta__texto">Figura humanoide de gran tamaño con tocado ceremonial. Considerado el símbolo central del parque.</p>
-        </div>
-        <div class="tarjeta__pie">
-          <span style="font-size:.8rem;color:var(--color-texto-3);">Estación 3 · QR-003</span>
-          <a href="pages/petroglifo-detalle.html?id=1" class="btn btn--contorno btn--sm" id="btn-detalle-1">Ver más →</a>
-        </div>
-      </article>
-
-      <!-- Tarjeta 2 -->
-      <article class="tarjeta revelar retraso-2" data-categoria="geometrico">
-        <div class="tarjeta__imagen">
-          <img src="assets/img/museo-exterior.png" alt="Petroglifo geométrico La Serpiente Cósmica" loading="lazy">
-          <div style="position:absolute;top:.75rem;left:.75rem;">
-            <span class="badge badge--verde">Geométrico</span>
+          <div class="tarjeta__cuerpo">
+            <h3 class="tarjeta__titulo">El Guardián</h3>
+            <p class="tarjeta__texto">Figura humanoide de gran tamaño con tocado ceremonial. Considerado el símbolo
+              central del parque.</p>
           </div>
-        </div>
-        <div class="tarjeta__cuerpo">
-          <h3 class="tarjeta__titulo">La Serpiente Cósmica</h3>
-          <p class="tarjeta__texto">Patrón serpentiforme que se extiende 4 metros. Posiblemente asociado a ciclos agrícolas y astronómicos.</p>
-        </div>
-        <div class="tarjeta__pie">
-          <span style="font-size:.8rem;color:var(--color-texto-3);">Estación 7 · QR-007</span>
-          <a href="pages/petroglifo-detalle.html?id=2" class="btn btn--contorno btn--sm" id="btn-detalle-2">Ver más →</a>
-        </div>
-      </article>
-
-      <!-- Tarjeta 3 -->
-      <article class="tarjeta revelar retraso-3" data-categoria="zoomorfo">
-        <div class="tarjeta__imagen">
-          <img src="assets/img/petroglifo-01.png" alt="Petroglifo zoomorfo El Jaguar Celeste" loading="lazy">
-          <div style="position:absolute;top:.75rem;left:.75rem;">
-            <span class="badge badge--rojo">Zoomorfo</span>
+          <div class="tarjeta__pie">
+            <span style="font-size:.8rem;color:var(--color-texto-3);">Estación 3 · QR-003</span>
+            <a href="pages/petroglifo-detalle.html?id=1" class="btn btn--contorno btn--sm" id="btn-detalle-1">Ver más
+              →</a>
           </div>
-        </div>
-        <div class="tarjeta__cuerpo">
-          <h3 class="tarjeta__titulo">El Jaguar Celeste</h3>
-          <p class="tarjeta__texto">Representación de jaguar con cuerpo estrellado. Símbolo de poder y conexión con el mundo espiritual.</p>
-        </div>
-        <div class="tarjeta__pie">
-          <span style="font-size:.8rem;color:var(--color-texto-3);">Estación 5 · QR-005</span>
-          <a href="pages/petroglifo-detalle.html?id=3" class="btn btn--contorno btn--sm" id="btn-detalle-3">Ver más →</a>
-        </div>
-      </article>
-    </div>
+        </article>
 
-    <div style="text-align:center;margin-top:2.5rem;" class="revelar">
-      <a href="pages/petroglifos.html" class="btn btn--primario btn--lg" id="btn-ver-catalogo">
-        🪨 Ver catálogo completo
-      </a>
-    </div>
-  </div>
-</section>
+        <!-- Tarjeta 2 -->
+        <article class="tarjeta revelar retraso-2" data-categoria="geometrico">
+          <div class="tarjeta__imagen">
+            <img src="assets/img/museo-exterior.png" alt="Petroglifo geométrico La Serpiente Cósmica" loading="lazy">
+            <div style="position:absolute;top:.75rem;left:.75rem;">
+              <span class="badge badge--verde">Geométrico</span>
+            </div>
+          </div>
+          <div class="tarjeta__cuerpo">
+            <h3 class="tarjeta__titulo">La Serpiente Cósmica</h3>
+            <p class="tarjeta__texto">Patrón serpentiforme que se extiende 4 metros. Posiblemente asociado a ciclos
+              agrícolas y astronómicos.</p>
+          </div>
+          <div class="tarjeta__pie">
+            <span style="font-size:.8rem;color:var(--color-texto-3);">Estación 7 · QR-007</span>
+            <a href="pages/petroglifo-detalle.html?id=2" class="btn btn--contorno btn--sm" id="btn-detalle-2">Ver más
+              →</a>
+          </div>
+        </article>
 
-<!-- ═══════════════════════════════════════════════════════════
+        <!-- Tarjeta 3 -->
+        <article class="tarjeta revelar retraso-3" data-categoria="zoomorfo">
+          <div class="tarjeta__imagen">
+            <img src="assets/img/petroglifo-01.png" alt="Petroglifo zoomorfo El Jaguar Celeste" loading="lazy">
+            <div style="position:absolute;top:.75rem;left:.75rem;">
+              <span class="badge badge--rojo">Zoomorfo</span>
+            </div>
+          </div>
+          <div class="tarjeta__cuerpo">
+            <h3 class="tarjeta__titulo">El Jaguar Celeste</h3>
+            <p class="tarjeta__texto">Representación de jaguar con cuerpo estrellado. Símbolo de poder y conexión con el
+              mundo espiritual.</p>
+          </div>
+          <div class="tarjeta__pie">
+            <span style="font-size:.8rem;color:var(--color-texto-3);">Estación 5 · QR-005</span>
+            <a href="pages/petroglifo-detalle.html?id=3" class="btn btn--contorno btn--sm" id="btn-detalle-3">Ver más
+              →</a>
+          </div>
+        </article>
+      </div>
+
+      <div style="text-align:center;margin-top:2.5rem;" class="revelar">
+        <a href="pages/petroglifos.html" class="btn btn--primario btn--lg" id="btn-ver-catalogo">
+          🪨 Ver catálogo completo
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
      SECCIÓN: HORARIO DE VISITAS
 ════════════════════════════════════════════════════════════ -->
-<section class="section" aria-labelledby="titulo-horario">
-  <div class="container">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;" class="responsive-stack">
-      <!-- Horario -->
-      <div class="revelar">
-        <span class="etiqueta">Planifica tu visita</span>
-        <h2 id="titulo-horario">Horario de Atención</h2>
-        <div class="divisor divisor--left"></div>
-        <div style="background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1rem;overflow:hidden;margin-top:1.5rem;">
-          <table class="horario-tabla" aria-label="Horario de visitas">
-            <tbody>
-              <tr>
-                <td>Lunes</td>
-                <td class="horario-cerrado">Cerrado</td>
-              </tr>
-              <tr>
-                <td>Martes – Viernes</td>
-                <td>8:00 am – 5:00 pm</td>
-              </tr>
-              <tr>
-                <td>Sábado</td>
-                <td>8:00 am – 6:00 pm</td>
-              </tr>
-              <tr>
-                <td>Domingo</td>
-                <td>9:00 am – 4:00 pm</td>
-              </tr>
-              <tr>
-                <td>Feriados</td>
-                <td class="horario-cerrado">Consultar</td>
-              </tr>
-            </tbody>
-          </table>
+  <section class="section" aria-labelledby="titulo-horario">
+    <div class="container">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;" class="responsive-stack">
+        <!-- Horario -->
+        <div class="revelar">
+          <span class="etiqueta">Planifica tu visita</span>
+          <h2 id="titulo-horario">Horario de Atención</h2>
+          <div class="divisor divisor--left"></div>
+          <div
+            style="background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1rem;overflow:hidden;margin-top:1.5rem;">
+            <table class="horario-tabla" aria-label="Horario de visitas">
+              <tbody>
+                <tr>
+                  <td>Lunes</td>
+                  <td class="horario-cerrado">Cerrado</td>
+                </tr>
+                <tr>
+                  <td>Martes – Viernes</td>
+                  <td>8:00 am – 5:00 pm</td>
+                </tr>
+                <tr>
+                  <td>Sábado</td>
+                  <td>8:00 am – 6:00 pm</td>
+                </tr>
+                <tr>
+                  <td>Domingo</td>
+                  <td>9:00 am – 4:00 pm</td>
+                </tr>
+                <tr>
+                  <td>Feriados</td>
+                  <td class="horario-cerrado">Consultar</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div
+            style="margin-top:1.5rem;display:flex;align-items:center;gap:.75rem;padding:1rem;background:rgba(122, 186, 88,0.08);border:1px solid rgba(122, 186, 88,0.20);border-radius:.75rem;">
+            <span style="font-size:1.5rem;">📍</span>
+            <div>
+              <div style="font-weight:600;font-size:.9rem;color:var(--color-dorado-claro);">Ubicación</div>
+              <div style="font-size:.85rem;color:var(--color-texto-2);">Parque Piedra Pintada, Venezuela</div>
+            </div>
+          </div>
         </div>
 
-        <div style="margin-top:1.5rem;display:flex;align-items:center;gap:.75rem;padding:1rem;background:rgba(122, 186, 88,0.08);border:1px solid rgba(122, 186, 88,0.20);border-radius:.75rem;">
-          <span style="font-size:1.5rem;">📍</span>
-          <div>
-            <div style="font-weight:600;font-size:.9rem;color:var(--color-dorado-claro);">Ubicación</div>
-            <div style="font-size:.85rem;color:var(--color-texto-2);">Parque Piedra Pintada, Venezuela</div>
+        <!-- Estado actual + contador de visitas -->
+        <div class="revelar retraso-2">
+          <span class="etiqueta">En este momento</span>
+          <h2>Visitantes de Hoy</h2>
+          <div class="divisor divisor--left"></div>
+
+          <div
+            style="margin-top:1.5rem;text-align:center;padding:2.5rem;background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1.2rem;position:relative;overflow:hidden;">
+            <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad-dorado);"></div>
+            <div
+              style="font-family:var(--font-titulo);font-size:5rem;font-weight:900;background:var(--grad-dorado);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;"
+              data-contador="342">0</div>
+            <div style="color:var(--color-texto-2);font-size:.9rem;margin-top:.5rem;">visitantes hoy</div>
+
+            <div style="display:flex;gap:1rem;margin-top:1.5rem;justify-content:center;">
+              <div style="text-align:center;">
+                <div style="font-family:var(--font-titulo);font-size:1.5rem;color:var(--color-dorado-claro);"
+                  data-contador="847">0</div>
+                <div style="font-size:.75rem;color:var(--color-texto-3);">Este mes</div>
+              </div>
+              <div style="width:1px;background:var(--glass-border);"></div>
+              <div style="text-align:center;">
+                <div style="font-family:var(--font-titulo);font-size:1.5rem;color:var(--color-dorado-claro);"
+                  data-contador="10250">0</div>
+                <div style="font-size:.75rem;color:var(--color-texto-3);">Este año</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Estado abierto/cerrado -->
+          <div
+            style="margin-top:1rem;padding:1rem;background:rgba(60,160,80,0.08);border:1px solid rgba(60,160,80,0.20);border-radius:.75rem;display:flex;align-items:center;gap:.75rem;"
+            id="estado-museo">
+            <span class="badge badge--verde badge--punto">Abierto ahora</span>
+            <span style="font-size:.85rem;color:var(--color-texto-2);">Cierra a las <strong
+                style="color:var(--color-dorado-claro);">5:00 pm</strong></span>
+          </div>
+
+          <div style="margin-top:1.5rem;">
+            <a href="pages/reservas.html" class="btn btn--primario w-full" id="btn-reservar-visita"
+              style="justify-content:center;">
+              📅 Reservar visita institucional
+            </a>
           </div>
         </div>
       </div>
+    </div>
+  </section>
 
-      <!-- Estado actual + contador de visitas -->
-      <div class="revelar retraso-2">
-        <span class="etiqueta">En este momento</span>
-        <h2>Visitantes de Hoy</h2>
-        <div class="divisor divisor--left"></div>
-
-        <div style="margin-top:1.5rem;text-align:center;padding:2.5rem;background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1.2rem;position:relative;overflow:hidden;">
-          <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad-dorado);"></div>
-          <div style="font-family:var(--font-titulo);font-size:5rem;font-weight:900;background:var(--grad-dorado);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;" data-contador="342">0</div>
-          <div style="color:var(--color-texto-2);font-size:.9rem;margin-top:.5rem;">visitantes hoy</div>
-
-          <div style="display:flex;gap:1rem;margin-top:1.5rem;justify-content:center;">
-            <div style="text-align:center;">
-              <div style="font-family:var(--font-titulo);font-size:1.5rem;color:var(--color-dorado-claro);" data-contador="847">0</div>
-              <div style="font-size:.75rem;color:var(--color-texto-3);">Este mes</div>
-            </div>
-            <div style="width:1px;background:var(--glass-border);"></div>
-            <div style="text-align:center;">
-              <div style="font-family:var(--font-titulo);font-size:1.5rem;color:var(--color-dorado-claro);" data-contador="10250">0</div>
-              <div style="font-size:.75rem;color:var(--color-texto-3);">Este año</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Estado abierto/cerrado -->
-        <div style="margin-top:1rem;padding:1rem;background:rgba(60,160,80,0.08);border:1px solid rgba(60,160,80,0.20);border-radius:.75rem;display:flex;align-items:center;gap:.75rem;" id="estado-museo">
-          <span class="badge badge--verde badge--punto">Abierto ahora</span>
-          <span style="font-size:.85rem;color:var(--color-texto-2);">Cierra a las <strong style="color:var(--color-dorado-claro);">5:00 pm</strong></span>
-        </div>
-
-        <div style="margin-top:1.5rem;">
-          <a href="pages/reservas.html" class="btn btn--primario w-full" id="btn-reservar-visita" style="justify-content:center;">
-            📅 Reservar visita institucional
+  <!-- ═══════════════════════════════════════════════════════════
+     CTA: RECORRIDO INTERACTIVO
+════════════════════════════════════════════════════════════ -->
+  <section class="section--sm" aria-labelledby="titulo-cta">
+    <div class="container">
+      <div class="cta revelar">
+        <span class="etiqueta">¡Experiencia única!</span>
+        <h2 id="titulo-cta">Recorre el museo con tu teléfono</h2>
+        <p>Escanea los códigos QR en cada estación y escucha al asistente narrar la historia de cada petroglifo.
+          Funciona incluso sin conexión a internet.</p>
+        <div class="acciones" style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+          <a href="pages/recorrido.html" class="btn btn--primario btn--lg" id="btn-cta-recorrido">
+            🗺️ Comenzar el recorrido
+          </a>
+          <a href="pages/mapa.html" class="btn btn--contorno btn--lg" id="btn-cta-mapa">
+            📥 Descargar mapa offline
           </a>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ═══════════════════════════════════════════════════════════
-     CTA: RECORRIDO INTERACTIVO
+  <!-- ═══════════════════════════════════════════════════════════
+     SECCIÓN: ÚLTIMAS NOTICIAS
 ════════════════════════════════════════════════════════════ -->
-<section class="section--sm" aria-labelledby="titulo-cta">
-  <div class="container">
-    <div class="cta revelar">
-      <span class="etiqueta">¡Experiencia única!</span>
-      <h2 id="titulo-cta">Recorre el museo con tu teléfono</h2>
-      <p>Escanea los códigos QR en cada estación y escucha al asistente narrar la historia de cada petroglifo. Funciona incluso sin conexión a internet.</p>
-      <div class="acciones" style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
-        <a href="pages/recorrido.html" class="btn btn--primario btn--lg" id="btn-cta-recorrido">
-          🗺️ Comenzar el recorrido
-        </a>
-        <a href="pages/mapa.html" class="btn btn--contorno btn--lg" id="btn-cta-mapa">
-          📥 Descargar mapa offline
+  <section class="section" style="background:var(--color-fondo-2);" aria-labelledby="titulo-noticias">
+    <div class="container">
+      <div class="seccion-titulo revelar">
+        <span class="etiqueta">Mantente informado</span>
+        <h2 id="titulo-noticias">Últimas Noticias y Eventos</h2>
+        <div class="divisor"></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;">
+        <article class="tarjeta revelar retraso-1">
+          <div class="tarjeta__imagen">
+            <img src="assets/img/museo-exterior.png" alt="Exposición temporal de arte rupestre" loading="lazy">
+          </div>
+          <div class="tarjeta__cuerpo">
+            <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;">
+              <span class="badge badge--dorado">Evento</span>
+              <span style="font-size:.75rem;color:var(--color-texto-3);">15 Jul 2026</span>
+            </div>
+            <h3 class="tarjeta__titulo" style="font-size:1.1rem;">Exposición: Arte Rupestre Latinoamericano</h3>
+            <p class="tarjeta__texto">Muestra itinerante que conecta los petroglifos de Piedra Pintada con expresiones
+              similares en toda América.</p>
+          </div>
+          <div class="tarjeta__pie">
+            <a href="pages/noticias.html" class="btn btn--contorno btn--sm" id="btn-noticia-1">Leer más →</a>
+          </div>
+        </article>
+
+        <article class="tarjeta revelar retraso-2">
+          <div class="tarjeta__imagen">
+            <img src="assets/img/petroglifo-01.png" alt="Taller de arqueología para niños" loading="lazy">
+          </div>
+          <div class="tarjeta__cuerpo">
+            <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;">
+              <span class="badge badge--verde">Taller</span>
+              <span style="font-size:.75rem;color:var(--color-texto-3);">8 Ago 2026</span>
+            </div>
+            <h3 class="tarjeta__titulo" style="font-size:1.1rem;">Taller de Arqueología para Niños</h3>
+            <p class="tarjeta__texto">Actividades didácticas donde los más pequeños aprenderán sobre las culturas
+              precolombinas de forma divertida.</p>
+          </div>
+          <div class="tarjeta__pie">
+            <a href="pages/noticias.html" class="btn btn--contorno btn--sm" id="btn-noticia-2">Leer más →</a>
+          </div>
+        </article>
+
+        <article class="tarjeta revelar retraso-3">
+          <div class="tarjeta__imagen">
+            <img src="assets/img/museo-exterior.png" alt="Nueva app PWA del museo disponible" loading="lazy">
+          </div>
+          <div class="tarjeta__cuerpo">
+            <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;">
+              <span class="badge badge--rojo">Tecnología</span>
+              <span style="font-size:.75rem;color:var(--color-texto-3);">1 Jun 2026</span>
+            </div>
+            <h3 class="tarjeta__titulo" style="font-size:1.1rem;">Nueva App Interactiva Disponible</h3>
+            <p class="tarjeta__texto">Ya puedes instalar nuestra PWA en tu teléfono y disfrutar del recorrido con guía
+              de voz, incluso sin conexión.</p>
+          </div>
+          <div class="tarjeta__pie">
+            <a href="pages/noticias.html" class="btn btn--contorno btn--sm" id="btn-noticia-3">Leer más →</a>
+          </div>
+        </article>
+      </div>
+
+      <div style="text-align:center;margin-top:2.5rem;" class="revelar">
+        <a href="pages/noticias.html" class="btn btn--contorno btn--lg" id="btn-ver-noticias">
+          Ver todas las noticias →
         </a>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ═══════════════════════════════════════════════════════════
-     SECCIÓN: ÚLTIMAS NOTICIAS
-════════════════════════════════════════════════════════════ -->
-<section class="section" style="background:var(--color-fondo-2);" aria-labelledby="titulo-noticias">
-  <div class="container">
-    <div class="seccion-titulo revelar">
-      <span class="etiqueta">Mantente informado</span>
-      <h2 id="titulo-noticias">Últimas Noticias y Eventos</h2>
-      <div class="divisor"></div>
-    </div>
+  <!-- Footer inyectado por JS -->
+  <div id="footer-placeholder"></div>
 
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;">
-      <article class="tarjeta revelar retraso-1">
-        <div class="tarjeta__imagen">
-          <img src="assets/img/museo-exterior.png" alt="Exposición temporal de arte rupestre" loading="lazy">
-        </div>
-        <div class="tarjeta__cuerpo">
-          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;">
-            <span class="badge badge--dorado">Evento</span>
-            <span style="font-size:.75rem;color:var(--color-texto-3);">15 Jul 2026</span>
-          </div>
-          <h3 class="tarjeta__titulo" style="font-size:1.1rem;">Exposición: Arte Rupestre Latinoamericano</h3>
-          <p class="tarjeta__texto">Muestra itinerante que conecta los petroglifos de Piedra Pintada con expresiones similares en toda América.</p>
-        </div>
-        <div class="tarjeta__pie">
-          <a href="pages/noticias.html" class="btn btn--contorno btn--sm" id="btn-noticia-1">Leer más →</a>
-        </div>
-      </article>
-
-      <article class="tarjeta revelar retraso-2">
-        <div class="tarjeta__imagen">
-          <img src="assets/img/petroglifo-01.png" alt="Taller de arqueología para niños" loading="lazy">
-        </div>
-        <div class="tarjeta__cuerpo">
-          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;">
-            <span class="badge badge--verde">Taller</span>
-            <span style="font-size:.75rem;color:var(--color-texto-3);">8 Ago 2026</span>
-          </div>
-          <h3 class="tarjeta__titulo" style="font-size:1.1rem;">Taller de Arqueología para Niños</h3>
-          <p class="tarjeta__texto">Actividades didácticas donde los más pequeños aprenderán sobre las culturas precolombinas de forma divertida.</p>
-        </div>
-        <div class="tarjeta__pie">
-          <a href="pages/noticias.html" class="btn btn--contorno btn--sm" id="btn-noticia-2">Leer más →</a>
-        </div>
-      </article>
-
-      <article class="tarjeta revelar retraso-3">
-        <div class="tarjeta__imagen">
-          <img src="assets/img/museo-exterior.png" alt="Nueva app PWA del museo disponible" loading="lazy">
-        </div>
-        <div class="tarjeta__cuerpo">
-          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;">
-            <span class="badge badge--rojo">Tecnología</span>
-            <span style="font-size:.75rem;color:var(--color-texto-3);">1 Jun 2026</span>
-          </div>
-          <h3 class="tarjeta__titulo" style="font-size:1.1rem;">Nueva App Interactiva Disponible</h3>
-          <p class="tarjeta__texto">Ya puedes instalar nuestra PWA en tu teléfono y disfrutar del recorrido con guía de voz, incluso sin conexión.</p>
-        </div>
-        <div class="tarjeta__pie">
-          <a href="pages/noticias.html" class="btn btn--contorno btn--sm" id="btn-noticia-3">Leer más →</a>
-        </div>
-      </article>
-    </div>
-
-    <div style="text-align:center;margin-top:2.5rem;" class="revelar">
-      <a href="pages/noticias.html" class="btn btn--contorno btn--lg" id="btn-ver-noticias">
-        Ver todas las noticias →
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- Footer inyectado por JS -->
-<div id="footer-placeholder"></div>
-
-<!-- ═══════════════════════════════════════════════════════════
+  <!-- ═══════════════════════════════════════════════════════════
      SCRIPTS
 ════════════════════════════════════════════════════════════ -->
-<script src="js/componentes.js?v=1.3"></script>
-<script src="js/app.js?v=1.3"></script>
-<script>
-  'use strict';
+  <script src="js/componentes.js?v=1.3"></script>
+  <script src="js/app.js?v=1.3"></script>
+  <script>
+    'use strict';
 
-  /* Partículas del hero */
-  function crearParticulas() {
-    const contenedor = document.getElementById('particulas');
-    if (!contenedor) return;
-    for (let i = 0; i < 18; i++) {
-      const p = document.createElement('div');
-      p.className = 'particula';
-      const size = Math.random() * 6 + 2;
-      p.style.cssText = `
+    /* Partículas del hero */
+    function crearParticulas() {
+      const contenedor = document.getElementById('particulas');
+      if (!contenedor) return;
+      for (let i = 0; i < 18; i++) {
+        const p = document.createElement('div');
+        p.className = 'particula';
+        const size = Math.random() * 6 + 2;
+        p.style.cssText = `
         width: ${size}px; height: ${size}px;
         left: ${Math.random() * 100}%;
         animation-duration: ${Math.random() * 15 + 10}s;
         animation-delay: ${Math.random() * -20}s;
         opacity: ${Math.random() * 0.6 + 0.2};
       `;
-      contenedor.appendChild(p);
+        contenedor.appendChild(p);
+      }
     }
-  }
 
-  /* Estado del museo (abierto/cerrado) */
-  function actualizarEstado() {
-    const estadoEl = document.getElementById('estado-museo');
-    if (!estadoEl) return;
-    const hora = new Date().getHours();
-    const dia  = new Date().getDay(); // 0 dom, 1 lun
-    let abierto = false;
-    if (dia === 0 && hora >= 9 && hora < 16) abierto = true;
-    if (dia >= 2 && dia <= 5 && hora >= 8 && hora < 17) abierto = true;
-    if (dia === 6 && hora >= 8 && hora < 18) abierto = true;
+    /* Estado del museo (abierto/cerrado) */
+    function actualizarEstado() {
+      const estadoEl = document.getElementById('estado-museo');
+      if (!estadoEl) return;
+      const hora = new Date().getHours();
+      const dia = new Date().getDay(); // 0 dom, 1 lun
+      let abierto = false;
+      if (dia === 0 && hora >= 9 && hora < 16) abierto = true;
+      if (dia >= 2 && dia <= 5 && hora >= 8 && hora < 17) abierto = true;
+      if (dia === 6 && hora >= 8 && hora < 18) abierto = true;
 
-    if (abierto) {
-      estadoEl.innerHTML = `
+      if (abierto) {
+        estadoEl.innerHTML = `
         <span class="badge badge--verde badge--punto">Abierto ahora</span>
         <span style="font-size:.85rem;color:var(--color-texto-2);">Cerramos pronto — planifica tu visita</span>
       `;
-      estadoEl.style.background = 'rgba(60,160,80,0.08)';
-      estadoEl.style.borderColor = 'rgba(60,160,80,0.20)';
-    } else {
-      estadoEl.innerHTML = `
+        estadoEl.style.background = 'rgba(60,160,80,0.08)';
+        estadoEl.style.borderColor = 'rgba(60,160,80,0.20)';
+      } else {
+        estadoEl.innerHTML = `
         <span class="badge badge--rojo badge--punto">Cerrado ahora</span>
         <span style="font-size:.85rem;color:var(--color-texto-2);">Abrimos mañana a las <strong style="color:var(--color-dorado-claro);">8:00 am</strong></span>
       `;
-      estadoEl.style.background = 'rgba(200,60,60,0.08)';
-      estadoEl.style.borderColor = 'rgba(200,60,60,0.20)';
+        estadoEl.style.background = 'rgba(200,60,60,0.08)';
+        estadoEl.style.borderColor = 'rgba(200,60,60,0.20)';
+      }
     }
-  }
 
-  /* CSS responsive para stack en móvil */
-  const style = document.createElement('style');
-  style.textContent = `
+    /* CSS responsive para stack en móvil */
+    const style = document.createElement('style');
+    style.textContent = `
     @media(max-width:768px){
       .responsive-stack { grid-template-columns: 1fr !important; gap: 2.5rem !important; }
     }
   `;
-  document.head.appendChild(style);
+    document.head.appendChild(style);
 
-  /* Activar hero */
-  window.addEventListener('load', () => {
-    document.getElementById('hero-fondo')?.closest('.hero')?.classList.add('cargado');
-  });
+    /* Activar hero */
+    window.addEventListener('load', () => {
+      document.getElementById('hero-fondo')?.closest('.hero')?.classList.add('cargado');
+    });
 
-  document.addEventListener('DOMContentLoaded', async () => {
-    crearParticulas();
-    actualizarEstado();
-    
-    // Conectar contador de visitas real
-    try {
-      const resp = await window.api.visitas.incrementar();
-      if (resp && typeof resp.visitas !== 'undefined') {
-        // Actualizar el contador principal (visitantes)
-        const principal = document.querySelector('[data-contador="342"]');
-        if (principal) {
-          principal.setAttribute('data-contador', resp.visitas);
-          principal.innerText = resp.visitas;
+    document.addEventListener('DOMContentLoaded', async () => {
+      crearParticulas();
+      actualizarEstado();
+
+      // Conectar contador de visitas real
+      try {
+        const resp = await window.api.visitas.incrementar();
+        if (resp && typeof resp.visitas !== 'undefined') {
+          // Actualizar el contador principal (visitantes)
+          const principal = document.querySelector('[data-contador="342"]');
+          if (principal) {
+            principal.setAttribute('data-contador', resp.visitas);
+            principal.innerText = resp.visitas;
+          }
         }
+      } catch (e) {
+        console.error('Error al cargar visitas:', e);
       }
-    } catch (e) {
-      console.error('Error al cargar visitas:', e);
-    }
 
-    // Cifras reales de petroglifos y estaciones desde la API
-    try {
-      const [petros, estaciones] = await Promise.all([
-        window.api.petroglifos.obtenerTodos(),
-        window.api.estaciones.obtenerTodas().catch(() => [])
-      ]);
-      const pEl = document.getElementById('hero-stat-petroglifos');
-      const eEl = document.getElementById('hero-stat-estaciones');
-      if (pEl && Array.isArray(petros)) { pEl.setAttribute('data-contador', petros.length); pEl.innerText = petros.length; }
-      if (eEl && Array.isArray(estaciones)) { eEl.setAttribute('data-contador', estaciones.length); eEl.innerText = estaciones.length; }
-    } catch (e) {
-      console.error('Error al cargar cifras:', e);
-    }
-  });
-</script>
+      // Cifras reales de petroglifos y estaciones desde la API
+      try {
+        const [petros, estaciones] = await Promise.all([
+          window.api.petroglifos.obtenerTodos(),
+          window.api.estaciones.obtenerTodas().catch(() => [])
+        ]);
+        const pEl = document.getElementById('hero-stat-petroglifos');
+        const eEl = document.getElementById('hero-stat-estaciones');
+        if (pEl && Array.isArray(petros)) { pEl.setAttribute('data-contador', petros.length); pEl.innerText = petros.length; }
+        if (eEl && Array.isArray(estaciones)) { eEl.setAttribute('data-contador', estaciones.length); eEl.innerText = estaciones.length; }
+      } catch (e) {
+        console.error('Error al cargar cifras:', e);
+      }
+    });
+  </script>
 </body>
+
 </html>
