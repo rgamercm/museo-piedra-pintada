@@ -12,7 +12,7 @@
   <meta property="og:description" content="Patrimonio arqueológico precolombino de Venezuela.">
   <meta property="og:type" content="website">
   <link rel="icon" href="assets/img/hero.png" type="image/png">
-  <link rel="stylesheet" href="css/estilos.css?v=1.9">
+  <link rel="stylesheet" href="css/estilos.css?v=2.0">
   <style>
     /* ── Partículas del hero ──────────────────────────────── */
     .particula {
@@ -429,7 +429,7 @@
       <div class="hero__imagen-badge">
         <span class="hero__imagen-badge-icon">🏛️</span>
         <div>
-          <div class="hero__imagen-badge-num" data-contador="847">0</div>
+          <div class="hero__imagen-badge-num" data-contador="0">0</div>
           <div class="hero__imagen-badge-texto" style="color:var(--color-texto-2);font-size:.75rem;">Visitantes este mes
           </div>
         </div>
@@ -460,19 +460,19 @@
 
       <div class="hero__stats">
         <div class="hero__stat">
-          <span class="hero__stat-num" id="hero-stat-petroglifos" data-contador="110">0</span>
+          <span class="hero__stat-num" id="hero-stat-petroglifos" data-contador="0">0</span>
           <span class="hero__stat-lbl">Petroglifos</span>
         </div>
         <div class="hero__stat">
-          <span class="hero__stat-num" id="hero-stat-estaciones" data-contador="104">0</span>
+          <span class="hero__stat-num" id="hero-stat-estaciones" data-contador="0">0</span>
           <span class="hero__stat-lbl">Estaciones</span>
         </div>
         <div class="hero__stat">
-          <span class="hero__stat-num" data-contador="3000">0</span>
+          <span class="hero__stat-num" data-contador="0">0</span>
           <span class="hero__stat-lbl">Años de historia</span>
         </div>
         <div class="hero__stat">
-          <span class="hero__stat-num" data-contador="10250">0</span>
+          <span class="hero__stat-num" data-contador="0">0</span>
           <span class="hero__stat-lbl">Visitantes al año</span>
         </div>
       </div>
@@ -533,19 +533,19 @@
 
       <div class="numeros-grid">
         <div class="stat-card revelar retraso-1">
-          <div class="stat-numero" data-contador="150">0</div>
+          <div class="stat-numero" data-contador="0">0</div>
           <div class="stat-label">Petroglifos catalogados</div>
         </div>
         <div class="stat-card revelar retraso-2">
-          <div class="stat-numero" data-contador="12">0</div>
+          <div class="stat-numero" data-contador="0">0</div>
           <div class="stat-label">Estaciones del recorrido</div>
         </div>
         <div class="stat-card revelar retraso-3">
-          <div class="stat-numero" data-contador="10250">0</div>
+          <div class="stat-numero" data-contador="0">0</div>
           <div class="stat-label">Visitantes anuales</div>
         </div>
         <div class="stat-card revelar retraso-4">
-          <div class="stat-numero" data-contador="3000">0</div>
+          <div class="stat-numero" data-contador="0">0</div>
           <div class="stat-label">Años de antigüedad</div>
         </div>
       </div>
@@ -565,66 +565,8 @@
           de años.</p>
       </div>
 
-      <div class="petroglifos-grid">
-        <!-- Tarjeta 1 -->
-        <article class="tarjeta revelar retraso-1" data-categoria="antropomorfo">
-          <div class="tarjeta__imagen">
-            <img src="assets/img/petroglifo-01.png" alt="Petroglifo antropomorfo El Guardián" loading="lazy">
-            <div style="position:absolute;top:.75rem;left:.75rem;">
-              <span class="badge badge--dorado">Antropomorfo</span>
-            </div>
-          </div>
-          <div class="tarjeta__cuerpo">
-            <h3 class="tarjeta__titulo">El Guardián</h3>
-            <p class="tarjeta__texto">Figura humanoide de gran tamaño con tocado ceremonial. Considerado el símbolo
-              central del parque.</p>
-          </div>
-          <div class="tarjeta__pie">
-            <span style="font-size:.8rem;color:var(--color-texto-3);">Estación 3 · QR-003</span>
-            <a href="pages/petroglifo-detalle.html?id=1" class="btn btn--contorno btn--sm" id="btn-detalle-1">Ver más
-              →</a>
-          </div>
-        </article>
-
-        <!-- Tarjeta 2 -->
-        <article class="tarjeta revelar retraso-2" data-categoria="geometrico">
-          <div class="tarjeta__imagen">
-            <img src="assets/img/museo-exterior.png" alt="Petroglifo geométrico La Serpiente Cósmica" loading="lazy">
-            <div style="position:absolute;top:.75rem;left:.75rem;">
-              <span class="badge badge--verde">Geométrico</span>
-            </div>
-          </div>
-          <div class="tarjeta__cuerpo">
-            <h3 class="tarjeta__titulo">La Serpiente Cósmica</h3>
-            <p class="tarjeta__texto">Patrón serpentiforme que se extiende 4 metros. Posiblemente asociado a ciclos
-              agrícolas y astronómicos.</p>
-          </div>
-          <div class="tarjeta__pie">
-            <span style="font-size:.8rem;color:var(--color-texto-3);">Estación 7 · QR-007</span>
-            <a href="pages/petroglifo-detalle.html?id=2" class="btn btn--contorno btn--sm" id="btn-detalle-2">Ver más
-              →</a>
-          </div>
-        </article>
-
-        <!-- Tarjeta 3 -->
-        <article class="tarjeta revelar retraso-3" data-categoria="zoomorfo">
-          <div class="tarjeta__imagen">
-            <img src="assets/img/petroglifo-01.png" alt="Petroglifo zoomorfo El Jaguar Celeste" loading="lazy">
-            <div style="position:absolute;top:.75rem;left:.75rem;">
-              <span class="badge badge--rojo">Zoomorfo</span>
-            </div>
-          </div>
-          <div class="tarjeta__cuerpo">
-            <h3 class="tarjeta__titulo">El Jaguar Celeste</h3>
-            <p class="tarjeta__texto">Representación de jaguar con cuerpo estrellado. Símbolo de poder y conexión con el
-              mundo espiritual.</p>
-          </div>
-          <div class="tarjeta__pie">
-            <span style="font-size:.8rem;color:var(--color-texto-3);">Estación 5 · QR-005</span>
-            <a href="pages/petroglifo-detalle.html?id=3" class="btn btn--contorno btn--sm" id="btn-detalle-3">Ver más
-              →</a>
-          </div>
-        </article>
+      <div style="text-align:center;padding:3rem;background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1rem;color:var(--color-texto-3);">
+        Próximamente se publicarán los petroglifos destacados del catálogo.
       </div>
 
       <div style="text-align:center;margin-top:2.5rem;" class="revelar">
@@ -694,19 +636,19 @@
             <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad-dorado);"></div>
             <div
               style="font-family:var(--font-titulo);font-size:5rem;font-weight:900;background:var(--grad-dorado);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;"
-              data-contador="342">0</div>
+              data-contador="0">0</div>
             <div style="color:var(--color-texto-2);font-size:.9rem;margin-top:.5rem;">visitantes hoy</div>
 
             <div style="display:flex;gap:1rem;margin-top:1.5rem;justify-content:center;">
               <div style="text-align:center;">
                 <div style="font-family:var(--font-titulo);font-size:1.5rem;color:var(--color-dorado-claro);"
-                  data-contador="847">0</div>
+                  data-contador="0">0</div>
                 <div style="font-size:.75rem;color:var(--color-texto-3);">Este mes</div>
               </div>
               <div style="width:1px;background:var(--glass-border);"></div>
               <div style="text-align:center;">
                 <div style="font-family:var(--font-titulo);font-size:1.5rem;color:var(--color-dorado-claro);"
-                  data-contador="10250">0</div>
+                  data-contador="0">0</div>
                 <div style="font-size:.75rem;color:var(--color-texto-3);">Este año</div>
               </div>
             </div>
@@ -765,60 +707,8 @@
         <div class="divisor"></div>
       </div>
 
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;">
-        <article class="tarjeta revelar retraso-1">
-          <div class="tarjeta__imagen">
-            <img src="assets/img/museo-exterior.png" alt="Exposición temporal de arte rupestre" loading="lazy">
-          </div>
-          <div class="tarjeta__cuerpo">
-            <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;">
-              <span class="badge badge--dorado">Evento</span>
-              <span style="font-size:.75rem;color:var(--color-texto-3);">15 Jul 2026</span>
-            </div>
-            <h3 class="tarjeta__titulo" style="font-size:1.1rem;">Exposición: Arte Rupestre Latinoamericano</h3>
-            <p class="tarjeta__texto">Muestra itinerante que conecta los petroglifos de Piedra Pintada con expresiones
-              similares en toda América.</p>
-          </div>
-          <div class="tarjeta__pie">
-            <a href="pages/noticias.html" class="btn btn--contorno btn--sm" id="btn-noticia-1">Leer más →</a>
-          </div>
-        </article>
-
-        <article class="tarjeta revelar retraso-2">
-          <div class="tarjeta__imagen">
-            <img src="assets/img/petroglifo-01.png" alt="Taller de arqueología para niños" loading="lazy">
-          </div>
-          <div class="tarjeta__cuerpo">
-            <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;">
-              <span class="badge badge--verde">Taller</span>
-              <span style="font-size:.75rem;color:var(--color-texto-3);">8 Ago 2026</span>
-            </div>
-            <h3 class="tarjeta__titulo" style="font-size:1.1rem;">Taller de Arqueología para Niños</h3>
-            <p class="tarjeta__texto">Actividades didácticas donde los más pequeños aprenderán sobre las culturas
-              precolombinas de forma divertida.</p>
-          </div>
-          <div class="tarjeta__pie">
-            <a href="pages/noticias.html" class="btn btn--contorno btn--sm" id="btn-noticia-2">Leer más →</a>
-          </div>
-        </article>
-
-        <article class="tarjeta revelar retraso-3">
-          <div class="tarjeta__imagen">
-            <img src="assets/img/museo-exterior.png" alt="Nueva app PWA del museo disponible" loading="lazy">
-          </div>
-          <div class="tarjeta__cuerpo">
-            <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;">
-              <span class="badge badge--rojo">Tecnología</span>
-              <span style="font-size:.75rem;color:var(--color-texto-3);">1 Jun 2026</span>
-            </div>
-            <h3 class="tarjeta__titulo" style="font-size:1.1rem;">Nueva App Interactiva Disponible</h3>
-            <p class="tarjeta__texto">Ya puedes instalar nuestra PWA en tu teléfono y disfrutar del recorrido con guía
-              de voz, incluso sin conexión.</p>
-          </div>
-          <div class="tarjeta__pie">
-            <a href="pages/noticias.html" class="btn btn--contorno btn--sm" id="btn-noticia-3">Leer más →</a>
-          </div>
-        </article>
+      <div style="text-align:center;padding:3rem;background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1rem;color:var(--color-texto-3);">
+        Próximamente se publicarán noticias y eventos del museo.
       </div>
 
       <div style="text-align:center;margin-top:2.5rem;" class="revelar">
@@ -835,7 +725,7 @@
   <!-- ═══════════════════════════════════════════════════════════
      SCRIPTS
 ════════════════════════════════════════════════════════════ -->
-  <script src="js/componentes.js?v=1.9"></script>
+  <script src="js/componentes.js?v=2.0"></script>
   <script src="js/app.js?v=1.3"></script>
   <script>
     'use strict';
