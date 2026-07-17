@@ -163,7 +163,7 @@ function renderNoticias(filtro='todos') {
     const badgeClass = dest.categoria === 'evento' ? 'badge--dorado' : (dest.categoria === 'taller' ? 'badge--verde' : 'badge--rojo');
     
     document.getElementById('noticia-destacada-main').innerHTML = `
-      <img src="${dest.imagen_url || '../assets/img/museo-exterior.png'}" alt="${dest.titulo}">
+      <img src="${dest.imagen_url || '/assets/img/museo-exterior.png'}" alt="${dest.titulo}">
       <div class="noticia-destacada__overlay" aria-hidden="true"></div>
       <div class="noticia-destacada__cuerpo">
         <div style="display:flex;gap:.5rem;margin-bottom:.75rem;flex-wrap:wrap;">
@@ -185,7 +185,7 @@ function renderNoticias(filtro='todos') {
     const badgeClass = n.categoria === 'evento' ? 'badge--dorado' : (n.categoria === 'taller' ? 'badge--verde' : 'badge--rojo');
     return `
     <article class="noticia-item revelar" data-categoria="${n.categoria}">
-      <div class="noticia-item__img"><img src="${n.imagen_url || '../assets/img/petroglifo-01.png'}" alt="${n.titulo}" loading="lazy"></div>
+      <div class="noticia-item__img"><img src="${n.imagen_url || '/assets/img/petroglifo-01.png'}" alt="${n.titulo}" loading="lazy"></div>
       <div class="noticia-item__body">
         <div style="display:flex;gap:.4rem;margin-bottom:.4rem;flex-wrap:wrap;">
           <span class="badge ${badgeClass}">${n.categoria.toUpperCase()}</span>
