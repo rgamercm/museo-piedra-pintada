@@ -1,4 +1,4 @@
-﻿'use strict';
+'use strict';
 
 // Protección de ruta
 (async function initAdmin() {

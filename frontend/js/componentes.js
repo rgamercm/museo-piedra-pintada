@@ -1,4 +1,4 @@
-﻿/**
+/**
  * MUSEO ARQUEOLÓGICO PIEDRA PINTADA
  * componentes.js — Header y Footer reutilizables (inyectados vía JS)
  *

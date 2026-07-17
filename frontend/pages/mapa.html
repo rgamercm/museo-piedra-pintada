@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mapa del Parque — Museo Piedra Pintada</title>
-  <meta name="description" content="Mapa interactivo del Parque Arqueológico Piedra Pintada con todas las estaciones. Descárgalo para usarlo sin conexión.">
+  <title>Mapa del Parque â€” Museo Piedra Pintada</title>
+  <meta name="description" content="Mapa interactivo del Parque ArqueolÃ³gico Piedra Pintada con todas las estaciones. DescÃ¡rgalo para usarlo sin conexiÃ³n.">
   <link rel="stylesheet" href="../css/estilos.css?v=2.1">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <style>
@@ -32,11 +32,11 @@
 
 <section class="page-hero">
   <div class="container">
-    <nav class="breadcrumb"><a href="../index.html">Inicio</a><span class="breadcrumb__sep">›</span><span aria-current="page">Mapa</span></nav>
-    <span class="etiqueta">Orientación en el parque</span>
-    <h1>Mapa del Parque Arqueológico</h1>
+    <nav class="breadcrumb"><a href="../index.html">Inicio</a><span class="breadcrumb__sep">â€º</span><span aria-current="page">Mapa</span></nav>
+    <span class="etiqueta">OrientaciÃ³n en el parque</span>
+    <h1>Mapa del Parque ArqueolÃ³gico</h1>
     <div class="divisor divisor--left"></div>
-    <p class="subtitulo" style="margin-top:.5rem;">12 estaciones georreferenciadas. Descarga el mapa para usarlo sin señal durante el recorrido.</p>
+    <p class="subtitulo" style="margin-top:.5rem;">12 estaciones georreferenciadas. Descarga el mapa para usarlo sin seÃ±al durante el recorrido.</p>
   </div>
 </section>
 
@@ -47,10 +47,10 @@
         <div class="leyenda-item"><div class="leyenda-punto" style="background:#60C080;"></div>Completadas</div>
         <div class="leyenda-item"><div class="leyenda-punto" style="background:#9BD07A;"></div>Actual</div>
         <div class="leyenda-item"><div class="leyenda-punto" style="background:#35882F;"></div>Pendientes</div>
-        <div class="leyenda-item"><div class="leyenda-punto" style="background:#4080FF;"></div>Tu posición</div>
+        <div class="leyenda-item"><div class="leyenda-punto" style="background:#4080FF;"></div>Tu posiciÃ³n</div>
       </div>
       <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
-        <button class="btn btn--contorno btn--sm" id="btn-mi-pos-mapa"> Mi ubicación</button>
+        <button class="btn btn--contorno btn--sm" id="btn-mi-pos-mapa"> Mi ubicaciÃ³n</button>
         <button class="btn btn--primario btn--sm" id="btn-offline-mapa">
            Descargar mapa offline
         </button>
@@ -64,7 +64,7 @@
       <span style="font-size:1.3rem;"></span>
       <div>
         <div style="font-size:.85rem;font-weight:600;color:var(--color-dorado-claro);">Modo offline disponible</div>
-        <div style="font-size:.78rem;color:var(--color-texto-2);">Descarga el mapa para usar el recorrido sin conexión a internet.</div>
+        <div style="font-size:.78rem;color:var(--color-texto-2);">Descarga el mapa para usar el recorrido sin conexiÃ³n a internet.</div>
       </div>
       <button class="btn btn--primario btn--sm" style="margin-left:auto;" id="btn-descargar-mapa-2">Descargar</button>
     </div>
@@ -97,8 +97,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Reordenar por si acaso (por orden de recorrido)
     estaciones.sort((a, b) => a.orden - b.orden);
     
-    // Aquí podríamos validar si el usuario las ha completado mirando localStorage, 
-    // pero por ahora mapeamos el estado a 'false' como en el diseño original.
+    // AquÃ­ podrÃ­amos validar si el usuario las ha completado mirando localStorage, 
+    // pero por ahora mapeamos el estado a 'false' como en el diseÃ±o original.
     const historial = JSON.parse(localStorage.getItem('museo_historial') || '[]');
     
     estaciones.forEach(est => {
@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
-// Mi ubicación
+// Mi ubicaciÃ³n
 document.getElementById('btn-mi-pos-mapa').addEventListener('click', () => {
   if (!navigator.geolocation) { window.Museo?.mostrarToast('GPS no disponible', 'aviso'); return; }
   navigator.geolocation.getCurrentPosition(
@@ -150,9 +150,9 @@ document.getElementById('btn-mi-pos-mapa').addEventListener('click', () => {
       const {latitude:lat,longitude:lng} = pos.coords;
       mapa.setView([lat,lng],17);
       L.circle([lat,lng],{radius:8,color:'#4080FF',fillOpacity:.6}).addTo(mapa);
-      window.Museo?.mostrarToast(' Ubicación actualizada', 'exito');
+      window.Museo?.mostrarToast(' UbicaciÃ³n actualizada', 'exito');
     },
-    () => window.Museo?.mostrarToast('Activa el GPS para ver tu ubicación', 'aviso')
+    () => window.Museo?.mostrarToast('Activa el GPS para ver tu ubicaciÃ³n', 'aviso')
   );
 });
 

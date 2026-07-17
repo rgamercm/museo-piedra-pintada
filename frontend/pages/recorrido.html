@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Recorrido Interactivo — Museo Arqueológico Piedra Pintada</title>
-  <meta name="description" content="Realiza el recorrido guiado por el Museo Arqueológico Piedra Pintada. Escanea códigos QR en cada estación y escucha al asistente narrar la historia de los petroglifos. Funciona sin conexión.">
+  <title>Recorrido Interactivo â€” Museo ArqueolÃ³gico Piedra Pintada</title>
+  <meta name="description" content="Realiza el recorrido guiado por el Museo ArqueolÃ³gico Piedra Pintada. Escanea cÃ³digos QR en cada estaciÃ³n y escucha al asistente narrar la historia de los petroglifos. Funciona sin conexiÃ³n.">
   <link rel="stylesheet" href="../css/estilos.css?v=2.1">
   <style>
     .recorrido-layout {
@@ -65,7 +65,7 @@
       align-items: center;
       gap: .5rem;
     }
-    /* Escáner QR */
+    /* EscÃ¡ner QR */
     .qr-scanner-area {
       width: 100%;
       aspect-ratio: 1;
@@ -177,7 +177,7 @@
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:1rem;">
       <div>
         <h1 style="font-size:1.8rem;margin-bottom:.25rem;">Recorrido Interactivo</h1>
-        <p style="color:var(--color-texto-3);font-size:.9rem;">12 estaciones · ~2 horas · Con guía de voz y QR</p>
+        <p style="color:var(--color-texto-3);font-size:.9rem;">12 estaciones Â· ~2 horas Â· Con guÃ­a de voz y QR</p>
       </div>
       <!-- Progreso -->
       <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
@@ -199,7 +199,7 @@
         <div id="mapa-leaflet"></div>
         <!-- Controles sobre el mapa -->
         <div style="position:absolute;bottom:1rem;left:1rem;z-index:1000;display:flex;gap:.5rem;">
-          <button class="btn btn--fantasma btn--sm" id="btn-mi-ubicacion" title="Mi ubicación"> Mi ubicación</button>
+          <button class="btn btn--fantasma btn--sm" id="btn-mi-ubicacion" title="Mi ubicaciÃ³n"> Mi ubicaciÃ³n</button>
           <button class="btn btn--fantasma btn--sm" id="btn-descargar-mapa" title="Descargar mapa offline"> Offline</button>
         </div>
       </div>
@@ -207,15 +207,15 @@
       <!-- Panel lateral -->
       <div class="panel-lateral">
 
-        <!-- Escáner QR -->
+        <!-- EscÃ¡ner QR -->
         <div class="panel-card">
-          <div class="panel-card__titulo"> Escáner QR</div>
+          <div class="panel-card__titulo"> EscÃ¡ner QR</div>
           <div class="qr-scanner-area" id="qr-area">
             <video id="qr-video" playsinline autoplay style="display:none;"></video>
             <div id="qr-placeholder" style="text-align:center;padding:1rem;">
               <div style="font-size:3rem;margin-bottom:.75rem;"></div>
-              <div style="font-size:.85rem;color:var(--color-texto-2);margin-bottom:1rem;">Activa la cámara para escanear el código QR de la estación</div>
-              <button class="btn btn--primario btn--sm" id="btn-activar-camara">Activar cámara</button>
+              <div style="font-size:.85rem;color:var(--color-texto-2);margin-bottom:1rem;">Activa la cÃ¡mara para escanear el cÃ³digo QR de la estaciÃ³n</div>
+              <button class="btn btn--primario btn--sm" id="btn-activar-camara">Activar cÃ¡mara</button>
             </div>
             <div class="qr-corner qr-corner--tl" aria-hidden="true"></div>
             <div class="qr-corner qr-corner--tr" aria-hidden="true"></div>
@@ -228,16 +228,16 @@
           </div>
         </div>
 
-        <!-- Estación activa -->
+        <!-- EstaciÃ³n activa -->
         <div class="panel-card" id="panel-estacion">
-          <div class="panel-card__titulo"> Estación Activa</div>
+          <div class="panel-card__titulo"> EstaciÃ³n Activa</div>
           <div style="margin-bottom:1rem;">
             <img id="est-img" src="../assets/img/petroglifo-01.png" alt="" style="width:100%;border-radius:.75rem;aspect-ratio:16/9;object-fit:cover;" loading="lazy">
           </div>
-          <div style="font-family:var(--font-titulo);font-size:1.1rem;margin-bottom:.4rem;" id="est-nombre">El Guardián</div>
-          <div style="font-size:.82rem;color:var(--color-texto-3);margin-bottom:.75rem;" id="est-qr"> Estación 3 · QR-003</div>
+          <div style="font-family:var(--font-titulo);font-size:1.1rem;margin-bottom:.4rem;" id="est-nombre">El GuardiÃ¡n</div>
+          <div style="font-size:.82rem;color:var(--color-texto-3);margin-bottom:.75rem;" id="est-qr"> EstaciÃ³n 3 Â· QR-003</div>
           <p id="est-desc" style="font-size:.85rem;color:var(--color-texto-2);line-height:1.65;margin-bottom:1rem;">
-            Figura humanoide con tocado ceremonial. Considerado el símbolo central del parque.
+            Figura humanoide con tocado ceremonial. Considerado el sÃ­mbolo central del parque.
           </p>
 
           <!-- Asistente -->
@@ -307,7 +307,7 @@ function iniciarMapa() {
       .on('click', () => activarEstacion(est.id));
   });
 
-  // Línea de recorrido
+  // LÃ­nea de recorrido
   const latlngs = ESTACIONES.map(e => [e.lat, e.lng]);
   L.polyline(latlngs, { color: 'rgba(122, 186, 88,0.5)', weight: 3, dashArray: '6,6' }).addTo(mapa);
 }
@@ -319,7 +319,7 @@ function renderLista() {
     <li>
       <button class="estacion-item ${est.completada?'completada':''} ${est.id===estActiva?'activa':''}"
         onclick="activarEstacion(${est.id})" id="estacion-btn-${est.id}"
-        aria-label="${est.nombre}${est.completada?' — completada':''}${est.id===estActiva?' — activa':''}">
+        aria-label="${est.nombre}${est.completada?' â€” completada':''}${est.id===estActiva?' â€” activa':''}">
         <div class="estacion-num">${est.completada?'':est.id}</div>
         <div>
           <div class="estacion-nombre">${est.nombre}</div>
@@ -331,14 +331,14 @@ function renderLista() {
   `).join('');
 }
 
-/*  Activar estación  */
+/*  Activar estaciÃ³n  */
 function activarEstacion(id) {
   estActiva = id;
   const est = ESTACIONES.find(e => e.id === id);
   if (!est) return;
 
   document.getElementById('est-nombre').textContent = est.nombre;
-  document.getElementById('est-qr').textContent = ` Estación ${est.id} · ${est.qr}`;
+  document.getElementById('est-qr').textContent = ` EstaciÃ³n ${est.id} Â· ${est.qr}`;
   if (est.petroglifo_id) {
     document.getElementById('btn-ver-detalle-est').href = `petroglifo-detalle.html?id=${est.petroglifo_id}`;
     document.getElementById('btn-ver-detalle-est').style.display = 'flex';
@@ -374,26 +374,26 @@ document.getElementById('btn-completar-estacion').addEventListener('click', () =
     est.completada = true;
     renderLista();
     actualizarProgreso();
-    window.Museo?.mostrarToast(` Estación ${est.id} — ${est.nombre} completada`, 'exito');
+    window.Museo?.mostrarToast(` EstaciÃ³n ${est.id} â€” ${est.nombre} completada`, 'exito');
     // Ir a la siguiente
     const siguiente = ESTACIONES.find(e => !e.completada);
     if (siguiente) setTimeout(() => activarEstacion(siguiente.id), 1000);
-    else window.Museo?.mostrarToast(' ¡Has completado el recorrido completo!', 'exito', 5000);
+    else window.Museo?.mostrarToast(' Â¡Has completado el recorrido completo!', 'exito', 5000);
   }
 });
 
 /*  Simular escaneo QR (demo)  */
 document.getElementById('btn-simular-qr').addEventListener('click', () => {
   const noCompletadas = ESTACIONES.filter(e => !e.completada);
-  if (!noCompletadas.length) { window.Museo?.mostrarToast('¡Todas las estaciones completadas!', 'info'); return; }
+  if (!noCompletadas.length) { window.Museo?.mostrarToast('Â¡Todas las estaciones completadas!', 'info'); return; }
   const est = noCompletadas[0];
-  window.Museo?.mostrarToast(` QR escaneado: ${est.qr} — ${est.nombre}`, 'exito');
+  window.Museo?.mostrarToast(` QR escaneado: ${est.qr} â€” ${est.nombre}`, 'exito');
   activarEstacion(est.id);
-  // Narrar automáticamente
+  // Narrar automÃ¡ticamente
   setTimeout(() => document.getElementById('btn-narrar').click(), 500);
 });
 
-/*  Cámara (GPS)  */
+/*  CÃ¡mara (GPS)  */
 document.getElementById('btn-activar-camara').addEventListener('click', async () => {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
@@ -402,9 +402,9 @@ document.getElementById('btn-activar-camara').addEventListener('click', async ()
     video.style.display = '';
     document.getElementById('qr-placeholder').style.display = 'none';
     document.getElementById('qr-linea').style.display = '';
-    window.Museo?.mostrarToast('Cámara activa — apunta al código QR de la estación', 'info');
+    window.Museo?.mostrarToast('CÃ¡mara activa â€” apunta al cÃ³digo QR de la estaciÃ³n', 'info');
   } catch(e) {
-    window.Museo?.mostrarToast('No se pudo acceder a la cámara. Verifica los permisos en ajustes.', 'aviso');
+    window.Museo?.mostrarToast('No se pudo acceder a la cÃ¡mara. Verifica los permisos en ajustes.', 'aviso');
   }
 });
 
@@ -417,9 +417,9 @@ document.getElementById('btn-mi-ubicacion').addEventListener('click', () => {
         mapa.setView([lat, lng], 17);
         L.circle([lat, lng], { radius: 10, color: '#4080FF', fillOpacity: .4 }).addTo(mapa);
       }
-      window.Museo?.mostrarToast(' Ubicación actualizada', 'exito');
+      window.Museo?.mostrarToast(' UbicaciÃ³n actualizada', 'exito');
     },
-    () => window.Museo?.mostrarToast('No se pudo obtener tu ubicación. Activa el GPS.', 'aviso')
+    () => window.Museo?.mostrarToast('No se pudo obtener tu ubicaciÃ³n. Activa el GPS.', 'aviso')
   );
 });
 
@@ -432,18 +432,18 @@ document.getElementById('btn-descargar-mapa').addEventListener('click', () => {
 document.getElementById('btn-narrar').addEventListener('click', () => {
   const est = ESTACIONES.find(e => e.id === estActiva);
   if (!est) return;
-  if (!('speechSynthesis' in window)) { window.Museo?.mostrarToast('Síntesis de voz no disponible', 'aviso'); return; }
+  if (!('speechSynthesis' in window)) { window.Museo?.mostrarToast('SÃ­ntesis de voz no disponible', 'aviso'); return; }
   window.speechSynthesis.cancel();
   // Usa el texto real del asistente del petroglifo; si no hay, un texto de respaldo.
   const texto = (est.petroglifo && est.petroglifo.texto_asistente)
     ? est.petroglifo.texto_asistente
-    : `Estás en la estación ${est.id}: ${est.nombre}, código ${est.qr}.`;
+    : `EstÃ¡s en la estaciÃ³n ${est.id}: ${est.nombre}, cÃ³digo ${est.qr}.`;
   const utt = new SpeechSynthesisUtterance(texto);
   utt.lang = 'es-ES'; utt.rate = 0.95;
   const voces = window.speechSynthesis.getVoices().filter(v => v.lang.startsWith('es'));
   if (voces.length) utt.voice = voces[0];
   utt.onstart = () => { document.getElementById('est-estado-voz').textContent = ' Narrando...'; document.getElementById('btn-narrar').textContent = ' Detener'; };
-  utt.onend   = () => { document.getElementById('est-estado-voz').textContent = 'Narración completada'; document.getElementById('btn-narrar').textContent = ' Escuchar'; };
+  utt.onend   = () => { document.getElementById('est-estado-voz').textContent = 'NarraciÃ³n completada'; document.getElementById('btn-narrar').textContent = ' Escuchar'; };
   window.speechSynthesis.speak(utt);
 });
 

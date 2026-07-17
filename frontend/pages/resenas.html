@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reseñas de Visitantes — Museo Piedra Pintada</title>
-  <meta name="description" content="Lee las reseñas de quienes visitaron el Museo Arqueológico Piedra Pintada y comparte tu propia experiencia.">
+  <title>ReseÃ±as de Visitantes â€” Museo Piedra Pintada</title>
+  <meta name="description" content="Lee las reseÃ±as de quienes visitaron el Museo ArqueolÃ³gico Piedra Pintada y comparte tu propia experiencia.">
   <link rel="stylesheet" href="../css/estilos.css?v=2.1">
   <style>
     .resenas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap: 1.25rem; }
@@ -45,9 +45,9 @@
 
 <section class="page-hero">
   <div class="container">
-    <nav class="breadcrumb"><a href="../index.html">Inicio</a><span class="breadcrumb__sep">›</span><span aria-current="page">Reseñas</span></nav>
+    <nav class="breadcrumb"><a href="../index.html">Inicio</a><span class="breadcrumb__sep">â€º</span><span aria-current="page">ReseÃ±as</span></nav>
     <span class="etiqueta">Lo que dicen nuestros visitantes</span>
-    <h1>Reseñas y Comentarios</h1>
+    <h1>ReseÃ±as y Comentarios</h1>
     <div class="divisor divisor--left"></div>
   </div>
 </section>
@@ -62,7 +62,7 @@
           <div style="display:flex;justify-content:center;gap:3px;margin:.5rem 0;">
             <span class="estrella"></span><span class="estrella"></span><span class="estrella"></span><span class="estrella"></span><span class="estrella" style="color:var(--color-dorado-claro);"></span>
           </div>
-          <div style="font-size:.82rem;color:var(--color-texto-3);">Basado en 127 reseñas</div>
+          <div style="font-size:.82rem;color:var(--color-texto-3);">Basado en 127 reseÃ±as</div>
 
           <div style="margin-top:1.5rem;text-align:left;">
             <div class="barra-dist"><span>5 </span><div class="barra-dist-track"><div class="barra-dist-fill" style="width:78%;"></div></div><span>78%</span></div>
@@ -74,18 +74,18 @@
         </div>
 
         <div style="background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1.2rem;padding:1.5rem;" class="revelar retraso-2">
-          <h3 style="font-size:1rem;color:var(--color-dorado-claro);margin-bottom:1rem;">¿Visitaste el museo?</h3>
+          <h3 style="font-size:1rem;color:var(--color-dorado-claro);margin-bottom:1rem;">Â¿Visitaste el museo?</h3>
           <p style="font-size:.82rem;color:var(--color-texto-2);margin-bottom:1rem;">Comparte tu experiencia y ayuda a otros visitantes. Debes estar registrado.</p>
-          <a href="login.html" class="btn btn--primario w-full" id="btn-escribir-resena" style="justify-content:center;">? Escribir reseña</a>
+          <a href="login.html" class="btn btn--primario w-full" id="btn-escribir-resena" style="justify-content:center;">? Escribir reseÃ±a</a>
         </div>
       </div>
 
-      <!-- Lista reseñas -->
+      <!-- Lista reseÃ±as -->
       <div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
-          <h2 style="font-size:1.2rem;">Últimas reseñas</h2>
-          <select class="form-select" style="width:auto;padding:.4rem .8rem;" id="ordenar-resenas" aria-label="Ordenar reseñas">
-            <option>Más recientes</option>
+          <h2 style="font-size:1.2rem;">Ãšltimas reseÃ±as</h2>
+          <select class="form-select" style="width:auto;padding:.4rem .8rem;" id="ordenar-resenas" aria-label="Ordenar reseÃ±as">
+            <option>MÃ¡s recientes</option>
             <option>Mejor puntuadas</option>
             <option>Con fotos</option>
           </select>
@@ -96,30 +96,30 @@
   </div>
 </section>
 
-<!-- Modal escribir reseña -->
+<!-- Modal escribir reseÃ±a -->
 <div class="modal-overlay" id="modal-resena">
   <div class="modal">
     <div class="modal__cabecera">
-      <h2 class="modal__titulo">? Escribir reseña</h2>
+      <h2 class="modal__titulo">? Escribir reseÃ±a</h2>
       <button class="modal__cerrar" aria-label="Cerrar"></button>
     </div>
     <form id="form-resena" novalidate>
       <div class="form-grupo">
-        <label class="form-etiqueta">Calificación *</label>
-        <div style="display:flex;gap:.5rem;font-size:2rem;cursor:pointer;" id="selector-estrellas" role="radiogroup" aria-label="Calificación">
+        <label class="form-etiqueta">CalificaciÃ³n *</label>
+        <div style="display:flex;gap:.5rem;font-size:2rem;cursor:pointer;" id="selector-estrellas" role="radiogroup" aria-label="CalificaciÃ³n">
           <span data-val="1"></span><span data-val="2"></span><span data-val="3"></span><span data-val="4"></span><span data-val="5"></span>
         </div>
         <input type="hidden" id="valor-estrellas" value="0" required>
       </div>
       <div class="form-grupo">
-        <label class="form-etiqueta" for="resena-titulo">Título de tu reseña *</label>
+        <label class="form-etiqueta" for="resena-titulo">TÃ­tulo de tu reseÃ±a *</label>
         <input type="text" id="resena-titulo" class="form-input" placeholder="Resumen de tu experiencia" required>
-        <div class="form-error">El título es obligatorio</div>
+        <div class="form-error">El tÃ­tulo es obligatorio</div>
       </div>
       <div class="form-grupo">
-        <label class="form-etiqueta" for="resena-texto">Tu reseña *</label>
-        <textarea id="resena-texto" class="form-textarea" placeholder="Cuéntanos sobre tu visita..." required></textarea>
-        <div class="form-error">La reseña es obligatoria</div>
+        <label class="form-etiqueta" for="resena-texto">Tu reseÃ±a *</label>
+        <textarea id="resena-texto" class="form-textarea" placeholder="CuÃ©ntanos sobre tu visita..." required></textarea>
+        <div class="form-error">La reseÃ±a es obligatoria</div>
       </div>
       <div class="form-grupo">
         <label class="form-etiqueta" for="resena-foto">Agregar foto (opcional)</label>
@@ -129,7 +129,7 @@
           <img id="foto-preview-img" style="max-height:150px;border-radius:.5rem;border:1px solid var(--glass-border);" alt="Vista previa">
         </div>
       </div>
-      <button type="submit" class="btn btn--primario w-full" style="justify-content:center;">Publicar reseña</button>
+      <button type="submit" class="btn btn--primario w-full" style="justify-content:center;">Publicar reseÃ±a</button>
     </form>
   </div>
 </div>
@@ -167,7 +167,7 @@ function renderResenas() {
   grid.querySelectorAll('.revelar').forEach(el => obs.observe(el));
 }
 
-// Modal reseña
+// Modal reseÃ±a
 document.getElementById('btn-escribir-resena').addEventListener('click', e => {
   e.preventDefault();
   window.Museo?.abrirModal('modal-resena');
@@ -197,14 +197,14 @@ document.getElementById('resena-foto').addEventListener('change', e => {
   reader.readAsDataURL(file);
 });
 
-// Submit reseña
+// Submit reseÃ±a
 document.getElementById('form-resena').addEventListener('submit', async e => {
   e.preventDefault();
   if (!window.Museo?.validarFormulario(e.target)) return;
-  if (!calif) { window.Museo?.mostrarToast('Selecciona una calificación', 'aviso'); return; }
+  if (!calif) { window.Museo?.mostrarToast('Selecciona una calificaciÃ³n', 'aviso'); return; }
   
   if (!window.api.getToken()) {
-    window.Museo?.mostrarToast('Debes iniciar sesión para publicar una reseña.', 'aviso');
+    window.Museo?.mostrarToast('Debes iniciar sesiÃ³n para publicar una reseÃ±a.', 'aviso');
     setTimeout(() => window.location.href = 'login.html', 1500);
     return;
   }
@@ -218,10 +218,10 @@ document.getElementById('form-resena').addEventListener('submit', async e => {
     await window.api.comentarios.crear({
       texto: document.getElementById('resena-texto').value,
       calificacion: calif,
-      petroglifo_id: null // Reseña general
+      petroglifo_id: null // ReseÃ±a general
     });
     window.Museo?.cerrarModal('modal-resena');
-    window.Museo?.mostrarToast(' Reseña enviada. Estará visible después de moderación.', 'exito');
+    window.Museo?.mostrarToast(' ReseÃ±a enviada. EstarÃ¡ visible despuÃ©s de moderaciÃ³n.', 'exito');
     e.target.reset();
   } catch (err) {
     console.error(err);

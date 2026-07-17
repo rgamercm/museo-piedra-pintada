@@ -1,4 +1,4 @@
-﻿/**
+/**
  * MUSEO ARQUEOLÓGICO PIEDRA PINTADA
  * qr-voz.js — Generación de códigos QR reales + asistente de voz (español).
  *

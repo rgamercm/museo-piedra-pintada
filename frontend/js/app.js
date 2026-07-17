@@ -1,4 +1,4 @@
-﻿/**
+/**
  * MUSEO ARQUEOLÓGICO PIEDRA PINTADA
  * app.js — Utilidades compartidas, navegación, animaciones
  * Fase R · Sistema de componentes base

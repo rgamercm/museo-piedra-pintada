@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trivia Arqueológica — Museo Piedra Pintada</title>
-  <meta name="description" content="Pon a prueba tu conocimiento sobre arqueología venezolana y los petroglifos de Piedra Pintada en nuestra trivia interactiva.">
+  <title>Trivia ArqueolÃ³gica â€” Museo Piedra Pintada</title>
+  <meta name="description" content="Pon a prueba tu conocimiento sobre arqueologÃ­a venezolana y los petroglifos de Piedra Pintada en nuestra trivia interactiva.">
   <link rel="stylesheet" href="../css/estilos.css?v=2.1">
   <style>
     .trivia-wrapper {
@@ -152,10 +152,10 @@
     <!-- Pantalla de INICIO -->
     <div id="pantalla-inicio" class="trivia-inicio">
       <div style="font-size:5rem;margin-bottom:1rem;"></div>
-      <span class="etiqueta">¿Quién quiere ser millonario?</span>
-      <h1 style="font-size:2rem;margin:1rem 0 .75rem;">Trivia Arqueológica</h1>
+      <span class="etiqueta">Â¿QuiÃ©n quiere ser millonario?</span>
+      <h1 style="font-size:2rem;margin:1rem 0 .75rem;">Trivia ArqueolÃ³gica</h1>
       <p style="color:var(--color-texto-2);max-width:400px;margin:0 auto 2rem;line-height:1.7;">
-        10 preguntas sobre los petroglifos, la historia precolombina y el Museo Piedra Pintada. ¿Cuántas puedes responder correctamente?
+        10 preguntas sobre los petroglifos, la historia precolombina y el Museo Piedra Pintada. Â¿CuÃ¡ntas puedes responder correctamente?
       </p>
       <div style="display:flex;gap:1.5rem;justify-content:center;margin-bottom:2rem;flex-wrap:wrap;">
         <div style="text-align:center;">
@@ -168,7 +168,7 @@
         </div>
         <div style="text-align:center;">
           <div style="font-family:var(--font-titulo);font-size:1.5rem;color:var(--color-dorado-claro);">1000</div>
-          <div style="font-size:.75rem;color:var(--color-texto-3);">Puntos máx.</div>
+          <div style="font-size:.75rem;color:var(--color-texto-3);">Puntos mÃ¡x.</div>
         </div>
       </div>
       <button class="btn btn--primario btn--lg" id="btn-iniciar-trivia"> Iniciar Trivia</button>
@@ -192,8 +192,8 @@
       </div>
 
       <div class="trivia-body">
-        <div class="pregunta-numero" id="pregunta-categoria">CATEGORÍA: PETROGLIFOS</div>
-        <div class="pregunta-texto" id="pregunta-texto">¿Cuántos petroglifos han sido catalogados en el Parque Piedra Pintada?</div>
+        <div class="pregunta-numero" id="pregunta-categoria">CATEGORÃA: PETROGLIFOS</div>
+        <div class="pregunta-texto" id="pregunta-texto">Â¿CuÃ¡ntos petroglifos han sido catalogados en el Parque Piedra Pintada?</div>
         <div class="opciones" id="contenedor-opciones" role="group" aria-label="Opciones de respuesta"></div>
       </div>
 
@@ -208,7 +208,7 @@
       <div class="puntaje-circulo" id="circulo-puntaje">
         <span id="puntaje-final">0%</span>
       </div>
-      <h2 style="margin-bottom:.5rem;" id="resultado-titulo">¡Bien hecho!</h2>
+      <h2 style="margin-bottom:.5rem;" id="resultado-titulo">Â¡Bien hecho!</h2>
       <p style="color:var(--color-texto-2);margin-bottom:.5rem;">Respondiste correctamente <strong id="correctas-num" style="color:var(--color-dorado-claro);">0</strong> de 10 preguntas</p>
       <p style="color:var(--color-texto-3);font-size:.85rem;margin-bottom:2rem;">Puntaje: <strong id="puntaje-num" style="color:var(--color-dorado-claro);">0</strong> / 1000 puntos</p>
       <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
@@ -274,14 +274,14 @@ function mostrarPregunta() {
   const p = PREGUNTAS[preguntaActual];
   document.getElementById('num-pregunta').textContent = `${preguntaActual + 1} / ${PREGUNTAS.length}`;
   document.getElementById('barra-trivia').style.width = `${((preguntaActual) / PREGUNTAS.length) * 100}%`;
-  document.getElementById('pregunta-categoria').textContent = `CATEGORÍA: ${p.categoria}`;
+  document.getElementById('pregunta-categoria').textContent = `CATEGORÃA: ${p.categoria}`;
   document.getElementById('pregunta-texto').textContent = p.pregunta;
   document.getElementById('feedback-texto').textContent = '';
   document.getElementById('btn-siguiente-pregunta').disabled = true;
 
   const letras = ['A', 'B', 'C', 'D'];
   document.getElementById('contenedor-opciones').innerHTML = p.opciones.map((op, i) => `
-    <button class="opcion-btn" onclick="responder(${i})" id="opcion-${i}" aria-label="Opción ${letras[i]}: ${op}">
+    <button class="opcion-btn" onclick="responder(${i})" id="opcion-${i}" aria-label="OpciÃ³n ${letras[i]}: ${op}">
       <span class="opcion-letra">${letras[i]}</span>
       <span>${op}</span>
     </button>
@@ -345,7 +345,7 @@ async function mostrarResultado() {
     const data = await window.api.trivia.verificar(respuestasUsuario);
     const { puntaje, total, detalle } = data;
     
-    // Contar cuántas respuestas fueron correctas en el detalle
+    // Contar cuÃ¡ntas respuestas fueron correctas en el detalle
     const correctas = detalle.filter(d => d.correcta).length;
     const pct = Math.round((correctas / total) * 100);
 
@@ -356,13 +356,13 @@ async function mostrarResultado() {
     document.getElementById('circulo-puntaje').style.setProperty('--p', pct + '%');
 
     const titulos = [
-      [0,  40,  '¡Sigue aprendiendo! '],
-      [40, 70,  '¡Buen intento! '],
-      [70, 90,  '¡Excelente conocimiento! '],
-      [90, 101, '¡Experto en arqueología! '],
+      [0,  40,  'Â¡Sigue aprendiendo! '],
+      [40, 70,  'Â¡Buen intento! '],
+      [70, 90,  'Â¡Excelente conocimiento! '],
+      [90, 101, 'Â¡Experto en arqueologÃ­a! '],
     ];
     const t = titulos.find(([min,max]) => pct >= min && pct < max);
-    document.getElementById('resultado-titulo').textContent = t?.[2] || '¡Bien hecho!';
+    document.getElementById('resultado-titulo').textContent = t?.[2] || 'Â¡Bien hecho!';
   } catch (error) {
     console.error(error);
     window.Museo?.mostrarToast('Error al verificar resultados.', 'error');

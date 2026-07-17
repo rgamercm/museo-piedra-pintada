@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cat·logo de Petroglifos ó Museo ArqueolÛgico Piedra Pintada</title>
-  <meta name="description" content="Explora el cat·logo completo de m·s de 150 petroglifos del Museo ArqueolÛgico Piedra Pintada. Filtra por categorÌa, busca por nombre y descubre la historia de cada grabado rupestre.">
+  <title>Cat√°logo de Petroglifos ‚Äî Museo Arqueol√≥gico Piedra Pintada</title>
+  <meta name="description" content="Explora el cat√°logo completo de m√°s de 150 petroglifos del Museo Arqueol√≥gico Piedra Pintada. Filtra por categor√≠a, busca por nombre y descubre la historia de cada grabado rupestre.">
   <link rel="stylesheet" href="../css/estilos.css?v=2.1">
   <style>
     .catalogo-grid {
@@ -152,15 +152,15 @@
 <!-- Hero -->
 <section class="page-hero" aria-labelledby="titulo-catalogo">
   <div class="container">
-    <nav class="breadcrumb" aria-label="Ruta de navegaciÛn">
+    <nav class="breadcrumb" aria-label="Ruta de navegaci√≥n">
       <a href="../index.html">Inicio</a>
-      <span class="breadcrumb__sep" aria-hidden="true">õ</span>
+      <span class="breadcrumb__sep" aria-hidden="true">‚Ä∫</span>
       <span aria-current="page">Petroglifos</span>
     </nav>
-    <span class="etiqueta">ColecciÛn completa</span>
-    <h1 id="titulo-catalogo">Cat·logo de Petroglifos</h1>
+    <span class="etiqueta">Colecci√≥n completa</span>
+    <h1 id="titulo-catalogo">Cat√°logo de Petroglifos</h1>
     <div class="divisor divisor--left"></div>
-    <p class="subtitulo" style="margin-top:.5rem;">M·s de 150 grabados rupestres catalogados. Cada uno, una ventana hacia la cosmovisiÛn de nuestros ancestros.</p>
+    <p class="subtitulo" style="margin-top:.5rem;">M√°s de 150 grabados rupestres catalogados. Cada uno, una ventana hacia la cosmovisi√≥n de nuestros ancestros.</p>
   </div>
 </section>
 
@@ -176,7 +176,7 @@
 
       <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
         <!-- Chips filtro -->
-        <div class="filtros-chips" id="filtros-chips" role="group" aria-label="Filtrar por categorÌa">
+        <div class="filtros-chips" id="filtros-chips" role="group" aria-label="Filtrar por categor√≠a">
           <button class="chip activo" data-filtro="todos">Todos</button>
           <button class="chip" data-filtro="Erosionado">Erosionados</button>
           <button class="chip" data-filtro="Bien conservado">Bien conservados</button>
@@ -185,28 +185,28 @@
 
         <!-- Vista -->
         <div class="vista-btns" role="group" aria-label="Cambiar vista">
-          <button class="vista-btn activo" id="btn-vista-grid" aria-label="Vista cuadrÌcula" title="Vista cuadrÌcula">?</button>
+          <button class="vista-btn activo" id="btn-vista-grid" aria-label="Vista cuadr√≠cula" title="Vista cuadr√≠cula">?</button>
           <button class="vista-btn" id="btn-vista-lista" aria-label="Vista lista" title="Vista lista"></button>
         </div>
       </div>
     </div>
 
     <!-- Grid de petroglifos -->
-    <div class="catalogo-grid" id="grid-petroglifos" aria-label="Cat·logo de petroglifos">
+    <div class="catalogo-grid" id="grid-petroglifos" aria-label="Cat√°logo de petroglifos">
 
       <!-- Los datos se generan por JS -->
 
     </div>
 
-    <!-- PaginaciÛn -->
-    <nav class="paginacion" aria-label="PaginaciÛn del cat·logo">
-      <button class="paginacion__btn" id="pag-anterior" aria-label="P·gina anterior">ã</button>
+    <!-- Paginaci√≥n -->
+    <nav class="paginacion" aria-label="Paginaci√≥n del cat√°logo">
+      <button class="paginacion__btn" id="pag-anterior" aria-label="P√°gina anterior">‚Äπ</button>
       <button class="paginacion__btn activo" aria-current="page">1</button>
       <button class="paginacion__btn">2</button>
       <button class="paginacion__btn">3</button>
-      <span style="color:var(--color-texto-3);padding:.5rem;">Ö</span>
+      <span style="color:var(--color-texto-3);padding:.5rem;">‚Ä¶</span>
       <button class="paginacion__btn">15</button>
-      <button class="paginacion__btn" id="pag-siguiente" aria-label="P·gina siguiente">õ</button>
+      <button class="paginacion__btn" id="pag-siguiente" aria-label="P√°gina siguiente">‚Ä∫</button>
     </nav>
   </div>
 </section>
@@ -262,7 +262,7 @@ function renderPetroglifos() {
         <div class="petroglifo-card__desc">${p.descripcion}</div>
       </div>
       <div class="petroglifo-card__pie">
-        <span class="petroglifo-card__estacion"> ${p.estacion_nombre || 'Sin estaciÛn'}</span>
+        <span class="petroglifo-card__estacion"> ${p.estacion_nombre || 'Sin estaci√≥n'}</span>
         <span class="btn btn--contorno btn--sm">Ver detalle ?</span>
       </div>
     </a>
