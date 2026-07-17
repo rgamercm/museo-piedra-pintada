@@ -42,9 +42,9 @@
   --grad-acento:  linear-gradient(135deg, #0A4F93 0%, #2E7BC4 100%);
 
   /* Tipografías */
-  --font-titulo:  'Cinzel', Georgia, serif;
-  --font-cuerpo:  'Raleway', system-ui, sans-serif;
-  --font-mono:    'JetBrains Mono', monospace;
+  --font-titulo:  'Century Gothic', sans-serif;
+  --font-cuerpo:  'Century Gothic', sans-serif;
+  --font-mono:    'Century Gothic', sans-serif;
 
   /* Tamaños tipográficos (escala modular 1.25) */
   --text-xs:    0.64rem;
