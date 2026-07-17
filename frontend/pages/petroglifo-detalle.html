@@ -129,7 +129,7 @@
       <!-- Columna izquierda: imagen + QR -->
       <div>
         <div class="imagen-principal revelar">
-          <img id="detalle-img" src="/assets/img/petroglifo-01.png" alt="El Guardián — Petroglifo antropomorfo">
+          <img id="detalle-img" src="../assets/img/petroglifo-01.png" alt="El Guardián — Petroglifo antropomorfo">
         </div>
 
         <div style="margin-top:1.5rem;background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1.2rem;padding:1.5rem;">
@@ -256,7 +256,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('detalle-estacion').textContent = ' ' + textoEstacion;
     document.getElementById('detalle-img').alt = petroglifo.nombre;
     if (petroglifo.imagen_url) {
-      document.getElementById('detalle-img').src = petroglifo.imagen_url;
+      document.getElementById('detalle-img').src = (petroglifo.imagen_url || "").replace(/^\/assets\//, "../assets/");
     }
     
     document.getElementById('texto-asistente').textContent = `"${petroglifo.texto_asistente || 'Sin descripción de asistente.'}"`;

@@ -173,7 +173,12 @@ function abrirModalPetroglifo(id = null) {
       
       const imgPreview = document.getElementById('petroglifo-imagen-preview');
       if (p.imagen_url) {
-        imgPreview.src = p.imagen_url;
+        let src = p.imagen_url;
+        // Fix relative paths for the admin panel which is nested one level deeper (pages/admin/)
+        if (src.startsWith('../')) {
+          src = '../' + src;
+        }
+        imgPreview.src = src;
         imgPreview.style.display = 'block';
       } else {
         imgPreview.style.display = 'none';

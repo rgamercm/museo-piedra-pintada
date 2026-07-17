@@ -250,7 +250,7 @@ function renderPetroglifos() {
   grid.innerHTML = filtrados.map(p => `
     <a href="petroglifo-detalle.html?id=${p.id}" class="petroglifo-card revelar" data-categoria="${p.categoria}" id="card-petroglifo-${p.id}">
       <div class="petroglifo-card__img">
-        <img src="${p.imagen_url || '/assets/img/petroglifo-01.png'}" alt="${p.nombre}" loading="lazy">
+        <img src="${(p.imagen_url || '').replace(/^\\/assets\\//, '../assets/') || '../assets/img/petroglifo-01.png'}" alt="${p.nombre}" loading="lazy">
         <div class="petroglifo-card__overlay" aria-hidden="true"></div>
         <span class="petroglifo-card__num">${p.codigo_qr}</span>
         <div style="position:absolute;bottom:.75rem;left:.75rem;">

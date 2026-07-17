@@ -348,7 +348,7 @@ function activarEstacion(id) {
   
   if (est.petroglifo) {
     document.getElementById('est-desc').textContent = est.petroglifo.descripcion;
-    document.getElementById('est-img').src = est.petroglifo.imagen_url || '/assets/img/petroglifo-01.png';
+    document.getElementById('est-img').src = (est.petroglifo.imagen_url || "").replace(/^\/assets\//, "../assets/") || '../assets/img/petroglifo-01.png';
   }
   
   document.getElementById('est-estado-voz').textContent = 'Listo para narrar';
