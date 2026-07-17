@@ -1,4 +1,4 @@
-/**
+﻿/**
  * MUSEO ARQUEOLÓGICO PIEDRA PINTADA
  * componentes.js — Header y Footer reutilizables (inyectados vía JS)
  *
@@ -9,7 +9,7 @@
 
 'use strict';
 
-/* ── Calcular prefijo de ruta relativa ──────────────────────
+/*  Calcular prefijo de ruta relativa 
  * Si estamos en  frontend/index.html       → base = ""
  * Si estamos en  frontend/pages/*.html     → base = "../"
  * Si estamos en  frontend/pages/admin/*.html → base = "../../"
@@ -40,7 +40,7 @@ function calcularBase() {
   return '../'.repeat(nivelDesde);
 }
 
-/* ── Ítems de navegación ─────────────────────────────────── */
+/*  Ítems de navegación  */
 const NAV_ITEMS = [
   { href: 'index.html',           label: 'Inicio'       },
   { href: 'pages/informacion.html', label: 'Información'  },
@@ -102,7 +102,7 @@ function generarHeader() {
   `;
 }
 
-/* ── Estado de sesión en el header ───────────────────────── */
+/*  Estado de sesión en el header  */
 function obtenerUsuarioSesion() {
   try {
     const crudo = localStorage.getItem('museo_usuario');
@@ -212,7 +212,7 @@ function generarFooter() {
       </div>
     </div>
     <div class="footer__base">
-      <span>© 2026 Museo Arqueológico Piedra Pintada · Todos los derechos reservados</span>
+      <span> 2026 Museo Arqueológico Piedra Pintada · Todos los derechos reservados</span>
       <span>Hecho con amor para preservar nuestra historia</span>
     </div>
   </div>

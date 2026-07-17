@@ -1,4 +1,4 @@
-'use strict';
+﻿'use strict';
 
 /**
  * MUSEO ARQUEOLÓGICO PIEDRA PINTADA
@@ -37,7 +37,7 @@ const api = {
     }
   },
 
-  // ── Módulos ──
+  //  Módulos 
 
   auth: {
     login: (correo, contrasena) => api.request('/auth/login', {

@@ -1,4 +1,4 @@
-'use strict';
+﻿'use strict';
 
 // Protección de ruta
 (async function initAdmin() {
@@ -78,7 +78,7 @@ function pintarFilasPetroglifos(lista) {
       <td><span class="badge badge--dorado">${_escapar(p.categoria || '—')}</span></td>
       <td><div style="display:flex;gap:.4rem;flex-wrap:wrap;">
         <button class="btn btn--contorno btn--sm" onclick="abrirModalPetroglifo(${p.id})">Editar</button>
-        <button class="btn btn--contorno btn--sm" onclick="window.MuseoQR?.imprimirQR('${_escapar(p.codigo_qr)}','${_escapar(p.nombre)}')">🖨️ QR</button>
+        <button class="btn btn--contorno btn--sm" onclick="window.MuseoQR?.imprimirQR('${_escapar(p.codigo_qr)}','${_escapar(p.nombre)}')">️ QR</button>
         <button class="btn btn--peligro btn--sm" onclick="eliminarPetroglifo(${p.id})">Eliminar</button>
       </div></td>
     </tr>`).join('');
@@ -359,8 +359,8 @@ async function cargarReservas() {
             </div>
             ${r.estado === 'pendiente' ? `
               <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
-                <button class="btn btn--primario btn--sm" onclick="cambiarEstadoReserva(${r.id}, 'aprobada')">✓ Aprobar</button>
-                <button class="btn btn--peligro btn--sm" onclick="cambiarEstadoReserva(${r.id}, 'rechazada')">✕ Rechazar</button>
+                <button class="btn btn--primario btn--sm" onclick="cambiarEstadoReserva(${r.id}, 'aprobada')"> Aprobar</button>
+                <button class="btn btn--peligro btn--sm" onclick="cambiarEstadoReserva(${r.id}, 'rechazada')"> Rechazar</button>
               </div>
             ` : ''}
           </div>
@@ -404,10 +404,10 @@ async function cargarModeracion() {
       container.innerHTML += `
         <div style="background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1rem;padding:1.25rem;">
           <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:.75rem;">
-            <div><strong>${c.autor_nombre || 'Anónimo'}</strong> — ${'★'.repeat(c.calificacion)}${'☆'.repeat(5-c.calificacion)}<br><span style="font-size:.78rem;color:var(--color-texto-3);">Enviada el ${formatearFecha(c.creado_en)}</span></div>
+            <div><strong>${c.autor_nombre || 'Anónimo'}</strong> — ${''.repeat(c.calificacion)}${''.repeat(5-c.calificacion)}<br><span style="font-size:.78rem;color:var(--color-texto-3);">Enviada el ${formatearFecha(c.creado_en)}</span></div>
             <div style="display:flex;gap:.5rem;">
-              <button class="btn btn--primario btn--sm" onclick="cambiarEstadoComentario(${c.id}, 'aprobado')">✓ Aprobar</button>
-              <button class="btn btn--peligro btn--sm" onclick="cambiarEstadoComentario(${c.id}, 'rechazado')">✕ Rechazar</button>
+              <button class="btn btn--primario btn--sm" onclick="cambiarEstadoComentario(${c.id}, 'aprobado')"> Aprobar</button>
+              <button class="btn btn--peligro btn--sm" onclick="cambiarEstadoComentario(${c.id}, 'rechazado')"> Rechazar</button>
             </div>
           </div>
           <p style="font-size:.88rem;color:var(--color-texto-2);">${c.texto}</p>

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * MUSEO ARQUEOLÓGICO PIEDRA PINTADA
  * qr-voz.js — Generación de códigos QR reales + asistente de voz (español).
  *
@@ -11,7 +11,7 @@
  */
 'use strict';
 
-/* ── QR ─────────────────────────────────────────────────── */
+/*  QR  */
 
 /**
  * Construye la URL pública que codifica el QR de un petroglifo.
@@ -87,7 +87,7 @@ function imprimirQR(codigoQr, nombre) {
   w.document.close();
 }
 
-/* ── Voz ────────────────────────────────────────────────── */
+/*  Voz  */
 
 let _vozActual = null;
 

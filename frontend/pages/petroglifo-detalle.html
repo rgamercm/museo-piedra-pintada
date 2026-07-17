@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Detalle de Petroglifo ‚Äî Museo Arqueol√≥gico Piedra Pintada</title>
-  <meta name="description" content="Informaci√≥n detallada del petroglifo: descripci√≥n, imagen, texto del asistente de voz y c√≥digo QR asociado.">
-  <link rel="stylesheet" href="../css/estilos.css?v=2.0">
+  <title>Detalle de Petroglifo ó Museo ArqueolÛgico Piedra Pintada</title>
+  <meta name="description" content="InformaciÛn detallada del petroglifo: descripciÛn, imagen, texto del asistente de voz y cÛdigo QR asociado.">
+  <link rel="stylesheet" href="../css/estilos.css?v=2.1">
   <style>
     .detalle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
     .imagen-principal {
@@ -109,17 +109,17 @@
 
 <section class="page-hero" aria-labelledby="titulo-petroglifo">
   <div class="container">
-    <nav class="breadcrumb" aria-label="Ruta de navegaci√≥n">
+    <nav class="breadcrumb" aria-label="Ruta de navegaciÛn">
       <a href="../index.html">Inicio</a>
-      <span class="breadcrumb__sep">‚Ä∫</span>
+      <span class="breadcrumb__sep">õ</span>
       <a href="petroglifos.html">Petroglifos</a>
-      <span class="breadcrumb__sep">‚Ä∫</span>
-      <span aria-current="page" id="breadcrumb-nombre">El Guardi√°n</span>
+      <span class="breadcrumb__sep">õ</span>
+      <span aria-current="page" id="breadcrumb-nombre">El Guardi·n</span>
     </nav>
     <span class="etiqueta" id="detalle-categoria">Antropomorfo</span>
-    <h1 id="titulo-petroglifo">El Guardi√°n</h1>
+    <h1 id="titulo-petroglifo">El Guardi·n</h1>
     <div class="divisor divisor--left"></div>
-    <p class="subtitulo" style="margin-top:.5rem;" id="detalle-estacion">üìç Estaci√≥n 3 ¬∑ QR-003</p>
+    <p class="subtitulo" style="margin-top:.5rem;" id="detalle-estacion"> EstaciÛn 3 ∑ QR-003</p>
   </div>
 </section>
 
@@ -129,23 +129,23 @@
       <!-- Columna izquierda: imagen + QR -->
       <div>
         <div class="imagen-principal revelar">
-          <img id="detalle-img" src="../assets/img/petroglifo-01.png" alt="El Guardi√°n ‚Äî Petroglifo antropomorfo">
+          <img id="detalle-img" src="../assets/img/petroglifo-01.png" alt="El Guardi·n ó Petroglifo antropomorfo">
         </div>
 
         <div style="margin-top:1.5rem;background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1.2rem;padding:1.5rem;">
-          <div style="font-family:var(--font-titulo);font-size:1rem;color:var(--color-dorado-claro);margin-bottom:1rem;">C√≥digo QR de la estaci√≥n</div>
+          <div style="font-family:var(--font-titulo);font-size:1rem;color:var(--color-dorado-claro);margin-bottom:1rem;">CÛdigo QR de la estaciÛn</div>
           <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;">
             <div class="qr-display">
               <!-- QR real generado por qr-voz.js -->
               <div id="qr-real" style="background:#fff;border-radius:.5rem;padding:8px;display:inline-block;"></div>
-              <div class="qr-display__codigo">‚Äî</div>
+              <div class="qr-display__codigo">ó</div>
               <div class="qr-display__lbl">Escanear en el parque</div>
             </div>
             <div style="flex:1;min-width:200px;">
-              <p style="font-size:.85rem;color:var(--color-texto-2);line-height:1.7;">Escanea este c√≥digo en la piedra f√≠sica para abrir esta ficha y escuchar la historia narrada por el asistente de voz.</p>
+              <p style="font-size:.85rem;color:var(--color-texto-2);line-height:1.7;">Escanea este cÛdigo en la piedra fÌsica para abrir esta ficha y escuchar la historia narrada por el asistente de voz.</p>
               <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem;">
-                <button class="btn btn--contorno btn--sm" id="btn-imprimir-qr">üñ®Ô∏è Imprimir QR</button>
-                <a href="recorrido.html" class="btn btn--primario btn--sm" id="btn-ir-recorrido">üó∫Ô∏è Ir al recorrido</a>
+                <button class="btn btn--contorno btn--sm" id="btn-imprimir-qr">? Imprimir QR</button>
+                <a href="recorrido.html" class="btn btn--primario btn--sm" id="btn-ir-recorrido">? Ir al recorrido</a>
               </div>
             </div>
           </div>
@@ -157,56 +157,56 @@
         <!-- Asistente de voz -->
         <div class="asistente-panel">
           <div class="asistente-panel__header">
-            <div class="asistente-avatar" aria-hidden="true">üéôÔ∏è</div>
+            <div class="asistente-avatar" aria-hidden="true">?</div>
             <div>
-              <div style="font-family:var(--font-titulo);font-size:.95rem;color:var(--color-dorado-claro);">Asistente Arqueol√≥gico</div>
-              <div style="font-size:.78rem;color:var(--color-texto-3);">Voz en espa√±ol ¬∑ Web Speech API</div>
+              <div style="font-family:var(--font-titulo);font-size:.95rem;color:var(--color-dorado-claro);">Asistente ArqueolÛgico</div>
+              <div style="font-size:.78rem;color:var(--color-texto-3);">Voz en espaÒol ∑ Web Speech API</div>
             </div>
             <div class="wave-bar pausado" id="barra-onda" aria-hidden="true" style="margin-left:auto;">
               <span></span><span></span><span></span><span></span><span></span>
             </div>
           </div>
           <p id="texto-asistente" style="font-size:.9rem;color:var(--color-texto-2);line-height:1.75;font-style:italic;border-left:3px solid rgba(122, 186, 88,.4);padding-left:1rem;">
-            "Ante ti se encuentra El Guardi√°n, una de las figuras m√°s imponentes del sitio. Con m√°s de dos metros de altura, esta figura humanoide porta un elaborado tocado ceremonial que indica su alto rango espiritual dentro de la comunidad precolombina. Su postura erguida y los brazos extendidos sugieren un ritual de invocaci√≥n o bienvenida..."
+            "Ante ti se encuentra El Guardi·n, una de las figuras m·s imponentes del sitio. Con m·s de dos metros de altura, esta figura humanoide porta un elaborado tocado ceremonial que indica su alto rango espiritual dentro de la comunidad precolombina. Su postura erguida y los brazos extendidos sugieren un ritual de invocaciÛn o bienvenida..."
           </p>
           <div style="margin-top:1.25rem;display:flex;gap:.75rem;flex-wrap:wrap;">
             <button class="btn btn--primario" id="btn-escuchar" aria-live="polite">
-              üîä Escuchar descripci√≥n
+               Escuchar descripciÛn
             </button>
             <button class="btn btn--fantasma" id="btn-pausar" style="display:none;">
-              ‚è∏ Pausar
+               Pausar
             </button>
           </div>
         </div>
 
-        <!-- Descripci√≥n completa -->
+        <!-- DescripciÛn completa -->
         <div style="margin-bottom:1.5rem;">
-          <h2 style="font-size:1.3rem;margin-bottom:.75rem;">Descripci√≥n</h2>
+          <h2 style="font-size:1.3rem;margin-bottom:.75rem;">DescripciÛn</h2>
           <p id="detalle-desc" style="color:var(--color-texto-2);line-height:1.8;">
-            Cargando descripci√≥n‚Ä¶
+            Cargando descripciÛnÖ
           </p>
           <div id="ficha-tecnica"></div>
         </div>
 
         <!-- Metadatos -->
         <div style="background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1rem;padding:1.5rem;margin-bottom:1.5rem;">
-          <h3 style="font-size:1rem;margin-bottom:1rem;color:var(--color-dorado-claro);">Ficha t√©cnica</h3>
+          <h3 style="font-size:1rem;margin-bottom:1rem;color:var(--color-dorado-claro);">Ficha tÈcnica</h3>
           <ul class="meta-lista">
-            <li class="meta-item"><span>Categor√≠a</span><strong id="meta-cat">Antropomorfo</strong></li>
-            <li class="meta-item"><span>Estaci√≥n</span><strong id="meta-estacion">N¬∫ 3 del recorrido</strong></li>
-            <li class="meta-item"><span>Dimensiones</span><strong>2.3 m √ó 1.8 m</strong></li>
+            <li class="meta-item"><span>CategorÌa</span><strong id="meta-cat">Antropomorfo</strong></li>
+            <li class="meta-item"><span>EstaciÛn</span><strong id="meta-estacion">N∫ 3 del recorrido</strong></li>
+            <li class="meta-item"><span>Dimensiones</span><strong>2.3 m ◊ 1.8 m</strong></li>
             <li class="meta-item"><span>Material</span><strong>Granito local</strong></li>
-            <li class="meta-item"><span>T√©cnica</span><strong>Percusi√≥n y abrasi√≥n</strong></li>
-            <li class="meta-item"><span>Dataci√≥n aprox.</span><strong>800 ‚Äì 1200 d.C.</strong></li>
-            <li class="meta-item"><span>C√≥digo QR</span><strong id="meta-qr">QR-003</strong></li>
+            <li class="meta-item"><span>TÈcnica</span><strong>PercusiÛn y abrasiÛn</strong></li>
+            <li class="meta-item"><span>DataciÛn aprox.</span><strong>800 ñ 1200 d.C.</strong></li>
+            <li class="meta-item"><span>CÛdigo QR</span><strong id="meta-qr">QR-003</strong></li>
           </ul>
         </div>
 
-        <!-- Navegaci√≥n entre petroglifos -->
+        <!-- NavegaciÛn entre petroglifos -->
         <div style="display:flex;gap:1rem;justify-content:space-between;">
-          <a href="petroglifo-detalle.html?id=3" class="btn btn--contorno" id="btn-anterior-petroglifo">‚Üê Petroglifo anterior</a>
-          <a href="petroglifos.html" class="btn btn--fantasma" id="btn-volver-catalogo">Ver cat√°logo</a>
-          <a href="petroglifo-detalle.html?id=2" class="btn btn--contorno" id="btn-siguiente-petroglifo">Siguiente ‚Üí</a>
+          <a href="petroglifo-detalle.html?id=3" class="btn btn--contorno" id="btn-anterior-petroglifo">? Petroglifo anterior</a>
+          <a href="petroglifos.html" class="btn btn--fantasma" id="btn-volver-catalogo">Ver cat·logo</a>
+          <a href="petroglifo-detalle.html?id=2" class="btn btn--contorno" id="btn-siguiente-petroglifo">Siguiente ?</a>
         </div>
       </div>
     </div>
@@ -216,7 +216,7 @@
 <div id="footer-placeholder"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="../js/componentes.js?v=2.0"></script>
+<script src="../js/componentes.js?v=2.1"></script>
 <script src="../js/qr-voz.js?v=1.3"></script>
 <script src="../js/app.js?v=1.3"></script>
 <script>
@@ -228,7 +228,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const id = parseInt(params.get('id')) || 1;
 
   try {
-    // Prioridad: si viene ?qr=... (QR escaneado), buscamos por c√≥digo.
+    // Prioridad: si viene ?qr=... (QR escaneado), buscamos por cÛdigo.
     const petroglifo = qrParam
       ? await window.api.petroglifos.obtenerPorQr(qrParam)
       : await window.api.petroglifos.obtenerPorId(id);
@@ -242,25 +242,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Llenar el DOM
     document.getElementById('breadcrumb-nombre').textContent = petroglifo.nombre;
     document.getElementById('titulo-petroglifo').textContent = petroglifo.nombre;
-    document.getElementById('detalle-categoria').textContent = petroglifo.categoria || 'Sin categor√≠a';
+    document.getElementById('detalle-categoria').textContent = petroglifo.categoria || 'Sin categorÌa';
     
-    // Obtener estaci√≥n si la tiene
-    let textoEstacion = 'Sin estaci√≥n asignada';
+    // Obtener estaciÛn si la tiene
+    let textoEstacion = 'Sin estaciÛn asignada';
     if (petroglifo.estaciones && petroglifo.estaciones.length > 0) {
       const est = petroglifo.estaciones[0]; // asumimos la primera
-      textoEstacion = `Est. ${est.orden || est.id} ¬∑ ${petroglifo.codigo_qr || 'Sin QR'}`;
+      textoEstacion = `Est. ${est.orden || est.id} ∑ ${petroglifo.codigo_qr || 'Sin QR'}`;
     } else if (petroglifo.codigo_qr) {
       textoEstacion = petroglifo.codigo_qr;
     }
     
-    document.getElementById('detalle-estacion').textContent = 'üìç ' + textoEstacion;
+    document.getElementById('detalle-estacion').textContent = ' ' + textoEstacion;
     document.getElementById('detalle-img').alt = petroglifo.nombre;
     if (petroglifo.imagen_url) {
       document.getElementById('detalle-img').src = petroglifo.imagen_url;
     }
     
-    document.getElementById('texto-asistente').textContent = `"${petroglifo.texto_asistente || 'Sin descripci√≥n de asistente.'}"`;
-    document.getElementById('detalle-desc').textContent = petroglifo.descripcion || 'Sin descripci√≥n detallada.';
+    document.getElementById('texto-asistente').textContent = `"${petroglifo.texto_asistente || 'Sin descripciÛn de asistente.'}"`;
+    document.getElementById('detalle-desc').textContent = petroglifo.descripcion || 'Sin descripciÛn detallada.';
     
     document.getElementById('meta-cat').textContent = petroglifo.categoria || 'N/A';
     document.getElementById('meta-estacion').textContent = textoEstacion;
@@ -269,7 +269,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const qrDisplay = document.querySelector('.qr-display__codigo');
     if (qrDisplay) qrDisplay.textContent = petroglifo.codigo_qr || 'N/A';
 
-    // ‚îÄ‚îÄ QR real escaneable ‚îÄ‚îÄ
+    //  QR real escaneable 
     if (petroglifo.codigo_qr && window.MuseoQR) {
       window.MuseoQR.generarQR('qr-real', petroglifo.codigo_qr, 130);
     }
@@ -277,28 +277,28 @@ document.addEventListener('DOMContentLoaded', async () => {
       window.MuseoQR?.imprimirQR(petroglifo.codigo_qr, petroglifo.nombre);
     });
 
-    // Ficha t√©cnica (si viene de los datos reales)
+    // Ficha tÈcnica (si viene de los datos reales)
     const ficha = [
-      ['C√≥digo de roca', petroglifo.codigo_roca],
+      ['CÛdigo de roca', petroglifo.codigo_roca],
       ['Coordenadas', (petroglifo.latitud && petroglifo.longitud) ? `${petroglifo.latitud}, ${petroglifo.longitud}` : null],
       ['Altitud', petroglifo.altitud_m ? `${petroglifo.altitud_m} m` : null],
       ['Caras grabadas', petroglifo.cantidad_caras],
       ['Estado', petroglifo.estado_conservacion],
-      ['Orientaci√≥n', petroglifo.orientacion],
+      ['OrientaciÛn', petroglifo.orientacion],
     ].filter(([, v]) => v);
     const fichaEl = document.getElementById('ficha-tecnica');
     if (fichaEl && ficha.length) {
-      fichaEl.innerHTML = '<h3 style="font-family:var(--font-titulo);color:var(--color-dorado-claro);font-size:1rem;margin:1.5rem 0 .75rem;">Ficha t√©cnica</h3>' +
+      fichaEl.innerHTML = '<h3 style="font-family:var(--font-titulo);color:var(--color-dorado-claro);font-size:1rem;margin:1.5rem 0 .75rem;">Ficha tÈcnica</h3>' +
         ficha.map(([k, v]) => `<div style="display:flex;justify-content:space-between;gap:1rem;padding:.4rem 0;border-bottom:1px solid var(--glass-border);font-size:.88rem;"><span style="color:var(--color-texto-3);">${k}</span><span style="color:var(--color-texto);text-align:right;">${v}</span></div>`).join('');
     }
 
-    // Si lleg√≥ por QR escaneado, narrar autom√°ticamente tras un instante.
+    // Si llegÛ por QR escaneado, narrar autom·ticamente tras un instante.
     if (qrParam && window.MuseoVoz) {
       setTimeout(() => document.getElementById('btn-escuchar')?.click(), 800);
     }
 
     // Enlaces anterior/siguiente (asumimos id-1 y id+1 de forma simple, 
-    // en un caso real se consultar√≠a la base de datos por el adyacente)
+    // en un caso real se consultarÌa la base de datos por el adyacente)
     const prevBtn = document.getElementById('btn-anterior-petroglifo');
     const nextBtn = document.getElementById('btn-siguiente-petroglifo');
     if (id > 1) {
@@ -314,7 +314,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.getElementById('btn-escuchar').addEventListener('click', () => {
       if (!('speechSynthesis' in window)) {
-        window.Museo?.mostrarToast('Tu navegador no soporta s√≠ntesis de voz', 'aviso');
+        window.Museo?.mostrarToast('Tu navegador no soporta sÌntesis de voz', 'aviso');
         return;
       }
       window.speechSynthesis.cancel();
@@ -336,11 +336,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('btn-pausar').addEventListener('click', () => {
       if (window.speechSynthesis.paused) {
         window.speechSynthesis.resume();
-        document.getElementById('btn-pausar').textContent = '‚è∏ Pausar';
+        document.getElementById('btn-pausar').textContent = ' Pausar';
         document.getElementById('barra-onda').classList.remove('pausado');
       } else {
         window.speechSynthesis.pause();
-        document.getElementById('btn-pausar').textContent = '‚ñ∂ Reanudar';
+        document.getElementById('btn-pausar').textContent = ' Reanudar';
         document.getElementById('barra-onda').classList.add('pausado');
       }
     });

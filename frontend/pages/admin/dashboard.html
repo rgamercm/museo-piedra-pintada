@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel de AdministraciÃ³n â€” Museo Piedra Pintada</title>
-  <meta name="description" content="Panel de administraciÃ³n del Museo ArqueolÃ³gico Piedra Pintada.">
-  <link rel="stylesheet" href="../../css/estilos.css?v=2.0">
+  <title>Panel de Administración — Museo Piedra Pintada</title>
+  <meta name="description" content="Panel de administración del Museo Arqueológico Piedra Pintada.">
+  <link rel="stylesheet" href="../../css/estilos.css?v=2.1">
   <style>
     /* Layout: sidebar fija + contenido desplazado. Sin grid para evitar
        el doble desplazamiento (la sidebar es position:fixed, fuera del flujo). */
@@ -65,7 +65,7 @@
     .form-input:focus, .form-textarea:focus { background: rgba(18, 40, 90,0.9) !important; }
     .modal-content { background: linear-gradient(145deg, #12285A, #0A1A3C) !important; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
 
-    /* Estilo del botÃ³n de subida de archivos */
+    /* Estilo del botón de subida de archivos */
     input[type="file"] { padding: 0.5rem; }
     input[type="file"]::file-selector-button {
       margin-right: 1rem;
@@ -84,7 +84,7 @@
     
     .empty-row td { text-align: center; color: var(--color-texto-3); padding: 2rem 1rem !important; }
 
-    /* Toggle mÃ³vil */
+    /* Toggle móvil */
     .admin-toggle-btn { display: none; position: fixed; bottom: 20px; right: 20px; z-index: 2000; background: var(--grad-dorado); color: var(--color-fondo); border: none; width: 50px; height: 50px; border-radius: 50%; box-shadow: 0 4px 15px rgba(122, 186, 88,0.4); font-size: 1.5rem; align-items: center; justify-content: center; cursor: pointer; }
 
     /* Envoltorio con scroll horizontal para tablas anchas */
@@ -101,33 +101,33 @@
 <body>
 <div class="bg-texture" aria-hidden="true"></div>
 <div id="header-placeholder"></div>
-<button class="admin-toggle-btn" onclick="document.querySelector('.admin-sidebar').classList.toggle('abierto')" aria-label="Alternar menÃº">â˜°</button>
+<button class="admin-toggle-btn" onclick="document.querySelector('.admin-sidebar').classList.toggle('abierto')" aria-label="Alternar menú"></button>
 
 <div class="admin-layout">
   <!-- Sidebar -->
-  <aside class="admin-sidebar" aria-label="MenÃº de administraciÃ³n">
+  <aside class="admin-sidebar" aria-label="Menú de administración">
     <div style="font-family:var(--font-titulo);font-size:.9rem;color:var(--color-dorado-claro);padding:.75rem;margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem;">
-      ğŸ”’ Panel Admin
+       Panel Admin
     </div>
     <div class="admin-nav-titulo">General</div>
-    <button class="admin-nav-item activo" onclick="mostrarSeccion('resumen')" id="nav-resumen">ğŸ“Š Resumen</button>
-    <button class="admin-nav-item" onclick="mostrarSeccion('petroglifos')" id="nav-petroglifos">ğŸª¨ Petroglifos</button>
+    <button class="admin-nav-item activo" onclick="mostrarSeccion('resumen')" id="nav-resumen"> Resumen</button>
+    <button class="admin-nav-item" onclick="mostrarSeccion('petroglifos')" id="nav-petroglifos"> Petroglifos</button>
     <button class="admin-nav-item" onclick="mostrarSeccion('reservas')" id="nav-reservas">
-      ğŸ“… Reservas <span class="badge badge--rojo" id="badge-reservas"></span>
+       Reservas <span class="badge badge--rojo" id="badge-reservas"></span>
     </button>
     <div class="admin-nav-titulo">Comunidad</div>
     <button class="admin-nav-item" onclick="mostrarSeccion('moderacion')" id="nav-moderacion">
-      ğŸ’¬ ModeraciÃ³n <span class="badge badge--dorado" id="badge-moderacion"></span>
+       Moderación <span class="badge badge--dorado" id="badge-moderacion"></span>
     </button>
     <button class="admin-nav-item" onclick="mostrarSeccion('preguntas-admin')" id="nav-preguntas-admin">
-      â“ Preguntas <span class="badge badge--verde" id="badge-preguntas"></span>
+       Preguntas <span class="badge badge--verde" id="badge-preguntas"></span>
     </button>
     <div class="admin-nav-titulo">Contenido</div>
-    <button class="admin-nav-item" onclick="mostrarSeccion('noticias-admin')" id="nav-noticias-admin">ğŸ“° Noticias</button>
-    <button class="admin-nav-item" onclick="mostrarSeccion('trivia-admin')" id="nav-trivia-admin">ğŸ® Trivia</button>
+    <button class="admin-nav-item" onclick="mostrarSeccion('noticias-admin')" id="nav-noticias-admin"> Noticias</button>
+    <button class="admin-nav-item" onclick="mostrarSeccion('trivia-admin')" id="nav-trivia-admin"> Trivia</button>
     <div class="admin-nav-titulo">Accesos</div>
-    <a href="../../index.html" class="admin-nav-item">ğŸ  Ver sitio pÃºblico</a>
-    <button class="admin-nav-item" style="color:#F09090;" onclick="window.Museo?.mostrarToast('SesiÃ³n cerrada','info');setTimeout(()=>location.href='login.html',1000)">ğŸšª Cerrar sesiÃ³n</button>
+    <a href="../../index.html" class="admin-nav-item"> Ver sitio público</a>
+    <button class="admin-nav-item" style="color:#F09090;" onclick="window.Museo?.mostrarToast('Sesión cerrada','info');setTimeout(()=>location.href='login.html',1000)"> Cerrar sesión</button>
   </aside>
 
   <!-- Main content -->
@@ -135,17 +135,17 @@
 
     <!-- RESUMEN -->
     <section class="seccion-admin activa" id="sec-resumen">
-      <h1 style="margin-bottom:.35rem;">Panel de AdministraciÃ³n</h1>
-      <p style="color:var(--color-texto-3);font-size:.9rem;margin-bottom:2rem;">Bienvenido, <span id="admin-name">Administrador</span> Â· <span id="fecha-admin"></span></p>
+      <h1 style="margin-bottom:.35rem;">Panel de Administración</h1>
+      <p style="color:var(--color-texto-3);font-size:.9rem;margin-bottom:2rem;">Bienvenido, <span id="admin-name">Administrador</span> · <span id="fecha-admin"></span></p>
 
       <!-- Stats -->
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-bottom:2rem;">
-        <div class="stat-admin"><span class="stat-admin__icono">ğŸª¨</span><div><div class="stat-admin__num" id="stat-petroglifos">0</div><div class="stat-admin__lbl">Petroglifos totales</div></div></div>
-        <div class="stat-admin"><span class="stat-admin__icono">ğŸ‘¥</span><div><div class="stat-admin__num" data-contador="342">0</div><div class="stat-admin__lbl">Visitantes hoy</div></div></div>
-        <div class="stat-admin"><span class="stat-admin__icono">ğŸ“…</span><div><div class="stat-admin__num" id="stat-reservas">0</div><div class="stat-admin__lbl">Reservas pendientes</div></div></div>
-        <div class="stat-admin"><span class="stat-admin__icono">ğŸ’¬</span><div><div class="stat-admin__num" id="stat-comentarios">0</div><div class="stat-admin__lbl">ReseÃ±as por moderar</div></div></div>
-        <div class="stat-admin"><span class="stat-admin__icono">â“</span><div><div class="stat-admin__num" id="stat-preguntas">0</div><div class="stat-admin__lbl">Preguntas sin responder</div></div></div>
-        <div class="stat-admin"><span class="stat-admin__icono">â­</span><div><div class="stat-admin__num">4.8</div><div class="stat-admin__lbl">CalificaciÃ³n promedio</div></div></div>
+        <div class="stat-admin"><span class="stat-admin__icono"></span><div><div class="stat-admin__num" id="stat-petroglifos">0</div><div class="stat-admin__lbl">Petroglifos totales</div></div></div>
+        <div class="stat-admin"><span class="stat-admin__icono"></span><div><div class="stat-admin__num" data-contador="0">0</div><div class="stat-admin__lbl">Visitantes hoy</div></div></div>
+        <div class="stat-admin"><span class="stat-admin__icono"></span><div><div class="stat-admin__num" id="stat-reservas">0</div><div class="stat-admin__lbl">Reservas pendientes</div></div></div>
+        <div class="stat-admin"><span class="stat-admin__icono"></span><div><div class="stat-admin__num" id="stat-comentarios">0</div><div class="stat-admin__lbl">Reseñas por moderar</div></div></div>
+        <div class="stat-admin"><span class="stat-admin__icono"></span><div><div class="stat-admin__num" id="stat-preguntas">0</div><div class="stat-admin__lbl">Preguntas sin responder</div></div></div>
+        <div class="stat-admin"><span class="stat-admin__icono"></span><div><div class="stat-admin__num">4.8</div><div class="stat-admin__lbl">Calificación promedio</div></div></div>
       </div>
 
       <!-- Actividad reciente -->
@@ -153,15 +153,15 @@
         <h2 style="font-size:1.1rem;margin-bottom:1.25rem;">Actividad reciente</h2>
         <div style="display:flex;flex-direction:column;gap:.65rem;">
           <div style="display:flex;align-items:center;gap:.75rem;padding:.75rem;border-radius:.5rem;background:var(--glass-hover);">
-            <span>ğŸ’¬</span><div style="flex:1;font-size:.85rem;">Nueva reseÃ±a de <strong>MarÃ­a G.</strong> â€” 5 estrellas</div><span style="font-size:.75rem;color:var(--color-texto-3);">hace 5 min</span>
+            <span></span><div style="flex:1;font-size:.85rem;">Nueva reseña de <strong>María G.</strong> — 5 estrellas</div><span style="font-size:.75rem;color:var(--color-texto-3);">hace 5 min</span>
             <button class="btn btn--primario btn--sm" onclick="mostrarSeccion('moderacion')">Moderar</button>
           </div>
           <div style="display:flex;align-items:center;gap:.75rem;padding:.75rem;border-radius:.5rem;background:var(--glass-hover);">
-            <span>ğŸ“…</span><div style="flex:1;font-size:.85rem;">Solicitud de reserva â€” <strong>Colegio San JosÃ©</strong></div><span style="font-size:.75rem;color:var(--color-texto-3);">hace 1h</span>
+            <span></span><div style="flex:1;font-size:.85rem;">Solicitud de reserva — <strong>Colegio San José</strong></div><span style="font-size:.75rem;color:var(--color-texto-3);">hace 1h</span>
             <button class="btn btn--primario btn--sm" onclick="mostrarSeccion('reservas')">Ver</button>
           </div>
           <div style="display:flex;align-items:center;gap:.75rem;padding:.75rem;border-radius:.5rem;background:var(--glass-hover);">
-            <span>â“</span><div style="flex:1;font-size:.85rem;">Nueva pregunta: <em>"Â¿CuÃ¡nto dura el recorrido?"</em></div><span style="font-size:.75rem;color:var(--color-texto-3);">hace 2h</span>
+            <span></span><div style="flex:1;font-size:.85rem;">Nueva pregunta: <em>"¿Cuánto dura el recorrido?"</em></div><span style="font-size:.75rem;color:var(--color-texto-3);">hace 2h</span>
             <button class="btn btn--primario btn--sm" onclick="mostrarSeccion('preguntas-admin')">Responder</button>
           </div>
         </div>
@@ -174,10 +174,10 @@
         <h1 style="font-size:1.5rem;">Petroglifos <span id="conteo-petroglifos" style="font-size:.9rem;color:var(--color-texto-3);font-weight:400;"></span></h1>
         <button class="btn btn--primario btn--sm" onclick="abrirModalPetroglifo()">+ Agregar petroglifo</button>
       </div>
-      <input type="text" id="buscar-petroglifos" class="form-input" placeholder="ğŸ” Buscar por nombre, cÃ³digo QR o categorÃ­aâ€¦" style="margin-bottom:1rem;max-width:420px;" oninput="filtrarPetroglifos(this.value)">
+      <input type="text" id="buscar-petroglifos" class="form-input" placeholder=" Buscar por nombre, código QR o categoría…" style="margin-bottom:1rem;max-width:420px;" oninput="filtrarPetroglifos(this.value)">
       <div class="tabla-scroll" style="background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1rem;margin-bottom:2rem;">
         <table class="tabla-admin">
-          <thead><tr><th>ID</th><th>CÃ³digo QR</th><th>Nombre</th><th>CategorÃ­a</th><th>Acciones</th></tr></thead>
+          <thead><tr><th>ID</th><th>Código QR</th><th>Nombre</th><th>Categoría</th><th>Acciones</th></tr></thead>
           <tbody id="tbody-petroglifos">
             <tr><td colspan="5" style="text-align:center;">Cargando...</td></tr>
           </tbody>
@@ -186,7 +186,7 @@
 
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
         <h1 style="font-size:1.5rem;">Estaciones</h1>
-        <button class="btn btn--primario btn--sm" onclick="abrirModalEstacion()">+ Agregar estaciÃ³n</button>
+        <button class="btn btn--primario btn--sm" onclick="abrirModalEstacion()">+ Agregar estación</button>
       </div>
       <div style="background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1rem;overflow:auto;">
         <table class="tabla-admin">
@@ -201,15 +201,15 @@
     <!-- MODAL ESTACION -->
     <div id="modal-estacion" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:999; align-items:center; justify-content:center; padding:1rem;">
       <div style="background:linear-gradient(145deg, #12285A, #0A1A3C); padding:2rem; border-radius:1rem; width:100%; max-width:500px; border:1px solid rgba(122, 186, 88,0.3); box-shadow:0 10px 40px rgba(0,0,0,0.8);">
-        <h2 style="margin-bottom:1rem;">EstaciÃ³n</h2>
+        <h2 style="margin-bottom:1rem;">Estación</h2>
         <form id="form-estacion" style="display:flex; flex-direction:column; gap:1rem;">
           <input type="hidden" id="estacion-id">
-          <input type="text" id="estacion-nombre" class="form-input" placeholder="Nombre (ej: EstaciÃ³n 1)" required>
+          <input type="text" id="estacion-nombre" class="form-input" placeholder="Nombre (ej: Estación 1)" required>
           <input type="number" id="estacion-orden" class="form-input" placeholder="Orden" required>
           <input type="number" id="estacion-petroglifo" class="form-input" placeholder="ID del Petroglifo">
           <input type="text" id="estacion-lat" class="form-input" placeholder="Latitud">
           <input type="text" id="estacion-lng" class="form-input" placeholder="Longitud">
-          <textarea id="estacion-descripcion" class="form-textarea" placeholder="DescripciÃ³n"></textarea>
+          <textarea id="estacion-descripcion" class="form-textarea" placeholder="Descripción"></textarea>
           <div style="display:flex; gap:1rem; margin-top:1rem;">
             <button type="submit" class="btn btn--primario">Guardar</button>
             <button type="button" class="btn btn--contorno" onclick="cerrarModalEstacion()">Cancelar</button>
@@ -225,23 +225,23 @@
         <form id="form-petroglifo" style="display:flex; flex-direction:column; gap:1rem;">
           <input type="hidden" id="petroglifo-id">
           <input type="text" id="petroglifo-nombre" class="form-input" placeholder="Nombre" required>
-          <input type="text" id="petroglifo-categoria" class="form-input" placeholder="CategorÃ­a (ej: Erosionado)" required>
-          <input type="text" id="petroglifo-codigo_qr" class="form-input" placeholder="CÃ³digo QR (ej: S9R1)" required>
+          <input type="text" id="petroglifo-categoria" class="form-input" placeholder="Categoría (ej: Erosionado)" required>
+          <input type="text" id="petroglifo-codigo_qr" class="form-input" placeholder="Código QR (ej: S9R1)" required>
 
           <div style="display:flex; flex-direction:column; gap:.5rem;">
             <label style="font-size:.85rem; color:var(--color-texto-2);">Imagen del petroglifo (opcional):</label>
             <input type="file" id="petroglifo-imagen" class="form-input" accept="image/*">
             <input type="hidden" id="petroglifo-imagen_url">
-            <img id="petroglifo-imagen-preview" src="" style="max-width:100%; border-radius:.5rem; display:none; margin-top:.5rem;" alt="PrevisualizaciÃ³n">
+            <img id="petroglifo-imagen-preview" src="" style="max-width:100%; border-radius:.5rem; display:none; margin-top:.5rem;" alt="Previsualización">
           </div>
 
-          <textarea id="petroglifo-descripcion" class="form-textarea" placeholder="DescripciÃ³n" required></textarea>
+          <textarea id="petroglifo-descripcion" class="form-textarea" placeholder="Descripción" required></textarea>
           <textarea id="petroglifo-texto_asistente" class="form-textarea" placeholder="Texto para asistente de voz (lo que se narra)"></textarea>
 
           <details style="border:1px solid var(--glass-border);border-radius:.6rem;padding:.5rem .75rem;">
-            <summary style="cursor:pointer;color:var(--color-dorado-claro);font-size:.9rem;">Ficha tÃ©cnica (opcional)</summary>
+            <summary style="cursor:pointer;color:var(--color-dorado-claro);font-size:.9rem;">Ficha técnica (opcional)</summary>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-top:.75rem;">
-              <input type="text" id="petroglifo-codigo_roca" class="form-input" placeholder="CÃ³digo de roca">
+              <input type="text" id="petroglifo-codigo_roca" class="form-input" placeholder="Código de roca">
               <input type="text" id="petroglifo-fecha_registro" class="form-input" placeholder="Fecha de registro">
               <input type="number" step="any" id="petroglifo-latitud" class="form-input" placeholder="Latitud">
               <input type="number" step="any" id="petroglifo-longitud" class="form-input" placeholder="Longitud">
@@ -249,9 +249,9 @@
               <input type="text" id="petroglifo-cantidad_caras" class="form-input" placeholder="Cantidad de caras">
               <input type="text" id="petroglifo-profundidad_surco" class="form-input" placeholder="Profundidad surco">
               <input type="text" id="petroglifo-forma_surco" class="form-input" placeholder="Forma del surco">
-              <input type="text" id="petroglifo-exposicion_solar" class="form-input" placeholder="ExposiciÃ³n solar">
-              <input type="text" id="petroglifo-orientacion" class="form-input" placeholder="OrientaciÃ³n">
-              <input type="text" id="petroglifo-estado_conservacion" class="form-input" placeholder="Estado conservaciÃ³n">
+              <input type="text" id="petroglifo-exposicion_solar" class="form-input" placeholder="Exposición solar">
+              <input type="text" id="petroglifo-orientacion" class="form-input" placeholder="Orientación">
+              <input type="text" id="petroglifo-estado_conservacion" class="form-input" placeholder="Estado conservación">
             </div>
             <textarea id="petroglifo-notas" class="form-textarea" placeholder="Notas" style="margin-top:.75rem;"></textarea>
           </details>
@@ -273,11 +273,11 @@
       </div>
     </section>
 
-    <!-- MODERACIÃ“N -->
+    <!-- MODERACIÓN -->
     <section class="seccion-admin" id="sec-moderacion">
-      <h1 style="font-size:1.5rem;margin-bottom:1.5rem;">ReseÃ±as por Moderar</h1>
+      <h1 style="font-size:1.5rem;margin-bottom:1.5rem;">Reseñas por Moderar</h1>
       <div id="contenedor-moderacion" style="display:flex;flex-direction:column;gap:1rem;">
-        <p>Cargando reseÃ±as...</p>
+        <p>Cargando reseñas...</p>
       </div>
     </section>
 
@@ -297,7 +297,7 @@
       </div>
       <div style="background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1rem;overflow:auto;">
         <table class="tabla-admin">
-          <thead><tr><th>TÃ­tulo</th><th>CategorÃ­a</th><th>Fecha</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <thead><tr><th>Título</th><th>Categoría</th><th>Fecha</th><th>Estado</th><th>Acciones</th></tr></thead>
           <tbody id="tbody-noticias">
             <tr><td colspan="5" style="text-align:center;">Cargando...</td></tr>
           </tbody>
@@ -311,8 +311,8 @@
         <h2 style="margin-bottom:1rem;">Noticia / Evento</h2>
         <form id="form-noticia" style="display:flex; flex-direction:column; gap:1rem;">
           <input type="hidden" id="noticia-id">
-          <input type="text" id="noticia-titulo" class="form-input" placeholder="TÃ­tulo" required>
-          <input type="text" id="noticia-categoria" class="form-input" placeholder="CategorÃ­a" required>
+          <input type="text" id="noticia-titulo" class="form-input" placeholder="Título" required>
+          <input type="text" id="noticia-categoria" class="form-input" placeholder="Categoría" required>
           <textarea id="noticia-contenido" class="form-textarea" placeholder="Contenido de la noticia" style="min-height:100px;" required></textarea>
           <select id="noticia-activa" class="form-input" required>
             <option value="true">Publicada</option>
@@ -350,15 +350,15 @@
         <form id="form-trivia" style="display:flex; flex-direction:column; gap:1rem;">
           <input type="hidden" id="trivia-id">
           <input type="text" id="trivia-pregunta" class="form-input" placeholder="Pregunta" required>
-          <input type="text" id="trivia-opcion-a" class="form-input" placeholder="OpciÃ³n A" required>
-          <input type="text" id="trivia-opcion-b" class="form-input" placeholder="OpciÃ³n B" required>
-          <input type="text" id="trivia-opcion-c" class="form-input" placeholder="OpciÃ³n C" required>
-          <input type="text" id="trivia-opcion-d" class="form-input" placeholder="OpciÃ³n D" required>
+          <input type="text" id="trivia-opcion-a" class="form-input" placeholder="Opción A" required>
+          <input type="text" id="trivia-opcion-b" class="form-input" placeholder="Opción B" required>
+          <input type="text" id="trivia-opcion-c" class="form-input" placeholder="Opción C" required>
+          <input type="text" id="trivia-opcion-d" class="form-input" placeholder="Opción D" required>
           <select id="trivia-correcta" class="form-input" required>
-            <option value="A">OpciÃ³n A correcta</option>
-            <option value="B">OpciÃ³n B correcta</option>
-            <option value="C">OpciÃ³n C correcta</option>
-            <option value="D">OpciÃ³n D correcta</option>
+            <option value="A">Opción A correcta</option>
+            <option value="B">Opción B correcta</option>
+            <option value="C">Opción C correcta</option>
+            <option value="D">Opción D correcta</option>
           </select>
           <select id="trivia-activa" class="form-input" required>
             <option value="true">Activa</option>
@@ -377,7 +377,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="../../js/componentes.js?v=2.0"></script>
+<script src="../../js/componentes.js?v=2.1"></script>
 <script src="../../js/api.js?v=1.3"></script>
 <script src="../../js/qr-voz.js?v=1.3"></script>
 <script src="../../js/admin.js?v=1.3"></script>

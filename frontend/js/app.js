@@ -1,4 +1,4 @@
-/**
+﻿/**
  * MUSEO ARQUEOLÓGICO PIEDRA PINTADA
  * app.js — Utilidades compartidas, navegación, animaciones
  * Fase R · Sistema de componentes base
@@ -6,7 +6,7 @@
 
 'use strict';
 
-/* ── Navegación / Header ─────────────────────────────────── */
+/*  Navegación / Header  */
 const header      = document.querySelector('.header');
 const hamburguesa = document.querySelector('.hamburguesa');
 const navMovil    = document.querySelector('.nav-movil');
@@ -57,7 +57,7 @@ function marcarEnlaceActivo() {
 }
 marcarEnlaceActivo();
 
-/* ── Scroll Reveal (Intersection Observer) ───────────────── */
+/*  Scroll Reveal (Intersection Observer)  */
 function iniciarScrollReveal() {
   const elementos = document.querySelectorAll('.revelar');
   if (!elementos.length) return;
@@ -75,7 +75,7 @@ function iniciarScrollReveal() {
 }
 document.addEventListener('DOMContentLoaded', iniciarScrollReveal);
 
-/* ── Toast ───────────────────────────────────────────────── */
+/*  Toast  */
 let toastContainer = null;
 
 function obtenerContenedorToast() {
@@ -94,7 +94,7 @@ function obtenerContenedorToast() {
  * @param {number} duracion ms
  */
 function mostrarToast(mensaje, tipo = 'info', duracion = 3500) {
-  const iconos = { exito: '✅', error: '❌', info: '🏛️', aviso: '⚠️' };
+  const iconos = { exito: '', error: '', info: '️', aviso: '️' };
   const contenedor = obtenerContenedorToast();
 
   const toast = document.createElement('div');
@@ -111,7 +111,7 @@ function mostrarToast(mensaje, tipo = 'info', duracion = 3500) {
   }, duracion);
 }
 
-/* ── Modal ───────────────────────────────────────────────── */
+/*  Modal  */
 function abrirModal(idModal) {
   const overlay = document.getElementById(idModal);
   if (!overlay) return;
@@ -147,7 +147,7 @@ document.addEventListener('click', e => {
   }
 });
 
-/* ── Tabs ────────────────────────────────────────────────── */
+/*  Tabs  */
 function iniciarTabs(contenedor) {
   if (!contenedor) return;
   const botones = contenedor.querySelectorAll('.tab-btn');
@@ -166,7 +166,7 @@ function iniciarTabs(contenedor) {
   paneles[0]?.classList.add('activo');
 }
 
-/* ── Contador animado ────────────────────────────────────── */
+/*  Contador animado  */
 function animarContador(elemento, fin, duracion = 2000) {
   let inicio = 0;
   const incremento = fin / (duracion / 16);
@@ -198,7 +198,7 @@ function iniciarContadores() {
 }
 document.addEventListener('DOMContentLoaded', iniciarContadores);
 
-/* ── Buscador (filtro de tarjetas) ───────────────────────── */
+/*  Buscador (filtro de tarjetas)  */
 function iniciarBuscador(inputId, selectorTarjetas) {
   const input = document.getElementById(inputId);
   if (!input) return;
@@ -213,7 +213,7 @@ function iniciarBuscador(inputId, selectorTarjetas) {
   });
 }
 
-/* ── Chips de filtro ─────────────────────────────────────── */
+/*  Chips de filtro  */
 function iniciarFiltroChips(contenedorId, selectorItems, atributo = 'data-categoria') {
   const contenedor = document.getElementById(contenedorId);
   if (!contenedor) return;
@@ -236,7 +236,7 @@ function iniciarFiltroChips(contenedorId, selectorItems, atributo = 'data-catego
   });
 }
 
-/* ── Formularios — validación básica ─────────────────────── */
+/*  Formularios — validación básica  */
 function validarFormulario(form) {
   let valido = true;
   form.querySelectorAll('[required]').forEach(campo => {
@@ -266,12 +266,12 @@ function validarFormulario(form) {
   return valido;
 }
 
-/* ── Simular carga de datos (prototipos) ─────────────────── */
+/*  Simular carga de datos (prototipos)  */
 function simularCarga(ms = 800) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-/* ── Exportar utilidades ─────────────────────────────────── */
+/*  Exportar utilidades  */
 window.Museo = {
   mostrarToast,
   abrirModal,
