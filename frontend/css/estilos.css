@@ -220,17 +220,41 @@ h6 { font-size: var(--text-base); }
   right: 0;
   z-index: 1000;
   height: var(--header-h);
-  background: rgba(12, 8, 4, 0.85);
+  background: rgba(122, 186, 88, 0.95);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
-  border-bottom: 1px solid var(--glass-border);
+  border-bottom: 1px solid rgba(13, 32, 73, 0.15);
   transition: background var(--dur-media) var(--ease-out),
               box-shadow var(--dur-media) var(--ease-out);
 }
 
 .header.scrolled {
-  background: rgba(12, 8, 4, 0.97);
+  background: var(--color-dorado);
   box-shadow: var(--shadow-md);
+}
+
+/* Sobrescrituras para visibilidad sobre fondo verde */
+.header .logo__nombre {
+  color: var(--color-fondo);
+}
+.header .logo__subtitulo {
+  color: rgba(13, 32, 73, 0.8);
+  font-weight: 600;
+}
+.header .nav__enlace {
+  color: var(--color-fondo);
+  font-weight: 600;
+}
+.header .nav__enlace::after {
+  background: var(--color-fondo);
+}
+.header .nav__enlace:hover,
+.header .nav__enlace.activo {
+  color: var(--color-fondo);
+  background: rgba(13, 32, 73, 0.1);
+}
+.header .hamburguesa span {
+  background: var(--color-fondo);
 }
 
 .header__inner {

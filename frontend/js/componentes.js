@@ -83,8 +83,8 @@ function generarHeader() {
     </nav>
 
     <div class="header__acciones" id="header-acciones">
-      <a href="${base}pages/reservas.html" class="btn btn--contorno btn--sm" id="btn-reservar">Reservar visita</a>
-      <a href="${base}pages/login.html"    class="btn btn--primario btn--sm" id="btn-login">Ingresar</a>
+      <a href="${base}pages/reservas.html" class="btn btn--fantasma btn--sm" id="btn-reservar">Reservar visita</a>
+      <a href="${base}pages/login.html"    class="btn btn--fantasma btn--sm" style="background: var(--color-fondo);" id="btn-login">Ingresar</a>
       <button class="hamburguesa" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-movil">
         <span></span><span></span><span></span>
       </button>
@@ -142,9 +142,9 @@ function pintarEstadoSesion() {
       : '';
 
     acciones.innerHTML = `
-      <span class="sesion-chip" title="${usuario.correo || ''}">👤 ${primerNombre}</span>
-      ${enlaceAdmin}
-      <button class="btn btn--primario btn--sm" onclick="cerrarSesion()">Cerrar sesión</button>
+      <span class="sesion-chip" title="${usuario.correo || ''}" style="color: var(--color-fondo); border-color: rgba(13,32,73,0.3);">👤 ${primerNombre}</span>
+      ${enlaceAdmin ? enlaceAdmin.replace('btn--contorno', 'btn--fantasma') : ''}
+      <button class="btn btn--fantasma btn--sm" style="background: var(--color-fondo);" onclick="cerrarSesion()">Cerrar sesión</button>
       ${hamburguesaHTML}`;
 
     if (accionesMovil) {
@@ -156,8 +156,8 @@ function pintarEstadoSesion() {
     }
   } else {
     acciones.innerHTML = `
-      <a href="${base}pages/reservas.html" class="btn btn--contorno btn--sm" id="btn-reservar">Reservar visita</a>
-      <a href="${base}pages/login.html"    class="btn btn--primario btn--sm" id="btn-login">Ingresar</a>
+      <a href="${base}pages/reservas.html" class="btn btn--fantasma btn--sm" id="btn-reservar">Reservar visita</a>
+      <a href="${base}pages/login.html"    class="btn btn--fantasma btn--sm" style="background: var(--color-fondo);" id="btn-login">Ingresar</a>
       ${hamburguesaHTML}`;
   }
 }
