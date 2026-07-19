@@ -45,7 +45,7 @@
     }
     .auth-tabs {
       display: flex;
-      background: rgba(10,26,60,.6);
+      background: rgba(26, 26, 26,.6);
       border-radius: 1rem;
       padding: .25rem;
       margin-bottom: 2rem;
@@ -168,10 +168,10 @@
         <!-- Indicador de fortaleza -->
         <div style="margin-bottom:1.25rem;">
           <div style="display:flex;gap:.3rem;margin-bottom:.25rem;" id="strength-bars">
-            <div style="height:4px;flex:1;border-radius:2px;background:rgba(122, 186, 88,.15);" class="sbar"></div>
-            <div style="height:4px;flex:1;border-radius:2px;background:rgba(122, 186, 88,.15);" class="sbar"></div>
-            <div style="height:4px;flex:1;border-radius:2px;background:rgba(122, 186, 88,.15);" class="sbar"></div>
-            <div style="height:4px;flex:1;border-radius:2px;background:rgba(122, 186, 88,.15);" class="sbar"></div>
+            <div style="height:4px;flex:1;border-radius:2px;background:rgba(140, 115, 85,.15);" class="sbar"></div>
+            <div style="height:4px;flex:1;border-radius:2px;background:rgba(140, 115, 85,.15);" class="sbar"></div>
+            <div style="height:4px;flex:1;border-radius:2px;background:rgba(140, 115, 85,.15);" class="sbar"></div>
+            <div style="height:4px;flex:1;border-radius:2px;background:rgba(140, 115, 85,.15);" class="sbar"></div>
           </div>
           <div style="font-size:.75rem;color:var(--color-texto-3);" id="strength-label">Escribe una contraseña</div>
         </div>
@@ -219,7 +219,7 @@ document.getElementById('reg-password').addEventListener('input', e => {
   const colores = ['#E06060','#E0A040','#60C080','#4090E0'];
   const niveles = [val.length >= 8, /[A-Z]/.test(val), /[0-9]/.test(val), /[^A-Za-z0-9]/.test(val)];
   const nivel = niveles.filter(Boolean).length;
-  bars.forEach((b, i) => { b.style.background = i < nivel ? colores[nivel-1] : 'rgba(122, 186, 88,.15)'; });
+  bars.forEach((b, i) => { b.style.background = i < nivel ? colores[nivel-1] : 'rgba(140, 115, 85,.15)'; });
   const etiquetas = ['','Débil','Moderada','Fuerte','Muy fuerte'];
   document.getElementById('strength-label').textContent = etiquetas[nivel] || 'Escribe una contraseña';
 });

@@ -66,13 +66,12 @@ function generarHeader() {
   return `
 <header class="header" role="banner">
   <div class="container header__inner">
-    <div style="display: flex; align-items: center; gap: 1rem;">
+    <div style="display: flex; align-items: center; gap: 1rem; background: rgba(140, 115, 85, 0.65); padding: 0.5rem 1.5rem; border-radius: 1rem; backdrop-filter: blur(8px);">
       <a href="${base}index.html" aria-label="Ir al inicio" style="display: flex; align-items: center; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
-        <img src="${base}assets/img/logo-museo.png" alt="Logo Museo Piedra Pintada" style="height: 58px; width: auto; object-fit: contain;">
+        <img src="${base}assets/img/logo-museo.png" alt="Logo Museo Piedra Pintada" style="height: 75px; width: auto; object-fit: contain;">
       </a>
-      <img src="${base}assets/img/logo-carabobo.png" alt="Logo Carabobo Te Quiero" style="height: 58px; width: auto; object-fit: contain;">
       
-      <div class="logo__texto" style="border-left: 1px solid var(--glass-border); padding-left: 1rem;">
+      <div class="logo__texto" style="border-left: 1px solid rgba(255, 255, 255, 0.3); padding-left: 1rem; margin-left: 0.5rem;">
         <span class="logo__nombre">Piedra Pintada</span>
         <span class="logo__subtitulo">Museo Arqueológico</span>
       </div>
@@ -142,7 +141,7 @@ function pintarEstadoSesion() {
       : '';
 
     acciones.innerHTML = `
-      <span class="sesion-chip" title="${usuario.correo || ''}" style="color: var(--color-fondo); border-color: rgba(13,32,73,0.3);">${primerNombre}</span>
+      <span class="sesion-chip" title="${usuario.correo || ''}" style="color: var(--color-fondo); border-color: rgba(18, 18, 18,0.3);">${primerNombre}</span>
       ${enlaceAdmin ? enlaceAdmin.replace('btn--contorno', 'btn--fantasma') : ''}
       <button class="btn btn--fantasma btn--sm" style="background: var(--color-fondo);" onclick="cerrarSesion()">Cerrar sesión</button>
       ${hamburguesaHTML}`;

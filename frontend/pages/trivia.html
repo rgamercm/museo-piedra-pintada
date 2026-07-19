@@ -24,7 +24,7 @@
       box-shadow: var(--shadow-lg), var(--shadow-gold);
     }
     .trivia-header {
-      background: linear-gradient(135deg, rgba(122, 186, 88,0.15), rgba(10,79,147,0.25));
+      background: linear-gradient(135deg, rgba(140, 115, 85,0.15), rgba(10,79,147,0.25));
       border-bottom: 1px solid var(--glass-border);
       padding: 1.5rem 2rem;
       display: flex;
@@ -52,8 +52,8 @@
     .opcion-btn {
       width: 100%;
       padding: 1rem 1.25rem;
-      background: rgba(18, 40, 90,0.5);
-      border: 2px solid rgba(122, 186, 88,.2);
+      background: rgba(38, 38, 38,0.5);
+      border: 2px solid rgba(140, 115, 85,.2);
       border-radius: 1rem;
       color: var(--color-texto);
       font-size: .95rem;
@@ -66,8 +66,8 @@
       font-family: var(--font-cuerpo);
     }
     .opcion-btn:hover:not(:disabled) {
-      border-color: rgba(122, 186, 88,.5);
-      background: rgba(122, 186, 88,.08);
+      border-color: rgba(140, 115, 85,.5);
+      background: rgba(140, 115, 85,.08);
       transform: translateX(4px);
     }
     .opcion-btn.correcta {
@@ -87,8 +87,8 @@
     .opcion-letra {
       width: 32px; height: 32px;
       border-radius: .5rem;
-      background: rgba(122, 186, 88,.15);
-      border: 1px solid rgba(122, 186, 88,.3);
+      background: rgba(140, 115, 85,.15);
+      border: 1px solid rgba(140, 115, 85,.3);
       display: flex; align-items: center; justify-content: center;
       font-weight: 700; font-size: .85rem;
       color: var(--color-dorado-claro);
@@ -113,7 +113,7 @@
     .puntaje-circulo {
       width: 160px; height: 160px;
       border-radius: 50%;
-      background: conic-gradient(var(--color-dorado) 0% var(--p, 0%), rgba(122, 186, 88,.15) var(--p, 0%) 100%);
+      background: conic-gradient(var(--color-dorado) 0% var(--p, 0%), rgba(140, 115, 85,.15) var(--p, 0%) 100%);
       display: flex; align-items: center; justify-content: center;
       margin: 0 auto 1.5rem;
       position: relative;
@@ -316,7 +316,7 @@ function responder(indice) {
   document.querySelectorAll('.opcion-btn').forEach(btn => btn.disabled = true);
   if (indice >= 0) {
     document.getElementById(`opcion-${indice}`).style.borderColor = 'var(--color-dorado-claro)';
-    document.getElementById(`opcion-${indice}`).style.background = 'rgba(122, 186, 88,.15)';
+    document.getElementById(`opcion-${indice}`).style.background = 'rgba(140, 115, 85,.15)';
   }
 
   document.getElementById('feedback-texto').innerHTML = `<span style="color:var(--color-texto-2);">Respuesta registrada.</span>`;
