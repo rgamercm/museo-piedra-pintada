@@ -73,8 +73,8 @@ function generarHeader() {
       </a>
       
       <div class="logo__texto" style="border-left: 1px solid rgba(255, 255, 255, 0.3); padding-left: 1rem; margin-left: 0.5rem;">
-        <span class="logo__nombre">Piedra Pintada</span>
-        <span class="logo__subtitulo">Museo Arqueológico</span>
+        <span class="logo__nombre" style="font-weight: normal;">Museo Parque Arqueológico</span>
+        <span class="logo__subtitulo" style="font-weight: bold;">Piedra Pintada</span>
       </div>
     </div>
 
@@ -83,8 +83,8 @@ function generarHeader() {
     </nav>
 
     <div class="header__acciones" id="header-acciones">
-      <a href="${base}pages/reservas.html" class="btn btn--fantasma btn--sm" id="btn-reservar">Reservar visita</a>
-      <a href="${base}pages/login.html"    class="btn btn--fantasma btn--sm" style="background: var(--color-fondo);" id="btn-login">Ingresar</a>
+      <a href="${base}pages/reservas.html" class="btn btn--primario btn--sm" id="btn-reservar">Reservar visita</a>
+      <a href="${base}pages/login.html"    class="btn btn--contorno btn--sm" style="color: white; border-color: rgba(255,255,255,0.4);" id="btn-login">Ingresar</a>
       <button class="hamburguesa" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-movil">
         <span></span><span></span><span></span>
       </button>
@@ -156,8 +156,8 @@ function pintarEstadoSesion() {
     }
   } else {
     acciones.innerHTML = `
-      <a href="${base}pages/reservas.html" class="btn btn--fantasma btn--sm" id="btn-reservar">Reservar visita</a>
-      <a href="${base}pages/login.html"    class="btn btn--fantasma btn--sm" style="background: var(--color-fondo);" id="btn-login">Ingresar</a>
+      <a href="${base}pages/reservas.html" class="btn btn--primario btn--sm" id="btn-reservar">Reservar visita</a>
+      <a href="${base}pages/login.html"    class="btn btn--contorno btn--sm" style="color: white; border-color: rgba(255,255,255,0.4);" id="btn-login">Ingresar</a>
       ${hamburguesaHTML}`;
   }
 }
@@ -174,8 +174,8 @@ function generarFooter() {
         <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;">
           <div class="logo__icono" aria-hidden="true"></div>
           <div class="logo__texto">
-            <span class="logo__nombre">Piedra Pintada</span>
-            <span class="logo__subtitulo">Museo Arqueológico</span>
+            <span class="logo__nombre" style="font-weight: normal;">Museo Parque Arqueológico</span>
+            <span class="logo__subtitulo" style="font-weight: bold;">Piedra Pintada</span>
           </div>
         </div>
         <p class="footer__descripcion">

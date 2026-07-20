@@ -312,12 +312,15 @@ h6 { font-size: var(--text-base); }
 
 .nav__enlace {
   position: relative;
+  display: flex;
+  align-items: center;
   font-size: var(--text-sm);
   font-weight: 500;
   color: var(--color-texto-2);
   padding: var(--sp-2) var(--sp-3);
   border-radius: var(--radius-md);
   letter-spacing: 0.03em;
+  line-height: 1.2;
   transition: color var(--dur-rapida) var(--ease-out),
               background var(--dur-rapida) var(--ease-out);
 }
@@ -436,6 +439,7 @@ h6 { font-size: var(--text-base); }
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  line-height: 1.2;
   padding: var(--sp-3) var(--sp-6);
   border-radius: var(--radius-md);
   border: none;

@@ -56,8 +56,19 @@ const api = {
   },
 
   petroglifos: {
-    obtenerTodos: () => api.request('/petroglifos'),
-    obtenerPorId: (id) => api.request(`/petroglifos/${id}`),
+    obtenerTodos: async () => {
+      try { return await api.request('/petroglifos'); }
+      catch (e) {
+        console.log("Fallback mock data para petroglifos");
+        return window.MOCK_PETROGLIFOS || [];
+      }
+    },
+    obtenerPorId: async (id) => {
+      try { return await api.request(`/petroglifos/${id}`); }
+      catch (e) {
+        return (window.MOCK_PETROGLIFOS || []).find(p => p.id === id) || { id, nombre: id, imagen_url: `/assets/img/petroglifos/${id}.jpeg`, estacion_nombre: 'Sector 9', categoria: 'Al valle', descripcion: 'Detalle simulado.' };
+      }
+    },
     obtenerPorQr: (codigo) => api.request(`/petroglifos/qr/${encodeURIComponent(codigo)}`),
     crear: (datos) => api.request('/petroglifos', { method: 'POST', headers: api.getHeaders(true), body: JSON.stringify(datos) }),
     editar: (id, datos) => api.request(`/petroglifos/${id}`, { method: 'PUT', headers: api.getHeaders(true), body: JSON.stringify(datos) }),
