@@ -686,12 +686,7 @@ async function eliminarTrivia(id) {
       window.Museo?.mostrarToast('Pregunta eliminada', 'exito');
       cargarTriviaAdmin();
     } catch (error) {
-      console.error(error);
-    }
-  }
-}
-
-// Hook de cambio de sección global
+// Hook de cambio de seccion global
 window.cambiarSeccion = function(id) {
   if(id === 'petroglifos') cargarPetroglifos();
   if(id === 'reservas') cargarReservas();
@@ -699,4 +694,156 @@ window.cambiarSeccion = function(id) {
   if(id === 'preguntas-admin') cargarPreguntasAdmin();
   if(id === 'noticias-admin') cargarNoticiasAdmin();
   if(id === 'trivia-admin') cargarTriviaAdmin();
+  if(id === 'editor-mapa') inicializarMapaAdmin();
 }
+
+// -----------------------------------------------------
+// LÓGICA DEL EDITOR DE MAPA ADMIN
+// -----------------------------------------------------
+let mapaAdmin = null;
+let capaRutaAdmin = null;
+let marcadorTemporalAdmin = null;
+let estacionesDatosAdmin = [];
+
+async function inicializarMapaAdmin() {
+  if (mapaAdmin) {
+    setTimeout(() => mapaAdmin.invalidateSize(), 300);
+    return;
+  }
+
+  mapaAdmin = L.map('mapa-editor').setView([10.3009, -67.8877], 16);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '© OpenStreetMap © CARTO', maxZoom: 19
+  }).addTo(mapaAdmin);
+
+  setTimeout(() => mapaAdmin.invalidateSize(), 300);
+
+  try {
+    const resGeo = await fetch('../../assets/data/track.geojson');
+    if (resGeo.ok) {
+      const geojson = await resGeo.json();
+      capaRutaAdmin = L.geoJSON(geojson, { style: { color: '#7ABA58', weight: 4, opacity: 0.6 } }).addTo(mapaAdmin);
+      mapaAdmin.fitBounds(capaRutaAdmin.getBounds());
+    }
+
+    await cargarMarcadoresAdmin();
+  } catch(e) {
+    console.error('Error al inicializar editor de mapa:', e);
+  }
+
+  mapaAdmin.on('click', onMapClickAdmin);
+
+  document.getElementById('btn-mi-pos-mapa').addEventListener('click', () => {
+    if (capaRutaAdmin) mapaAdmin.fitBounds(capaRutaAdmin.getBounds());
+  });
+}
+
+async function cargarMarcadoresAdmin() {
+  mapaAdmin.eachLayer(layer => {
+    if (layer instanceof L.Marker) {
+      mapaAdmin.removeLayer(layer);
+    }
+  });
+
+  estacionesDatosAdmin = await window.api.estaciones.obtenerTodas();
+  
+  estacionesDatosAdmin.forEach(est => {
+    if (!est.lat || !est.lng) return;
+    
+    let color = '#35882F'; 
+    if (est.tipo_marcador === 'parada') color = '#e6a23c';
+    if (est.tipo_marcador === 'continuar') color = '#409eff';
+    
+    const icono = L.divIcon({
+      className: '',
+      html: `<div style="width:24px;height:24px;border-radius:50%;background:${color};border:2px solid rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:white;box-shadow:0 2px 8px rgba(0,0,0,.6);">${est.tipo_marcador === 'parada' ? 'P' : (est.tipo_marcador === 'continuar' ? '→' : '★')}</div>`,
+      iconSize:[24,24], iconAnchor:[12,12]
+    });
+    
+    L.marker([est.lat, est.lng], { icon: icono }).addTo(mapaAdmin)
+      .bindPopup(`<b>${est.nombre}</b><br><span style="font-size:11px;color:#888;">${est.tipo_marcador}</span><br>
+        <button onclick="eliminarMarcadorAdmin(${est.id})" style="margin-top:5px;background:#c33;color:white;border:none;padding:3px 6px;border-radius:4px;cursor:pointer;">Eliminar</button>`);
+  });
+}
+
+async function onMapClickAdmin(e) {
+  if (marcadorTemporalAdmin) {
+    mapaAdmin.removeLayer(marcadorTemporalAdmin);
+  }
+
+  const lat = e.latlng.lat;
+  const lng = e.latlng.lng;
+  marcadorTemporalAdmin = L.marker([lat, lng]).addTo(mapaAdmin);
+  
+  const petros = await window.api.petroglifos.obtenerTodos();
+  const opcionesPetros = petros.map(p => `<option value="${p.id}">${p.nombre} (${p.codigo_roca})</option>`).join('');
+
+  const html = `
+    <div style="min-width:200px;">
+      <h3 style="margin-top:0;font-size:1rem;">Nuevo Marcador</h3>
+      <div class="form-grupo" style="margin-bottom:8px;">
+        <label style="display:block;font-size:0.8rem;">Nombre / Etiqueta</label>
+        <input type="text" id="nuevo-marcador-nombre" placeholder="Ej: Mirador" style="width:100%;padding:4px;">
+      </div>
+      <div class="form-grupo" style="margin-bottom:8px;">
+        <label style="display:block;font-size:0.8rem;">Tipo</label>
+        <select id="nuevo-marcador-tipo" style="width:100%;padding:4px;" onchange="document.getElementById('caja-petro').style.display = this.value === 'petroglifo' ? 'block' : 'none'">
+          <option value="parada">Parada / Descanso</option>
+          <option value="continuar">Dirección / Siga</option>
+          <option value="petroglifo">Petroglifo</option>
+        </select>
+      </div>
+      <div class="form-grupo" id="caja-petro" style="display:none;margin-bottom:8px;">
+        <label style="display:block;font-size:0.8rem;">Vincular Petroglifo</label>
+        <select id="nuevo-marcador-petro_id" style="width:100%;padding:4px;">
+          <option value="">Seleccione...</option>
+          ${opcionesPetros}
+        </select>
+      </div>
+      <button onclick="guardarMarcadorAdmin(${lat}, ${lng})" class="btn btn--primario btn--sm" style="width:100%;">Guardar Punto</button>
+    </div>
+  `;
+
+  marcadorTemporalAdmin.bindPopup(html).openPopup();
+}
+
+window.guardarMarcadorAdmin = async function(lat, lng) {
+  const nombre = document.getElementById('nuevo-marcador-nombre').value;
+  const tipo = document.getElementById('nuevo-marcador-tipo').value;
+  const petroglifo_id = document.getElementById('nuevo-marcador-petro_id').value;
+
+  if (!nombre) {
+    window.Museo?.mostrarToast('El nombre es obligatorio', 'error');
+    return;
+  }
+
+  const datos = {
+    nombre,
+    descripcion: `Marcador de tipo ${tipo}`,
+    latitud: lat,
+    longitud: lng,
+    tipo_marcador: tipo,
+    petroglifo_id: (tipo === 'petroglifo' && petroglifo_id) ? parseInt(petroglifo_id) : null
+  };
+
+  try {
+    await window.api.estaciones.crear(datos);
+    window.Museo?.mostrarToast('Marcador guardado', 'exito');
+    mapaAdmin.closePopup();
+    if (marcadorTemporalAdmin) mapaAdmin.removeLayer(marcadorTemporalAdmin);
+    await cargarMarcadoresAdmin();
+  } catch(e) {
+    window.Museo?.mostrarToast('Error al guardar', 'error');
+  }
+};
+
+window.eliminarMarcadorAdmin = async function(id) {
+  if(!confirm('¿Seguro que deseas eliminar este marcador?')) return;
+  try {
+    await window.api.estaciones.eliminar(id);
+    window.Museo?.mostrarToast('Eliminado', 'exito');
+    await cargarMarcadoresAdmin();
+  } catch(e) {
+    window.Museo?.mostrarToast('Error al eliminar', 'error');
+  }
+};
