@@ -59,10 +59,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       est.completada = historial.includes(est.petroglifo_id);
       if (!est.lat || !est.lng) return;
       
-      const color = est.completada ? '#60C080' : '#35882F';
+      let color = '#35882F'; // Verde por defecto (Pendiente)
+      if (est.completada) color = '#60C080';
+      if (est.tipo_marcador === 'parada') color = '#e6a23c'; // Naranja
+      if (est.tipo_marcador === 'continuar') color = '#409eff'; // Azul
+      
+      const char = est.tipo_marcador === 'parada' ? 'P' : (est.tipo_marcador === 'continuar' ? '→' : (est.orden || est.id));
+
       const icono = L.divIcon({
         className: '',
-        html: `<div style="width:30px;height:30px;border-radius:50%;background:${color};border:2px solid rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:${est.completada?'#1a1a1a':'white'};box-shadow:0 2px 8px rgba(0,0,0,.6);">${est.orden || est.id}</div>`,
+        html: `<div style="width:30px;height:30px;border-radius:50%;background:${color};border:2px solid rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;box-shadow:0 2px 8px rgba(0,0,0,.6);">${char}</div>`,
         iconSize:[30,30], iconAnchor:[15,15]
       });
       
@@ -166,21 +172,78 @@ function comprobarProximidad(lat, lng) {
   estacionActualNarrada = null;
 }
 
-// Actualizar posición del usuario en el mapa
-function actualizarPuntoUsuario(lat, lng) {
+let prevPos = null;
+
+// Matemática para pegar el GPS al sendero (Snap to route)
+function proyectarPuntoEnSegmento(px, py, ax, ay, bx, by) {
+  const dx = bx - ax;
+  const dy = by - ay;
+  if (dx === 0 && dy === 0) return { x: ax, y: ay };
+  const t = Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy)));
+  return { x: ax + t * dx, y: ay + t * dy };
+}
+
+function snapToRoute(lat, lng) {
+  if (!geojsonCoords || geojsonCoords.length < 2) return { lat, lng };
+  let minDist = Infinity;
+  let snapped = { lat, lng };
+  
+  for (let i = 0; i < geojsonCoords.length - 1; i++) {
+    const a = { x: geojsonCoords[i][0], y: geojsonCoords[i][1] };
+    const b = { x: geojsonCoords[i+1][0], y: geojsonCoords[i+1][1] };
+    const p = { x: lng, y: lat };
+    
+    const proj = proyectarPuntoEnSegmento(p.x, p.y, a.x, a.y, b.x, b.y);
+    const distSq = (proj.x - p.x)**2 + (proj.y - p.y)**2;
+    
+    if (distSq < minDist) {
+      minDist = distSq;
+      snapped = { lat: proj.y, lng: proj.x };
+    }
+  }
+  return snapped;
+}
+
+// Actualizar posición del usuario en el mapa (Flecha direccional)
+function actualizarPuntoUsuario(rawLat, rawLng) {
+  // Aplicar Snap-to-Route
+  const { lat, lng } = snapToRoute(rawLat, rawLng);
+
+  // Calcular rotación (vector de movimiento)
+  let rotacion = 0;
+  if (prevPos) {
+    const dLng = lng - prevPos.lng;
+    const dLat = lat - prevPos.lat;
+    if (Math.abs(dLng) > 0.00001 || Math.abs(dLat) > 0.00001) {
+      rotacion = Math.atan2(dLng, dLat) * 180 / Math.PI;
+    }
+  }
+
+  const svgFlecha = `
+    <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(${rotacion}deg); transition: transform 0.3s;">
+      <circle cx="20" cy="20" r="16" fill="rgba(64,128,255,0.3)" />
+      <circle cx="20" cy="20" r="8" fill="#4080FF" stroke="white" stroke-width="2"/>
+      <polygon points="20,4 26,14 14,14" fill="#4080FF" />
+    </svg>
+  `;
+
+  const iconoNavegacion = L.divIcon({
+    className: '',
+    html: svgFlecha,
+    iconSize: [40, 40],
+    iconAnchor: [20, 20]
+  });
+
   if (!capaUsuario) {
-    capaUsuario = L.circleMarker([lat, lng], {
-      radius: 8,
-      fillColor: '#4080FF',
-      color: '#fff',
-      weight: 2,
-      opacity: 1,
-      fillOpacity: 0.8
-    }).addTo(mapa);
+    capaUsuario = L.marker([lat, lng], { icon: iconoNavegacion }).addTo(mapa);
   } else {
     capaUsuario.setLatLng([lat, lng]);
+    capaUsuario.setIcon(iconoNavegacion);
   }
+  
+  prevPos = { lat, lng };
   comprobarProximidad(lat, lng);
+  return { lat, lng }; // Retornar coordenada corregida
 }
 
 
@@ -200,8 +263,8 @@ document.getElementById('btn-mi-pos-mapa').addEventListener('click', () => {
   window.Museo?.mostrarToast('Buscando señal GPS...', 'info');
   navigator.geolocation.watchPosition(
     pos => {
-      const {latitude:lat, longitude:lng} = pos.coords;
-      actualizarPuntoUsuario(lat, lng);
+      const {latitude:rawLat, longitude:rawLng} = pos.coords;
+      const { lat, lng } = actualizarPuntoUsuario(rawLat, rawLng);
       mapa.setView([lat, lng], 18);
     },
     err => {
@@ -242,10 +305,14 @@ document.getElementById('btn-simular-gps').addEventListener('click', () => {
     }
     
     // GeoJSON es [lng, lat]
-    const lng = geojsonCoords[indiceSimulador][0];
-    const lat = geojsonCoords[indiceSimulador][1];
+    const rawLng = geojsonCoords[indiceSimulador][0];
+    const rawLat = geojsonCoords[indiceSimulador][1];
     
-    actualizarPuntoUsuario(lat, lng);
+    // Al simulador le pasamos algo "ligeramente desviado" para probar el Snap-to-Route
+    const jitterLat = rawLat + (Math.random() - 0.5) * 0.0002;
+    const jitterLng = rawLng + (Math.random() - 0.5) * 0.0002;
+
+    const { lat, lng } = actualizarPuntoUsuario(jitterLat, jitterLng);
     
     // Mantener la cámara centrada suavemente en el usuario simulado
     mapa.panTo([lat, lng]);

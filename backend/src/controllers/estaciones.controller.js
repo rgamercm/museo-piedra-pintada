@@ -39,13 +39,13 @@ async function buscarPorQr(req, res, next) {
 
 async function crear(req, res, next) {
   try {
-    const { nombre, descripcion, latitud, longitud, petroglifo_id } = req.body;
+    const { nombre, descripcion, latitud, longitud, petroglifo_id, tipo_marcador } = req.body;
     
     const { rows } = await db.query(
-      `INSERT INTO estaciones (nombre, descripcion, latitud, longitud, petroglifo_id)
-       VALUES ($1, $2, $3, $4, $5)
+      `INSERT INTO estaciones (nombre, descripcion, latitud, longitud, petroglifo_id, tipo_marcador)
+       VALUES ($1, $2, $3, $4, $5, $6)
        RETURNING *`,
-      [nombre, descripcion, latitud, longitud, petroglifo_id || null]
+      [nombre, descripcion, latitud, longitud, petroglifo_id || null, tipo_marcador || 'petroglifo']
     );
     
     return creado(res, rows[0]);
@@ -57,14 +57,14 @@ async function crear(req, res, next) {
 async function editar(req, res, next) {
   try {
     const { id } = req.params;
-    const { nombre, descripcion, latitud, longitud, petroglifo_id } = req.body;
+    const { nombre, descripcion, latitud, longitud, petroglifo_id, tipo_marcador } = req.body;
     
     const { rows } = await db.query(
       `UPDATE estaciones
-       SET nombre = $1, descripcion = $2, latitud = $3, longitud = $4, petroglifo_id = $5
-       WHERE id = $6
+       SET nombre = $1, descripcion = $2, latitud = $3, longitud = $4, petroglifo_id = $5, tipo_marcador = $6
+       WHERE id = $7
        RETURNING *`,
-      [nombre, descripcion, latitud, longitud, petroglifo_id || null, id]
+      [nombre, descripcion, latitud, longitud, petroglifo_id || null, tipo_marcador || 'petroglifo', id]
     );
     
     if (!rows[0]) return error(res, 'Estación no encontrada.', 404);

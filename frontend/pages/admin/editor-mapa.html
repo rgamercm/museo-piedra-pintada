@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editor de Mapa — Panel de Control</title>
+  <link rel="stylesheet" href="../../css/estilos.css?v=4.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    .admin-layout { display: flex; min-height: 100vh; }
+    .admin-sidebar { width: 250px; background: var(--bg-card); border-right: 1px solid var(--glass-border); padding: 1.5rem; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+    .admin-main { flex: 1; display: flex; flex-direction: column; height: 100vh; }
+    #mapa-editor { flex: 1; width: 100%; border:none; border-left: 1px solid var(--glass-border); }
+    
+    .sidebar-menu { list-style: none; padding: 0; margin: 2rem 0; }
+    .sidebar-menu li { margin-bottom: 0.5rem; }
+    .sidebar-menu a { display: block; padding: 0.75rem 1rem; color: var(--color-texto); text-decoration: none; border-radius: 0.5rem; transition: background 0.2s; }
+    .sidebar-menu a:hover { background: rgba(122,186,88,0.1); color: var(--color-verde); }
+    .sidebar-menu a.activo { background: var(--color-verde); color: white; }
+
+    .leaflet-popup-content-wrapper { background: var(--bg-card); color: var(--color-texto); border: 1px solid var(--glass-border); border-radius: 8px; }
+    .leaflet-popup-tip { background: var(--bg-card); border: 1px solid var(--glass-border); }
+    .form-grupo { margin-bottom: 10px; }
+    .form-grupo label { display: block; font-size: 0.8rem; margin-bottom: 4px; color: var(--color-texto-2); }
+    .form-grupo input, .form-grupo select { width: 100%; padding: 6px; border-radius: 4px; border: 1px solid var(--glass-border); background: var(--bg-input); color: var(--color-texto); font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+<div class="bg-texture" aria-hidden="true"></div>
+
+<div class="admin-layout">
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <a href="../../index.html" style="text-decoration:none;">
+      <h2 style="font-size:1.2rem;color:var(--color-dorado-claro);margin:0;">Piedra Pintada</h2>
+      <p style="font-size:0.75rem;color:var(--color-texto-2);margin:0;">Panel de Control</p>
+    </a>
+    
+    <ul class="sidebar-menu">
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="petroglifos.html">Petroglifos</a></li>
+      <li><a href="noticias.html">Noticias</a></li>
+      <li><a href="editor-mapa.html" class="activo">Editor de Mapa</a></li>
+    </ul>
+
+    <div style="margin-top:auto; font-size: 0.85rem;">
+      <p>Modo Editor de Mapa:</p>
+      <ul style="color:var(--color-texto-2); padding-left: 1rem;">
+        <li>Haz clic en el mapa para añadir un nuevo punto.</li>
+        <li>Selecciona si es Parada, Continuar o Petroglifo.</li>
+        <li>Si es un petroglifo, ingresa su ID.</li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+    <div style="padding: 1rem 1.5rem; background: var(--bg-card); border-bottom: 1px solid var(--glass-border); display:flex; justify-content:space-between; align-items:center;">
+      <h1 style="margin:0; font-size:1.3rem;">Editor de Rutas (Puntos de Interés)</h1>
+      <button class="btn btn--contorno btn--sm" id="btn-mi-pos-mapa">Centrar Mapa</button>
+    </div>
+    <div id="mapa-editor"></div>
+  </main>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="../../js/componentes.js?v=4.0"></script>
+<script src="../../js/api.js?v=4.0"></script>
+<script>
+'use strict';
+
+let mapa, capaRuta, marcadorTemporal;
+let estacionesDatos = [];
+let petroglifosDatos = [];
+
+document.addEventListener('DOMContentLoaded', async () => {
+  if (!window.api.auth.obtenerToken()) {
+    window.location.href = '../login.html';
+    return;
+  }
+
+  mapa = L.map('mapa-editor').setView([10.3009, -67.8877], 16);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '© OpenStreetMap © CARTO', maxZoom: 19
+  }).addTo(mapa);
+
+  try {
+    // 1. Cargar GeoJSON de la ruta
+    const resGeo = await fetch('../../assets/data/track.geojson');
+    if (resGeo.ok) {
+      const geojson = await resGeo.json();
+      capaRuta = L.geoJSON(geojson, { style: { color: '#7ABA58', weight: 4, opacity: 0.6 } }).addTo(mapa);
+      mapa.fitBounds(capaRuta.getBounds());
+    }
+
+    // 2. Cargar petroglifos para el selector
+    petroglifosDatos = await window.api.petroglifos.obtenerTodos();
+
+    // 3. Cargar estaciones (marcadores existentes)
+    await cargarMarcadores();
+
+  } catch(e) {
+    console.error('Error al inicializar editor:', e);
+  }
+
+  // Evento de clic en el mapa para añadir puntos
+  mapa.on('click', onMapClick);
+});
+
+async function cargarMarcadores() {
+  // Limpiar marcadores anteriores excepto la ruta (simplificado recargando todo)
+  mapa.eachLayer(layer => {
+    if (layer instanceof L.Marker) {
+      mapa.removeLayer(layer);
+    }
+  });
+
+  estacionesDatos = await window.api.estaciones.obtenerTodas();
+  
+  estacionesDatos.forEach(est => {
+    if (!est.lat || !est.lng) return;
+    
+    let color = '#35882F'; // verde
+    if (est.tipo_marcador === 'parada') color = '#e6a23c'; // naranja
+    if (est.tipo_marcador === 'continuar') color = '#409eff'; // azul
+    
+    const icono = L.divIcon({
+      className: '',
+      html: `<div style="width:24px;height:24px;border-radius:50%;background:${color};border:2px solid rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:white;box-shadow:0 2px 8px rgba(0,0,0,.6);">${est.tipo_marcador === 'parada' ? 'P' : (est.tipo_marcador === 'continuar' ? '→' : '★')}</div>`,
+      iconSize:[24,24], iconAnchor:[12,12]
+    });
+    
+    L.marker([est.lat, est.lng], { icon: icono }).addTo(mapa)
+      .bindPopup(`<b>${est.nombre}</b><br><span style="font-size:11px;color:#888;">${est.tipo_marcador}</span><br>
+        <button onclick="eliminarMarcador(${est.id})" style="margin-top:5px;background:#c33;color:white;border:none;padding:3px 6px;border-radius:4px;cursor:pointer;">Eliminar</button>`);
+  });
+}
+
+function onMapClick(e) {
+  if (marcadorTemporal) {
+    mapa.removeLayer(marcadorTemporal);
+  }
+
+  const lat = e.latlng.lat;
+  const lng = e.latlng.lng;
+
+  marcadorTemporal = L.marker([lat, lng]).addTo(mapa);
+  
+  // Opciones de petroglifos
+  const opcionesPetros = petroglifosDatos.map(p => `<option value="${p.id}">${p.nombre} (${p.codigo_roca})</option>`).join('');
+
+  const html = `
+    <div style="min-width:200px;">
+      <h3 style="margin-top:0;font-size:1rem;">Nuevo Marcador</h3>
+      <div class="form-grupo">
+        <label>Nombre / Etiqueta</label>
+        <input type="text" id="nuevo-marcador-nombre" placeholder="Ej: Mirador Sur">
+      </div>
+      <div class="form-grupo">
+        <label>Tipo</label>
+        <select id="nuevo-marcador-tipo" onchange="document.getElementById('caja-petro').style.display = this.value === 'petroglifo' ? 'block' : 'none'">
+          <option value="parada">Parada / Descanso</option>
+          <option value="continuar">Dirección / Siga</option>
+          <option value="petroglifo">Petroglifo</option>
+        </select>
+      </div>
+      <div class="form-grupo" id="caja-petro" style="display:none;">
+        <label>Vincular Petroglifo</label>
+        <select id="nuevo-marcador-petro_id">
+          <option value="">Seleccione...</option>
+          ${opcionesPetros}
+        </select>
+      </div>
+      <button onclick="guardarMarcador(${lat}, ${lng})" class="btn btn--primario btn--sm" style="width:100%;margin-top:8px;">Guardar Punto</button>
+    </div>
+  `;
+
+  marcadorTemporal.bindPopup(html).openPopup();
+}
+
+window.guardarMarcador = async function(lat, lng) {
+  const nombre = document.getElementById('nuevo-marcador-nombre').value;
+  const tipo = document.getElementById('nuevo-marcador-tipo').value;
+  const petroglifo_id = document.getElementById('nuevo-marcador-petro_id').value;
+
+  if (!nombre) {
+    window.Museo?.mostrarToast('El nombre es obligatorio', 'error');
+    return;
+  }
+
+  const datos = {
+    nombre,
+    descripcion: `Marcador de tipo ${tipo}`,
+    latitud: lat,
+    longitud: lng,
+    tipo_marcador: tipo,
+    petroglifo_id: (tipo === 'petroglifo' && petroglifo_id) ? parseInt(petroglifo_id) : null
+  };
+
+  try {
+    await window.api.estaciones.crear(datos);
+    window.Museo?.mostrarToast('Marcador guardado con éxito', 'exito');
+    mapa.closePopup();
+    if (marcadorTemporal) mapa.removeLayer(marcadorTemporal);
+    await cargarMarcadores();
+  } catch(e) {
+    window.Museo?.mostrarToast('Error al guardar marcador', 'error');
+    console.error(e);
+  }
+};
+
+window.eliminarMarcador = async function(id) {
+  if(!confirm('¿Seguro que deseas eliminar este marcador?')) return;
+  try {
+    await window.api.estaciones.eliminar(id);
+    window.Museo?.mostrarToast('Eliminado correctamente', 'exito');
+    await cargarMarcadores();
+  } catch(e) {
+    window.Museo?.mostrarToast('Error al eliminar', 'error');
+  }
+};
+
+document.getElementById('btn-mi-pos-mapa').addEventListener('click', () => {
+  if (capaRuta) mapa.fitBounds(capaRuta.getBounds());
+});
+
+</script>
+</body>
+</html>
