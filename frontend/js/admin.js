@@ -792,7 +792,7 @@ async function cargarMarcadoresAdmin() {
   estacionesDatosAdmin = await window.api.estaciones.obtenerTodas();
   
   estacionesDatosAdmin.forEach(est => {
-    if (!est.lat || !est.lng) return;
+    if (!est.latitud || !est.longitud) return;
     
     let color = '#35882F'; 
     if (est.tipo_marcador === 'parada') color = '#e6a23c';
@@ -804,7 +804,7 @@ async function cargarMarcadoresAdmin() {
       iconSize:[24,24], iconAnchor:[12,12]
     });
     
-    L.marker([est.lat, est.lng], { icon: icono }).addTo(mapaAdmin)
+    L.marker([est.latitud, est.longitud], { icon: icono }).addTo(mapaAdmin)
       .bindPopup(`<b>${est.nombre}</b><br><span style="font-size:11px;color:#888;">${est.tipo_marcador}</span><br>
         <button onclick="eliminarMarcadorAdmin(${est.id})" style="margin-top:5px;background:#c33;color:white;border:none;padding:3px 6px;border-radius:4px;cursor:pointer;">Eliminar</button>`);
   });
