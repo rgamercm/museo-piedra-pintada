@@ -283,3 +283,14 @@ window.Museo = {
   simularCarga,
   animarContador
 };
+
+// Registro del Service Worker para funcionamiento Offline
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').then(reg => {
+      console.log('ServiceWorker registrado:', reg.scope);
+    }).catch(err => {
+      console.warn('Fallo el registro del ServiceWorker:', err);
+    });
+  });
+}
