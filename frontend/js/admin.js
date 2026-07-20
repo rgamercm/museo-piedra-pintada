@@ -562,6 +562,7 @@ document.getElementById('form-noticia')?.addEventListener('submit', async (e) =>
     titulo: document.getElementById('noticia-titulo').value,
     categoria: document.getElementById('noticia-categoria').value,
     contenido: document.getElementById('noticia-contenido').value,
+    imagen_url: '',
     activa: document.getElementById('noticia-activa').value === 'true'
   };
   

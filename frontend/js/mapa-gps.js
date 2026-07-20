@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     estacionesDatos.forEach(est => {
       est.completada = historial.includes(est.petroglifo_id);
-      if (!est.lat || !est.lng) return;
+      if (!est.latitud || !est.longitud) return;
       
       let color = '#35882F'; // Verde por defecto (Pendiente)
       if (est.completada) color = '#60C080';
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         </div>
       `;
 
-      const marcador = L.marker([est.lat, est.lng], { icon: icono })
+      const marcador = L.marker([est.latitud, est.longitud], { icon: icono })
         .addTo(mapa)
         .bindPopup(popupHtml, { minWidth: 200 });
         
@@ -139,9 +139,9 @@ function calcularDistancia(lat1, lon1, lat2, lon2) {
 // Verifica si estamos cerca de alguna estación (< 15 metros)
 function comprobarProximidad(lat, lng) {
   for (const est of estacionesDatos) {
-    if (!est.lat || !est.lng) continue;
+    if (!est.latitud || !est.longitud) continue;
     
-    const distancia = calcularDistancia(lat, lng, est.lat, est.lng);
+    const distancia = calcularDistancia(lat, lng, est.latitud, est.longitud);
     
     if (distancia <= 15) { // 15 metros de radio
       if (estacionActualNarrada !== est.id) {
@@ -155,7 +155,7 @@ function comprobarProximidad(lat, lng) {
         const marcador = marcadores[est.id];
         if (marcador) {
           marcador.openPopup();
-          mapa.panTo([est.lat, est.lng]);
+          mapa.panTo([est.latitud, est.longitud]);
         }
         
         // 3. Notificación interactiva / Voz
@@ -354,7 +354,7 @@ document.getElementById('btn-descargar-mapa-2').addEventListener('click', descar
 function renderizarGridEstaciones(estaciones) {
   const grid = document.getElementById('grid-estaciones-mapa');
   grid.innerHTML = estaciones.map(est => `
-    <button onclick="mapa.setView([${est.lat || 10.3009},${est.lng || -67.8877}],18); if(marcadores[${est.id}]) marcadores[${est.id}].openPopup();"
+    <button onclick="mapa.setView([${est.latitud || 10.3009},${est.longitud || -67.8877}],18); if(marcadores[${est.id}]) marcadores[${est.id}].openPopup();"
       style="background:var(--grad-card);border:1px solid ${est.completada?'rgba(60,160,80,.3)':'var(--glass-border)'};border-radius:.75rem;padding:.85rem;text-align:left;cursor:pointer;transition:all .2s;width:100%;font-family:inherit;"
       onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform=''"
       id="est-mapa-btn-${est.id}">
