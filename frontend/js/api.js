@@ -22,19 +22,42 @@ const api = {
     return headers;
   },
 
-  async request(endpoint, options = {}) {
+  async request(endpoint, { silent = false, ...options } = {}) {
+    const avisar = (msg) => {
+      if (!silent && window.Museo?.mostrarToast) window.Museo.mostrarToast(msg, 'error');
+    };
+
+    let res;
     try {
-      const res = await fetch(`${API_URL}${endpoint}`, options);
-      const data = await res.json();
-      if (!data.ok) throw new Error(data.error || 'Error en la petición');
-      return data.datos;
+      res = await fetch(`${API_URL}${endpoint}`, options);
     } catch (e) {
-      console.error(`API Error (${endpoint}):`, e.message);
-      if (window.Museo?.mostrarToast) {
-        window.Museo.mostrarToast(e.message, 'error');
-      }
+      // Fallo de red / CORS: no llegó respuesta.
+      console.error(`API Error (${endpoint}): sin conexión`, e.message);
+      avisar('No se pudo conectar con el servidor.');
       throw e;
     }
+
+    // Leemos como texto y parseamos con cuidado: si el servidor devuelve una
+    // página de error (HTML/texto plano, típico de un 500 en Vercel), res.json()
+    // reventaría con "Unexpected token". Así lo detectamos limpiamente.
+    const texto = await res.text();
+    let data;
+    try {
+      data = texto ? JSON.parse(texto) : {};
+    } catch (e) {
+      console.error(`API Error (${endpoint}): respuesta no-JSON (HTTP ${res.status})`);
+      avisar('El servidor no está disponible en este momento.');
+      throw new Error('Respuesta no válida del servidor');
+    }
+
+    if (!res.ok || !data.ok) {
+      const msg = data.error || `Error en la petición (${res.status})`;
+      console.error(`API Error (${endpoint}):`, msg);
+      avisar(msg);
+      throw new Error(msg);
+    }
+
+    return data.datos;
   },
 
   //  Módulos 
@@ -57,14 +80,14 @@ const api = {
 
   petroglifos: {
     obtenerTodos: async () => {
-      try { return await api.request('/petroglifos'); }
+      try { return await api.request('/petroglifos', { silent: true }); }
       catch (e) {
         console.log("Fallback mock data para petroglifos");
         return window.MOCK_PETROGLIFOS || [];
       }
     },
     obtenerPorId: async (id) => {
-      try { return await api.request(`/petroglifos/${id}`); }
+      try { return await api.request(`/petroglifos/${id}`, { silent: true }); }
       catch (e) {
         return (window.MOCK_PETROGLIFOS || []).find(p => p.id === id) || { id, nombre: id, imagen_url: `/assets/img/petroglifos/${id}.jpeg`, estacion_nombre: 'Sector 9', categoria: 'Al valle', descripcion: 'Detalle simulado.' };
       }
@@ -76,7 +99,10 @@ const api = {
   },
 
   estaciones: {
-    obtenerTodas: () => api.request('/estaciones'),
+    obtenerTodas: async () => {
+      try { return await api.request('/estaciones', { silent: true }); }
+      catch (e) { return []; }
+    },
     crear: (datos) => api.request('/estaciones', { method: 'POST', headers: api.getHeaders(true), body: JSON.stringify(datos) }),
     editar: (id, datos) => api.request(`/estaciones/${id}`, { method: 'PUT', headers: api.getHeaders(true), body: JSON.stringify(datos) }),
     eliminar: (id) => api.request(`/estaciones/${id}`, { method: 'DELETE', headers: api.getHeaders(true) })
@@ -161,8 +187,8 @@ const api = {
   },
 
   visitas: {
-    obtener: () => api.request('/visitas'),
-    incrementar: () => api.request('/visitas', { method: 'POST' })
+    obtener: () => api.request('/visitas', { silent: true }),
+    incrementar: () => api.request('/visitas', { method: 'POST', silent: true })
   }
 };
 

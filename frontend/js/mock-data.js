@@ -10,7 +10,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R2",
     "nombre": "S9R2",
-    "imagen_url": "../assets/img/petroglifos/S9R2.png",
+    "imagen_url": "../assets/img/petroglifos/S9R2.jpeg",
     "estacion_nombre": "545 m.s.n.m",
     "categoria": "al cerro, al valle",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al cerro, al valle; altitud 545 m. Al lado de la roca crece un árbol Caruto."
@@ -26,7 +26,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R4",
     "nombre": "S9R4",
-    "imagen_url": "../assets/img/petroglifos/S9R4.png",
+    "imagen_url": "../assets/img/petroglifos/S9R4.jpeg",
     "estacion_nombre": "544 m.s.n.m",
     "categoria": "al valle",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al valle; altitud 544 m."
@@ -34,7 +34,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R5",
     "nombre": "S9R5",
-    "imagen_url": "../assets/img/petroglifos/S9R5.png",
+    "imagen_url": "../assets/img/petroglifos/S9R5.jpeg",
     "estacion_nombre": "544 m.s.n.m",
     "categoria": "al valle",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al valle; altitud 544 m."
@@ -186,7 +186,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R24",
     "nombre": "S9R24",
-    "imagen_url": "../assets/img/petroglifos/S9R24.png",
+    "imagen_url": "../assets/img/petroglifos/S9R24.jpeg",
     "estacion_nombre": "522 m.s.n.m",
     "categoria": "al cerro, al valle",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al cerro, al valle; altitud 522 m."
@@ -202,7 +202,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R26",
     "nombre": "S9R26",
-    "imagen_url": "../assets/img/petroglifos/S9R26.png",
+    "imagen_url": "../assets/img/petroglifos/S9R26.jpeg",
     "estacion_nombre": "522 m.s.n.m",
     "categoria": "al cielo",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al cielo; altitud 522 m."
@@ -210,7 +210,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R27",
     "nombre": "S9R27",
-    "imagen_url": "../assets/img/petroglifos/S9R27.png",
+    "imagen_url": "../assets/img/petroglifos/S9R27.jpeg",
     "estacion_nombre": "519 m.s.n.m",
     "categoria": "al cielo",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al cielo; altitud 519 m."
@@ -258,7 +258,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R33",
     "nombre": "S9R33",
-    "imagen_url": "../assets/img/petroglifos/S9R33.png",
+    "imagen_url": "../assets/img/petroglifos/S9R33.jpeg",
     "estacion_nombre": "516 m.s.n.m",
     "categoria": "al cielo",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al cielo; altitud 516 m."
@@ -266,7 +266,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R34",
     "nombre": "S9R34",
-    "imagen_url": "../assets/img/petroglifos/S9R34.png",
+    "imagen_url": "../assets/img/petroglifos/S9R34.jpeg",
     "estacion_nombre": "517 m.s.n.m",
     "categoria": "al valle",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al valle; altitud 517 m."
@@ -282,7 +282,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R36",
     "nombre": "S9R36",
-    "imagen_url": "../assets/img/petroglifos/S9R36.png",
+    "imagen_url": "../assets/img/petroglifos/S9R36.jpeg",
     "estacion_nombre": "521 m.s.n.m",
     "categoria": "al valle",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: Sin daños registrados; 1 cara(s) grabada(s); orientado al valle; altitud 521 m."
@@ -290,7 +290,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R37",
     "nombre": "S9R37",
-    "imagen_url": "../assets/img/petroglifos/S9R37.png",
+    "imagen_url": "../assets/img/petroglifos/S9R37.jpeg",
     "estacion_nombre": "512 m.s.n.m",
     "categoria": "al cielo",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al cielo; altitud 512 m."
@@ -306,7 +306,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R39",
     "nombre": "S9R39",
-    "imagen_url": "../assets/img/petroglifos/S9R39.png",
+    "imagen_url": "../assets/img/petroglifos/S9R39.jpeg",
     "estacion_nombre": "505 m.s.n.m",
     "categoria": "al cerro, al valle, al cielo",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al cerro, al valle, al cielo; altitud 505 m."
@@ -322,7 +322,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R41",
     "nombre": "S9R41",
-    "imagen_url": "../assets/img/petroglifos/S9R41.png",
+    "imagen_url": "../assets/img/petroglifos/S9R41.jpeg",
     "estacion_nombre": "493 m.s.n.m",
     "categoria": "al cielo",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al cielo; altitud 493 m. En la superficie hay profundos huecos grabados."
@@ -370,7 +370,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R47",
     "nombre": "S9R47",
-    "imagen_url": "../assets/img/petroglifos/S9R47.png",
+    "imagen_url": "../assets/img/petroglifos/S9R47.jpeg",
     "estacion_nombre": "493 m.s.n.m",
     "categoria": "al cerro, al río",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al cerro, al río; altitud 493 m."
@@ -394,7 +394,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R50",
     "nombre": "S9R50",
-    "imagen_url": "../assets/img/petroglifos/S9R50.png",
+    "imagen_url": "../assets/img/petroglifos/S9R50.jpeg",
     "estacion_nombre": "495 m.s.n.m",
     "categoria": "al cielo",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al cielo; altitud 495 m."
@@ -402,7 +402,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R51",
     "nombre": "S9R51",
-    "imagen_url": "../assets/img/petroglifos/S9R51.png",
+    "imagen_url": "../assets/img/petroglifos/S9R51.jpeg",
     "estacion_nombre": "497 m.s.n.m",
     "categoria": "al cerro, al valle, al río, al cielo",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; orientado al cerro, al valle, al río, al cielo; altitud 497 m. Montículo 3, sector sur. Parece una pared rocosa erosionada."
@@ -426,7 +426,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R54",
     "nombre": "S9R54",
-    "imagen_url": "../assets/img/petroglifos/S9R54.png",
+    "imagen_url": "../assets/img/petroglifos/S9R54.jpeg",
     "estacion_nombre": "490 m.s.n.m",
     "categoria": "al cerro, al valle, al río",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al cerro, al valle, al río; altitud 490 m."
@@ -442,7 +442,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R56",
     "nombre": "S9R56",
-    "imagen_url": "../assets/img/petroglifos/S9R56.png",
+    "imagen_url": "../assets/img/petroglifos/S9R56.jpeg",
     "estacion_nombre": "488 m.s.n.m",
     "categoria": "al valle, al cielo",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al valle, al cielo; altitud 488 m. Una parte de la superficie está destruida."
@@ -450,7 +450,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R57",
     "nombre": "S9R57",
-    "imagen_url": "../assets/img/petroglifos/S9R57.png",
+    "imagen_url": "../assets/img/petroglifos/S9R57.jpeg",
     "estacion_nombre": "488 m.s.n.m",
     "categoria": "al cielo",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al cielo; altitud 488 m."
@@ -458,7 +458,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R58",
     "nombre": "S9R58",
-    "imagen_url": "../assets/img/petroglifos/S9R58.png",
+    "imagen_url": "../assets/img/petroglifos/S9R58.jpeg",
     "estacion_nombre": "493 m.s.n.m",
     "categoria": "al cerro, al valle, al río, al cielo",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 2 cara(s) grabada(s); orientado al cerro, al valle, al río, al cielo; altitud 493 m."
@@ -466,7 +466,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R59",
     "nombre": "S9R59",
-    "imagen_url": "../assets/img/petroglifos/S9R59.png",
+    "imagen_url": "../assets/img/petroglifos/S9R59.jpeg",
     "estacion_nombre": "489 m.s.n.m",
     "categoria": "al valle, al río, al cielo",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al valle, al río, al cielo; altitud 489 m."
@@ -474,7 +474,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R60",
     "nombre": "S9R60",
-    "imagen_url": "../assets/img/petroglifos/S9R60.png",
+    "imagen_url": "../assets/img/petroglifos/S9R60.jpeg",
     "estacion_nombre": "486 m.s.n.m",
     "categoria": "al cielo",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al cielo; altitud 486 m. Una parte de la superficie está destruida."
@@ -490,7 +490,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R62",
     "nombre": "S9R62",
-    "imagen_url": "../assets/img/petroglifos/S9R62.png",
+    "imagen_url": "../assets/img/petroglifos/S9R62.jpeg",
     "estacion_nombre": "510 m.s.n.m",
     "categoria": "al valle",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al valle; altitud 510 m. Montículo 2. Se rompió una parte de la roca."
@@ -514,7 +514,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R65",
     "nombre": "S9R65",
-    "imagen_url": "../assets/img/petroglifos/S9R65.png",
+    "imagen_url": "../assets/img/petroglifos/S9R65.jpeg",
     "estacion_nombre": "509 m.s.n.m",
     "categoria": "al cielo",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: Sin daños registrados; 1 cara(s) grabada(s); orientado al cielo; altitud 509 m."
@@ -522,7 +522,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R66",
     "nombre": "S9R66",
-    "imagen_url": "../assets/img/petroglifos/S9R66.png",
+    "imagen_url": "../assets/img/petroglifos/S9R66.jpeg",
     "estacion_nombre": "510 m.s.n.m",
     "categoria": "al cielo",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: Sin daños registrados; 3 cara(s) grabada(s); orientado al cielo; altitud 510 m. Son 3 piedras pegadas una a la otra."
@@ -530,7 +530,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R67",
     "nombre": "S9R67",
-    "imagen_url": "../assets/img/petroglifos/S9R67.png",
+    "imagen_url": "../assets/img/petroglifos/S9R67.jpeg",
     "estacion_nombre": "509 m.s.n.m",
     "categoria": "al cielo",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al cielo; altitud 509 m."
@@ -570,7 +570,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R72",
     "nombre": "S9R72",
-    "imagen_url": "../assets/img/petroglifos/S9R72.png",
+    "imagen_url": "../assets/img/petroglifos/S9R72.jpeg",
     "estacion_nombre": "498 m.s.n.m",
     "categoria": "al cerro, al valle",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al cerro, al valle; altitud 498 m. Una parte de la roca se rompió."
@@ -586,7 +586,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R74",
     "nombre": "S9R74",
-    "imagen_url": "../assets/img/petroglifos/S9R74.png",
+    "imagen_url": "../assets/img/petroglifos/S9R74.jpeg",
     "estacion_nombre": "494 m.s.n.m",
     "categoria": "al valle",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al valle; altitud 494 m. La roca no parece estar in situ."
@@ -594,7 +594,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R75",
     "nombre": "S9R75",
-    "imagen_url": "../assets/img/petroglifos/S9R75.png",
+    "imagen_url": "../assets/img/petroglifos/S9R75.jpeg",
     "estacion_nombre": "505 m.s.n.m",
     "categoria": "al valle",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al valle; altitud 505 m."
@@ -602,7 +602,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R76",
     "nombre": "S9R76",
-    "imagen_url": "../assets/img/petroglifos/S9R76.png",
+    "imagen_url": "../assets/img/petroglifos/S9R76.jpeg",
     "estacion_nombre": "508 m.s.n.m",
     "categoria": "al valle",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al valle; altitud 508 m."
@@ -682,7 +682,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R86",
     "nombre": "S9R86",
-    "imagen_url": "../assets/img/petroglifos/S9R86.png",
+    "imagen_url": "../assets/img/petroglifos/S9R86.jpeg",
     "estacion_nombre": "511 m.s.n.m",
     "categoria": "al valle",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: vandalismo, erosión; 1 cara(s) grabada(s); orientado al valle; altitud 511 m. En la superficie crece mucha vegetación."
@@ -690,7 +690,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R87",
     "nombre": "S9R87",
-    "imagen_url": "../assets/img/petroglifos/S9R87.png",
+    "imagen_url": "../assets/img/petroglifos/S9R87.jpeg",
     "estacion_nombre": "505 m.s.n.m",
     "categoria": "al valle, al cielo",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 2 cara(s) grabada(s); orientado al valle, al cielo; altitud 505 m."
@@ -698,7 +698,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R88",
     "nombre": "S9R88",
-    "imagen_url": "../assets/img/petroglifos/S9R88.png",
+    "imagen_url": "../assets/img/petroglifos/S9R88.jpeg",
     "estacion_nombre": "508 m.s.n.m",
     "categoria": "al cielo",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al cielo; altitud 508 m."
@@ -706,7 +706,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R89",
     "nombre": "S9R89",
-    "imagen_url": "../assets/img/petroglifos/S9R89.png",
+    "imagen_url": "../assets/img/petroglifos/S9R89.jpeg",
     "estacion_nombre": "503 m.s.n.m",
     "categoria": "al valle",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al valle; altitud 503 m."
@@ -714,7 +714,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R90",
     "nombre": "S9R90",
-    "imagen_url": "../assets/img/petroglifos/S9R90.png",
+    "imagen_url": "../assets/img/petroglifos/S9R90.jpeg",
     "estacion_nombre": "505 m.s.n.m",
     "categoria": "al cielo",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al cielo; altitud 505 m."
@@ -722,7 +722,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R91",
     "nombre": "S9R91",
-    "imagen_url": "../assets/img/petroglifos/S9R91.png",
+    "imagen_url": "../assets/img/petroglifos/S9R91.jpeg",
     "estacion_nombre": "504 m.s.n.m",
     "categoria": "al valle",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al valle; altitud 504 m."
@@ -738,7 +738,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R93",
     "nombre": "S9R93",
-    "imagen_url": "../assets/img/petroglifos/S9R93.png",
+    "imagen_url": "../assets/img/petroglifos/S9R93.jpeg",
     "estacion_nombre": "504 m.s.n.m",
     "categoria": "al valle",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al valle; altitud 504 m."
@@ -746,7 +746,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R94",
     "nombre": "S9R94",
-    "imagen_url": "../assets/img/petroglifos/S9R94.png",
+    "imagen_url": "../assets/img/petroglifos/S9R94.jpeg",
     "estacion_nombre": "503 m.s.n.m",
     "categoria": "al valle",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al valle; altitud 503 m."
@@ -762,7 +762,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R96",
     "nombre": "S9R96",
-    "imagen_url": "../assets/img/petroglifos/S9R96.png",
+    "imagen_url": "../assets/img/petroglifos/S9R96.jpeg",
     "estacion_nombre": "499 m.s.n.m",
     "categoria": "al cerro, al valle",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al cerro, al valle; altitud 499 m."
@@ -770,7 +770,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R97",
     "nombre": "S9R97",
-    "imagen_url": "../assets/img/petroglifos/S9R97.png",
+    "imagen_url": "../assets/img/petroglifos/S9R97.jpeg",
     "estacion_nombre": "500 m.s.n.m",
     "categoria": "al valle",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al valle; altitud 500 m. La superficie está muy erosionada."
@@ -794,7 +794,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R101",
     "nombre": "S9R101",
-    "imagen_url": "../assets/img/petroglifos/S9R101.png",
+    "imagen_url": "../assets/img/petroglifos/S9R101.jpeg",
     "estacion_nombre": "498 m.s.n.m",
     "categoria": "Grabado",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); altitud 498 m. Es una pared rocosa. Algunos petroglifos están pintados con tiza blanca."
@@ -810,7 +810,7 @@ window.MOCK_PETROGLIFOS = [
   {
     "id": "S9R103",
     "nombre": "S9R103",
-    "imagen_url": "../assets/img/petroglifos/S9R103.png",
+    "imagen_url": "../assets/img/petroglifos/S9R103.jpeg",
     "estacion_nombre": "496 m.s.n.m",
     "categoria": "al valle",
     "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al valle; altitud 496 m."
