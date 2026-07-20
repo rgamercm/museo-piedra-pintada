@@ -202,6 +202,7 @@ Todos los demás endpoints (petroglifos, estaciones, recorridos, reservas, comen
 
 ---
 
+
 ## Para profundizar
 
 - **Estado actual detallado:** `docs/PROGRESO.md`
