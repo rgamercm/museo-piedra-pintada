@@ -686,6 +686,11 @@ async function eliminarTrivia(id) {
       window.Museo?.mostrarToast('Pregunta eliminada', 'exito');
       cargarTriviaAdmin();
     } catch (error) {
+      console.error(error);
+    }
+  }
+}
+
 // Hook de cambio de seccion global
 window.cambiarSeccion = function(id) {
   if(id === 'petroglifos') cargarPetroglifos();
