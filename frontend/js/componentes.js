@@ -45,7 +45,8 @@ const NAV_ITEMS = [
   { href: 'index.html',           label: 'Inicio'       },
   { href: 'pages/informacion.html', label: 'Información'  },
   { href: 'pages/petroglifos.html', label: 'Petroglifos'  },
-  { href: 'pages/recorrido.html',   label: 'Recorrido'    },
+  { href: 'pages/mapa.html',        label: 'Mapa GPS'     },
+  { href: 'pages/recorrido.html',   label: 'Escáner QR'   },
   { href: 'pages/noticias.html',    label: 'Noticias'     },
   { href: 'pages/preguntas.html',   label: 'Preguntas'    },
   { href: 'pages/resenas.html',     label: 'Reseñas'      },
@@ -186,9 +187,10 @@ function generarFooter() {
         <ul class="footer__lista">
           <li><a href="${base}pages/informacion.html"         class="footer__enlace">Cómo llegar</a></li>
           <li><a href="${base}pages/informacion.html#horario" class="footer__enlace">Horario</a></li>
-          <li><a href="${base}pages/reservas.html"            class="footer__enlace">Reservas institucionales</a></li>
-          <li><a href="${base}pages/recorrido.html"           class="footer__enlace">Recorrido interactivo</a></li>
-          <li><a href="${base}pages/mapa.html"                class="footer__enlace">Mapa del parque</a></li>
+          <li><a href="${base}pages/petroglifos.html"         class="footer__enlace">Catálogo de petroglifos</a></li>
+          <li><a href="${base}pages/mapa.html"                class="footer__enlace">Navegación Mapa GPS</a></li>
+          <li><a href="${base}pages/recorrido.html"           class="footer__enlace">Recorrido con Escáner QR</a></li>
+          <li><a href="${base}pages/informacion.html"         class="footer__enlace">Información general</a></li>
         </ul>
       </div>
       <div>

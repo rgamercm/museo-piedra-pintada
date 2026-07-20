@@ -450,7 +450,7 @@ document.getElementById('btn-narrar').addEventListener('click', () => {
 /*  Iniciar  */
 document.addEventListener('DOMContentLoaded', async () => {
   try {
-    const data = await window.api.recorridos.obtenerEstaciones();
+    const data = await window.api.estaciones.obtenerTodas();
     ESTACIONES = data.map((e, idx) => ({
       id: e.id,
       nombre: e.nombre,
