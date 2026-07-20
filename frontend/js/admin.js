@@ -709,6 +709,8 @@ let mapaAdmin = null;
 let capaRutaAdmin = null;
 let marcadorTemporalAdmin = null;
 let estacionesDatosAdmin = [];
+let adminGpsTracker = null;
+let adminGpsLayer = null;
 
 async function inicializarMapaAdmin() {
   if (mapaAdmin) {
@@ -740,6 +742,43 @@ async function inicializarMapaAdmin() {
 
   document.getElementById('btn-mi-pos-mapa').addEventListener('click', () => {
     if (capaRutaAdmin) mapaAdmin.fitBounds(capaRutaAdmin.getBounds());
+  });
+
+  document.getElementById('btn-gps-admin').addEventListener('click', () => {
+    if (adminGpsTracker) {
+      navigator.geolocation.clearWatch(adminGpsTracker);
+      adminGpsTracker = null;
+      document.getElementById('btn-gps-admin').innerHTML = '📍 Rastrear mi GPS';
+      if (adminGpsLayer) { mapaAdmin.removeLayer(adminGpsLayer); adminGpsLayer = null; }
+      window.Museo?.mostrarToast('Rastreo GPS detenido', 'info');
+      return;
+    }
+
+    if (!navigator.geolocation) {
+      window.Museo?.mostrarToast('GPS no disponible en este dispositivo', 'aviso');
+      return;
+    }
+
+    document.getElementById('btn-gps-admin').innerHTML = 'Detener GPS';
+    window.Museo?.mostrarToast('Buscando señal GPS...', 'info');
+
+    adminGpsTracker = navigator.geolocation.watchPosition(
+      pos => {
+        const { latitude, longitude } = pos.coords;
+        if (!adminGpsLayer) {
+          adminGpsLayer = L.circle([latitude, longitude], { radius: 10, color: '#4080FF', fillOpacity: 0.8 }).addTo(mapaAdmin);
+          mapaAdmin.setView([latitude, longitude], 19);
+        } else {
+          adminGpsLayer.setLatLng([latitude, longitude]);
+          mapaAdmin.setView([latitude, longitude]);
+        }
+      },
+      err => {
+        console.warn(err);
+        window.Museo?.mostrarToast('Error de GPS. Verifica los permisos.', 'error');
+      },
+      { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 }
+    );
   });
 }
 
