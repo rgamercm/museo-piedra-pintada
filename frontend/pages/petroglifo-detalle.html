@@ -227,9 +227,12 @@
 document.addEventListener('DOMContentLoaded', async () => {
   const params = new URLSearchParams(window.location.search);
   const qrParam = params.get('qr');
-  const id = parseInt(params.get('id')) || 1;
+  const id = params.get('id') || 'S9R1';
 
   try {
+    // Catálogo completo, usado para resolver navegación anterior/siguiente.
+    const todos = await window.api.petroglifos.obtenerTodos().catch(() => []);
+
     // Prioridad: si viene ?qr=... (QR escaneado), buscamos por código.
     const petroglifo = qrParam
       ? await window.api.petroglifos.obtenerPorQr(qrParam)
@@ -299,16 +302,24 @@ document.addEventListener('DOMContentLoaded', async () => {
       setTimeout(() => document.getElementById('btn-escuchar')?.click(), 800);
     }
 
-    // Enlaces anterior/siguiente (asumimos id-1 y id+1 de forma simple, 
-    // en un caso real se consultaría la base de datos por el adyacente)
+    // Enlaces anterior/siguiente según la posición real del petroglifo en el catálogo.
     const prevBtn = document.getElementById('btn-anterior-petroglifo');
     const nextBtn = document.getElementById('btn-siguiente-petroglifo');
-    if (id > 1) {
-      prevBtn.href = `petroglifo-detalle.html?id=${id - 1}`;
+    const indiceActual = todos.findIndex(p => String(p.id) === String(petroglifo.id));
+
+    if (indiceActual > 0) {
+      prevBtn.href = `petroglifo-detalle.html?id=${todos[indiceActual - 1].id}`;
+      prevBtn.style.visibility = '';
     } else {
       prevBtn.style.visibility = 'hidden';
     }
-    nextBtn.href = `petroglifo-detalle.html?id=${id + 1}`;
+
+    if (indiceActual !== -1 && indiceActual < todos.length - 1) {
+      nextBtn.href = `petroglifo-detalle.html?id=${todos[indiceActual + 1].id}`;
+      nextBtn.style.visibility = '';
+    } else {
+      nextBtn.style.visibility = 'hidden';
+    }
 
     // Asistente de voz
     let utterance = null;
