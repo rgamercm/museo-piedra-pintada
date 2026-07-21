@@ -7,19 +7,33 @@
   <meta name="description" content="Preguntas frecuentes sobre el Museo Arqueológico Piedra Pintada y formulario para enviar nuevas consultas.">
   <link rel="stylesheet" href="../css/estilos.css?v=5.0">
   <style>
+    /* Acordeón FAQ con el mismo lenguaje visual que los botones
+       globales (.btn): pastilla, contorno blanco, hover dorado */
     .qa-item {
-      background: var(--grad-card);
-      border: 1px solid var(--glass-border);
-      border-radius: 1rem;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      border-radius: var(--radius-full);
       overflow: hidden;
       margin-bottom: .75rem;
-      transition: border-color .2s;
+      transition: border-color var(--dur-rapida) var(--ease-out),
+                  background var(--dur-rapida) var(--ease-out),
+                  border-radius var(--dur-media) var(--ease-out),
+                  box-shadow var(--dur-rapida) var(--ease-out);
     }
-    .qa-item:hover { border-color: rgba(140, 115, 85,.3); }
+    .qa-item:not(.abierto):hover {
+      background: var(--color-dorado);
+      border-color: var(--color-dorado);
+      box-shadow: 0 4px 16px rgba(140, 115, 85, 0.40);
+    }
+    .qa-item.abierto {
+      border-radius: var(--radius-lg);
+      background: var(--grad-card);
+      border-color: rgba(140, 115, 85, 0.45);
+    }
     .qa-pregunta {
       width: 100%;
       text-align: left;
-      padding: 1.1rem 1.25rem;
+      padding: 1rem 1.5rem;
       background: none;
       border: none;
       display: flex;
@@ -28,11 +42,15 @@
       gap: 1rem;
       cursor: pointer;
       font-family: var(--font-cuerpo);
-      font-size: .95rem;
+      font-size: .85rem;
       font-weight: 600;
-      color: var(--color-texto);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      line-height: 1.4;
+      color: #FFFFFF;
     }
     .qa-flecha { font-size: 1.1rem; color: var(--color-dorado); transition: transform .3s var(--ease-out); flex-shrink:0; }
+    .qa-item:not(.abierto):hover .qa-flecha { color: #FFFFFF; }
     .qa-item.abierto .qa-flecha { transform: rotate(180deg); }
     .qa-respuesta {
       max-height: 0;
@@ -100,22 +118,27 @@
 <div id="footer-placeholder"></div>
 
 <script src="../js/componentes.js?v=2.2"></script>
-<script src="../js/api.js?v=1.3"></script>
+<script src="../js/api.js?v=1.4"></script>
 <script src="../js/app.js?v=1.3"></script>
 <script>
 'use strict';
 let QAS = [];
+
+// Escapa HTML para prevenir XSS en contenido enviado por visitantes
+function escaparHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
 
 function renderQa() {
   const lista = document.getElementById('lista-qa');
   lista.innerHTML = QAS.map((qa, i) => `
     <div class="qa-item revelar" role="listitem" id="qa-item-${i}">
       <button class="qa-pregunta" onclick="toggleQa(${i})" aria-expanded="false" aria-controls="qa-resp-${i}" id="qa-btn-${i}">
-        <span> ${qa.q}</span>
+        <span> ${escaparHtml(qa.q)}</span>
         <span class="qa-flecha" aria-hidden="true"></span>
       </button>
       <div class="qa-respuesta" id="qa-resp-${i}" role="region" aria-labelledby="qa-btn-${i}">
-        <div class="qa-respuesta-texto">${qa.r}</div>
+        <div class="qa-respuesta-texto">${escaparHtml(qa.r)}</div>
       </div>
     </div>
   `).join('');
@@ -138,7 +161,11 @@ document.getElementById('form-pregunta').addEventListener('submit', async e => {
   btn.textContent = 'Enviando...'; btn.disabled = true;
   
   try {
-    await window.api.preguntas.crear(document.getElementById('preg-texto').value);
+    await window.api.preguntas.crear({
+      pregunta: document.getElementById('preg-texto').value,
+      nombre:   document.getElementById('preg-nombre').value.trim(),
+      correo:   document.getElementById('preg-email').value.trim()
+    });
     btn.textContent = ' Pregunta enviada';
     window.Museo?.mostrarToast(' Tu pregunta fue enviada. Responderemos pronto.', 'exito');
     e.target.reset();

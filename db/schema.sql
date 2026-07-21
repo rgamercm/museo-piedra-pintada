@@ -117,12 +117,15 @@ CREATE TABLE fotos (
 
 -- ── 9. preguntas_respuestas ──────────────────────────────────
 CREATE TABLE preguntas_respuestas (
-  id          SERIAL PRIMARY KEY,
-  pregunta    TEXT      NOT NULL,
-  respuesta   TEXT,
-  usuario_id  INTEGER   REFERENCES usuarios(id) ON DELETE SET NULL,
-  publicada   BOOLEAN   NOT NULL DEFAULT FALSE,
-  creado_en   TIMESTAMP NOT NULL DEFAULT NOW()
+  id                SERIAL PRIMARY KEY,
+  pregunta          TEXT      NOT NULL,
+  respuesta         TEXT,
+  usuario_id        INTEGER   REFERENCES usuarios(id) ON DELETE SET NULL,
+  -- Datos de contacto para preguntas anónimas (visitantes sin cuenta)
+  nombre_visitante  VARCHAR(100),
+  correo_visitante  VARCHAR(150),
+  publicada         BOOLEAN   NOT NULL DEFAULT FALSE,
+  creado_en         TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 -- ── 10. noticias_eventos ─────────────────────────────────────

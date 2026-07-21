@@ -44,7 +44,11 @@ router.post(
   '/',
   sesionOpcional,
   [
-    body('pregunta').trim().notEmpty().withMessage('La pregunta no puede estar vacía.')
+    body('pregunta').trim().notEmpty().withMessage('La pregunta no puede estar vacía.'),
+    body('nombre').optional({ values: 'falsy' }).trim().isLength({ max: 100 })
+      .withMessage('El nombre es demasiado largo.'),
+    body('correo').optional({ values: 'falsy' }).trim().isEmail()
+      .withMessage('El correo no es válido.').isLength({ max: 150 })
   ],
   validar,
   ctrl.crear

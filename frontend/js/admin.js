@@ -358,9 +358,9 @@ async function cargarReservas() {
           <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
             <div>
               <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;"><span class="badge ${badgeColor} badge--punto">${r.estado.toUpperCase()}</span></div>
-              <strong>${r.institucion_nombre || 'Institución desconocida'}</strong> — ${r.num_personas} personas<br>
-              <span style="font-size:.85rem;color:var(--color-texto-2);">Contacto: ${r.contacto_nombre} (${r.contacto_telefono}) · Fecha: ${formatearFecha(r.fecha_visita)}</span>
-              ${r.notas ? `<p style="font-size:.85rem; margin-top:.5rem;"><em>Notas:</em> ${r.notas}</p>` : ''}
+              <strong>${_escapar(r.institucion_nombre || 'Institución desconocida')}</strong> — ${_escapar(r.num_personas)} personas<br>
+              <span style="font-size:.85rem;color:var(--color-texto-2);">Contacto: ${_escapar(r.contacto_nombre)} (${_escapar(r.contacto_telefono)}) · Fecha: ${formatearFecha(r.fecha_visita)}</span>
+              ${r.notas ? `<p style="font-size:.85rem; margin-top:.5rem;"><em>Notas:</em> ${_escapar(r.notas)}</p>` : ''}
             </div>
             ${r.estado === 'pendiente' ? `
               <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
@@ -409,13 +409,13 @@ async function cargarModeracion() {
       container.innerHTML += `
         <div style="background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1rem;padding:1.25rem;">
           <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:.75rem;">
-            <div><strong>${c.autor_nombre || 'Anónimo'}</strong> — ${''.repeat(c.calificacion)}${''.repeat(5-c.calificacion)}<br><span style="font-size:.78rem;color:var(--color-texto-3);">Enviada el ${formatearFecha(c.creado_en)}</span></div>
+            <div><strong>${_escapar(c.autor_nombre || 'Anónimo')}</strong> — ${''.repeat(c.calificacion)}${''.repeat(5-c.calificacion)}<br><span style="font-size:.78rem;color:var(--color-texto-3);">Enviada el ${formatearFecha(c.creado_en)}</span></div>
             <div style="display:flex;gap:.5rem;">
               <button class="btn btn--primario btn--sm" onclick="cambiarEstadoComentario(${c.id}, 'aprobado')"> Aprobar</button>
               <button class="btn btn--peligro btn--sm" onclick="cambiarEstadoComentario(${c.id}, 'rechazado')"> Rechazar</button>
             </div>
           </div>
-          <p style="font-size:.88rem;color:var(--color-texto-2);">${c.texto}</p>
+          <p style="font-size:.88rem;color:var(--color-texto-2);">${_escapar(c.texto)}</p>
         </div>
       `;
     });
@@ -454,9 +454,14 @@ async function cargarPreguntasAdmin() {
     }
     
     pendientes.forEach(p => {
+      // Nombre a mostrar: usuario registrado > nombre del formulario > Anónimo
+      const autor = p.autor_nombre || p.nombre_visitante || 'Anónimo';
+      const contacto = p.correo_visitante
+        ? ` · <a href="mailto:${_escapar(p.correo_visitante)}" style="color:var(--color-dorado-claro);text-decoration:underline;">${_escapar(p.correo_visitante)}</a>`
+        : '';
       container.innerHTML += `
         <div style="background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1rem;padding:1.25rem;margin-bottom:1rem;">
-          <p style="font-size:.9rem;color:var(--color-texto-2);margin-bottom:1rem;"><strong style="color:var(--color-dorado-claro);">${p.autor_nombre || 'Anónimo'}</strong> pregunta: "${p.pregunta}"</p>
+          <p style="font-size:.9rem;color:var(--color-texto-2);margin-bottom:1rem;"><strong style="color:var(--color-dorado-claro);">${_escapar(autor)}</strong>${contacto} pregunta: "${_escapar(p.pregunta)}"</p>
           <textarea id="respuesta-${p.id}" class="form-textarea" placeholder="Escribe tu respuesta aquí..." style="min-height:80px;margin-bottom:.75rem;width:100%;"></textarea>
           <div style="display:flex;gap:.75rem;">
             <button class="btn btn--primario btn--sm" onclick="responderPregunta(${p.id})">Publicar respuesta</button>

@@ -189,10 +189,11 @@ const api = {
   preguntas: {
     obtenerPublicadas: () => api.request('/preguntas'),
     obtenerAdmin: () => api.request('/preguntas/pendientes', { headers: api.getHeaders(true) }),
-    crear: (pregunta) => api.request('/preguntas', {
+    // Acepta un string (solo pregunta) o un objeto {pregunta, nombre, correo}
+    crear: (datos) => api.request('/preguntas', {
       method: 'POST',
       headers: api.getHeaders(true),
-      body: JSON.stringify({ pregunta })
+      body: JSON.stringify(typeof datos === 'string' ? { pregunta: datos } : datos)
     }),
     responder: (id, respuesta) => api.request(`/preguntas/${id}/responder`, { method: 'PATCH', headers: api.getHeaders(true), body: JSON.stringify({ respuesta }) }),
     eliminar: (id) => api.request(`/preguntas/${id}`, { method: 'DELETE', headers: api.getHeaders(true) })

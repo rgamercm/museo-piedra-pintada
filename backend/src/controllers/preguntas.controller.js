@@ -40,13 +40,14 @@ async function crear(req, res, next) {
   try {
     // Si hay sesión, usamos el usuario_id. Si no, queda null (pregunta anónima).
     const usuario_id = req.usuario ? req.usuario.id : null;
-    const { pregunta } = req.body;
-    
+    const { pregunta, nombre, correo } = req.body;
+
     const { rows } = await db.query(
-      `INSERT INTO preguntas_respuestas (usuario_id, pregunta, publicada)
-       VALUES ($1, $2, false)
+      `INSERT INTO preguntas_respuestas
+         (usuario_id, pregunta, nombre_visitante, correo_visitante, publicada)
+       VALUES ($1, $2, $3, $4, false)
        RETURNING *`,
-      [usuario_id, pregunta]
+      [usuario_id, pregunta, nombre || null, correo || null]
     );
     
     return creado(res, rows[0]);
