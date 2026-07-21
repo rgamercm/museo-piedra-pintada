@@ -441,43 +441,43 @@ h6 { font-size: var(--text-base); }
   text-transform: uppercase;
   line-height: 1.2;
   padding: var(--sp-3) var(--sp-6);
-  border-radius: var(--radius-md);
-  border: none;
+  border-radius: var(--radius-full); /* Opción A: Botón de pastilla */
   cursor: pointer;
-  transition: transform var(--dur-rapida) var(--ease-bounce),
-              box-shadow var(--dur-media) var(--ease-out),
-              background var(--dur-rapida) var(--ease-out),
-              opacity var(--dur-rapida) var(--ease-out);
+  transition: all var(--dur-rapida) var(--ease-out);
   white-space: nowrap;
   text-decoration: none;
+  
+  /* Opción A: Contorno blanco por defecto */
+  background: transparent;
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.8);
 }
 
-.btn:hover   { transform: translateY(-2px); }
-.btn:active  { transform: translateY(0) scale(0.98); }
+.btn:hover {
+  transform: translateY(-2px);
+  /* Opción A: Fondo marrón al hacer hover */
+  background: var(--color-dorado);
+  border-color: var(--color-dorado);
+  color: #FFFFFF;
+  box-shadow: 0 4px 16px rgba(140, 115, 85, 0.40);
+}
 
+.btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Redefinimos las variantes para que usen la Opción A por igual, 
+   o mantengan ligeras variaciones si es necesario, pero siguiendo la directriz global */
 .btn--primario {
-  background: var(--grad-dorado);
-  color: var(--color-texto-inv);
-  box-shadow: 0 4px 16px rgba(140, 115, 85,0.30);
+  /* Ya toma el estilo base que es la Opción A */
 }
-.btn--primario:hover { box-shadow: 0 6px 24px rgba(140, 115, 85,0.50); }
 
 .btn--acento {
-  background: var(--grad-acento);
-  color: white;
-  box-shadow: 0 4px 16px rgba(105, 105, 105,0.30);
+  /* Ya toma el estilo base que es la Opción A */
 }
-.btn--acento:hover { box-shadow: 0 6px 24px rgba(105, 105, 105,0.50); }
 
 .btn--contorno {
-  background: transparent;
-  color: var(--color-dorado-claro);
-  border: 1px solid rgba(140, 115, 85,0.5);
-}
-.btn--contorno:hover {
-  background: rgba(140, 115, 85,0.10);
-  border-color: var(--color-dorado-claro);
-  box-shadow: var(--shadow-gold);
+  /* Ya toma el estilo base que es la Opción A */
 }
 
 .btn--fantasma {

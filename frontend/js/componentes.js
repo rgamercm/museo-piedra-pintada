@@ -67,14 +67,14 @@ function generarHeader() {
   return `
 <header class="header" role="banner">
   <div class="container header__inner">
-    <div style="display: flex; align-items: center; gap: 1rem; background: rgba(140, 115, 85, 0.65); padding: 0.5rem 1.5rem; border-radius: 1rem; backdrop-filter: blur(8px);">
+    <div style="display: flex; align-items: center; gap: 1rem; background: rgba(255, 255, 255, 0.05); padding: 0.5rem 1.5rem; border-radius: 1rem; backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1);">
       <a href="${base}index.html" aria-label="Ir al inicio" style="display: flex; align-items: center; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
-        <img src="${base}assets/img/logo-museo.png" alt="Logo Museo Piedra Pintada" style="height: 75px; width: auto; object-fit: contain;">
+        <img src="${base}assets/img/logo-museo.png" alt="Logo Museo Piedra Pintada" style="height: 75px; width: auto; object-fit: contain; filter: brightness(0) invert(1);">
       </a>
       
       <div class="logo__texto" style="border-left: 1px solid rgba(255, 255, 255, 0.3); padding-left: 1rem; margin-left: 0.5rem;">
-        <span class="logo__nombre" style="font-weight: normal;">Museo Parque Arqueológico</span>
-        <span class="logo__subtitulo" style="font-weight: bold;">Piedra Pintada</span>
+        <span class="logo__nombre" style="font-weight: normal; color: #FFFFFF;">Museo Parque Arqueológico</span>
+        <span class="logo__subtitulo" style="font-weight: bold; color: rgba(255, 255, 255, 0.9);">Piedra Pintada</span>
       </div>
     </div>
 
