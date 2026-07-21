@@ -1346,3 +1346,146 @@ h6 { font-size: var(--text-base); }
   box-shadow: 0 0 12px rgba(140, 115, 85, 0.25);
 }
 
+/* ============================================================
+   CAPA RESPONSIVE GLOBAL — v4.0
+   Cobertura de TODAS las resoluciones:
+   · Móvil pequeño   ≤ 360px
+   · Móvil           ≤ 480px
+   · Móvil grande    ≤ 640px
+   · Tablet          ≤ 768px
+   · Tablet grande   ≤ 1024px
+   · Laptop          ≤ 1280px
+   · Desktop         1281 – 1536px
+   · Pantalla grande ≥ 1537px
+   · Ultra-wide / 4K ≥ 1920px
+   Objetivo: que el diseño NUNCA se descuadre ni genere scroll
+   horizontal al hacer zoom (< 100 %) o en monitores anchos.
+   ============================================================ */
+
+/* ── Prevención global de desbordes ─────────────────────────── */
+html { overflow-x: hidden; }
+body { overflow-x: hidden; max-width: 100%; }
+
+/* Todo medio visual se mantiene dentro de su contenedor */
+img, video, canvas, svg, iframe, picture, object {
+  max-width: 100%;
+}
+
+/* Los hijos de flex/grid pueden encogerse sin desbordar */
+.flex > *, .grid-2 > *, .grid-3 > *, .grid-4 > *,
+.hero__contenido > *, .footer__grid > * { min-width: 0; }
+
+/* Palabras muy largas / URLs no rompen el layout */
+h1, h2, h3, h4, h5, h6, p, a, span, li, td, th, .tarjeta__titulo, .tarjeta__texto {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+/* Contenedor con padding elástico (se adapta al ancho disponible) */
+.container {
+  padding-inline: clamp(1rem, 4vw, var(--sp-8));
+}
+
+/* Tablas anchas se pueden desplazar horizontalmente en su caja */
+.tabla-admin { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+/* ── PANTALLAS GRANDES: el contenido no queda “varado” al centro ─ */
+/* Al hacer zoom-out o en monitores anchos, subimos el ancho máximo
+   del contenedor y escalamos la raíz para que todo crezca en rem. */
+@media (min-width: 1537px) {
+  :root { --max-width: 1440px; }
+  html { font-size: 17px; }
+}
+
+@media (min-width: 1920px) {
+  :root { --max-width: 1600px; }
+  html { font-size: 18px; }
+}
+
+@media (min-width: 2560px) {
+  :root { --max-width: 1840px; }
+  html { font-size: 20px; }
+}
+
+/* ── LAPTOP / TABLET GRANDE: nav se colapsa antes para no amontonar ─ */
+/* La barra tiene muchos enlaces; por debajo de 1200px pasamos a menú
+   hamburguesa para evitar que la navegación se solape. */
+@media (max-width: 1200px) {
+  .nav { display: none; }
+  .header__acciones .btn:not(:last-child) { display: none; }
+  .hamburguesa { display: flex !important; }
+}
+
+/* ── HERO: comportamiento fluido en todo ancho ──────────────── */
+/* El hero usa estilos en línea (flex); los sobrescribimos con
+   !important para poder apilarlo en pantallas estrechas. */
+@media (max-width: 1024px) {
+  .hero__contenido {
+    gap: 2rem !important;
+  }
+  .hero__texto-wrapper { max-width: 100% !important; }
+}
+
+@media (max-width: 760px) {
+  .hero__contenido {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 1.5rem !important;
+    text-align: left;
+  }
+  .hero { min-height: auto; padding-block: calc(var(--header-h) + 2rem) 3rem; }
+  .hero__stats { gap: 1.25rem !important; }
+  .hero__scroll { display: none; }
+}
+
+/* ── MÓVIL GRANDE (≤640): rejillas y acciones a una columna ──── */
+@media (max-width: 640px) {
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .hero__acciones { width: 100%; }
+  .hero__acciones .btn { flex: 1 1 auto; justify-content: center; }
+  .hero__stats { gap: 1rem !important; }
+  .hero__stat { flex: 1 1 40%; }
+  /* Layout de reseñas (grid en línea sin breakpoint propio) */
+  #resenas-layout { grid-template-columns: 1fr !important; gap: 1.5rem !important; }
+}
+
+/* Reseñas: apilar también en tablet estrecha */
+@media (max-width: 900px) {
+  #resenas-layout { grid-template-columns: 1fr !important; }
+}
+
+/* ── TABLET (≤768): ajustes de tipografía y CTA ─────────────── */
+@media (max-width: 768px) {
+  .cta { padding: 3rem 1.25rem; }
+  .hero__titulo { font-size: clamp(2rem, 9vw, 3.2rem) !important; }
+  .modal { max-width: 100%; }
+}
+
+/* ── MÓVIL (≤480): compactar todavía más ────────────────────── */
+@media (max-width: 480px) {
+  html { font-size: 15px; }
+  .container { padding-inline: 1rem; }
+  .hero__acciones { flex-direction: column; }
+  .hero__acciones .btn { width: 100%; }
+  .footer__base { flex-direction: column; gap: .5rem; text-align: center; }
+  .paginacion { flex-wrap: wrap; }
+  .toast-container { left: 1rem; right: 1rem; }
+}
+
+/* ── MÓVIL PEQUEÑO (≤360): última reducción ─────────────────── */
+@media (max-width: 360px) {
+  html { font-size: 14px; }
+  .container { padding-inline: .85rem; }
+  .btn { padding: var(--sp-2) var(--sp-4); }
+}
+
+/* ── Accesibilidad: respetar “reducir movimiento” ───────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Panel de Administración — Museo Piedra Pintada</title>
   <meta name="description" content="Panel de administración del Museo Arqueológico Piedra Pintada.">
-  <link rel="stylesheet" href="../../css/estilos.css?v=3.1">
+  <link rel="stylesheet" href="../../css/estilos.css?v=4.0">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <style>
     /* Layout: sidebar fija + contenido desplazado. Sin grid para evitar
@@ -94,7 +94,7 @@
     @media(max-width:900px) {
       .admin-sidebar { transform: translateX(-100%); transition: transform .3s ease; box-shadow: 2px 0 20px rgba(0,0,0,0.8); }
       .admin-sidebar.abierto { transform: translateX(0); display: block; }
-      .admin-main { margin-left: 0; padding: calc(var(--header-h) + 1rem) 1rem 1rem; width: 100vw; overflow-x: hidden; }
+      .admin-main { margin-left: 0; padding: calc(var(--header-h) + 1rem) 1rem 1rem; width: 100%; max-width: 100%; overflow-x: hidden; }
       .admin-toggle-btn { display: flex; }
     }
   </style>
