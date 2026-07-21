@@ -78,4 +78,71 @@ function construirEstaciones(paradas) {
   });
 }
 
-window.MuseoEstaciones = { PETROGLIFOS_POR_PARADA, cargarTrack, construirEstaciones };
+// ── Clasificación de estaciones respecto al sendero ──────────────────────
+// Un petroglifo "pasa por el recorrido" si está a menos de este umbral del
+// sendero. Según los datos reales: 57 de 99 quedan dentro de 35 m; el resto
+// está a 40 m – 1.4 km (otras zonas del sitio que la ruta actual no visita).
+const UMBRAL_RUTA_M = 35;
+
+function _haversine(lat1, lon1, lat2, lon2) {
+  const R = 6371e3;
+  const p1 = lat1 * Math.PI / 180, p2 = lat2 * Math.PI / 180;
+  const dp = (lat2 - lat1) * Math.PI / 180, dl = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dp / 2) ** 2 + Math.cos(p1) * Math.cos(p2) * Math.sin(dl / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+/**
+ * Anota cada estación con su relación al sendero:
+ *  - distARuta:  metros al punto más cercano del sendero
+ *  - posEnRuta:  metros recorridos desde el inicio hasta ese punto (para
+ *                ordenar las paradas en el sentido de la caminata)
+ *  - enRuta:     true si distARuta <= UMBRAL_RUTA_M
+ *  - ordenRuta:  1..N solo para las estaciones en ruta, en orden de camino
+ * Muta y devuelve el mismo array.
+ * @param {Array} estaciones objetos con latitud/longitud (número o string)
+ * @param {Array<Array<number>>} coordsRuta puntos [lng,lat] del sendero aplanado
+ */
+function clasificarPorRuta(estaciones, coordsRuta) {
+  if (!Array.isArray(coordsRuta) || coordsRuta.length < 2) return estaciones;
+
+  // Longitud acumulada del sendero en cada vértice
+  const acum = [0];
+  for (let i = 1; i < coordsRuta.length; i++) {
+    acum.push(acum[i - 1] + _haversine(
+      coordsRuta[i - 1][1], coordsRuta[i - 1][0], coordsRuta[i][1], coordsRuta[i][0]
+    ));
+  }
+
+  for (const est of estaciones) {
+    const lat = parseFloat(est.latitud), lng = parseFloat(est.longitud);
+    if (!isFinite(lat) || !isFinite(lng)) { est.enRuta = false; continue; }
+
+    let mejorDist = Infinity, mejorPos = 0;
+    for (let i = 0; i < coordsRuta.length - 1; i++) {
+      const ax = coordsRuta[i][0], ay = coordsRuta[i][1];
+      const bx = coordsRuta[i + 1][0], by = coordsRuta[i + 1][1];
+      const dx = bx - ax, dy = by - ay;
+      const t = (dx === 0 && dy === 0) ? 0 :
+        Math.max(0, Math.min(1, ((lng - ax) * dx + (lat - ay) * dy) / (dx * dx + dy * dy)));
+      const px = ax + t * dx, py = ay + t * dy;
+      const d = _haversine(lat, lng, py, px);
+      if (d < mejorDist) {
+        mejorDist = d;
+        mejorPos = acum[i] + t * (acum[i + 1] - acum[i]);
+      }
+    }
+    est.distARuta = mejorDist;
+    est.posEnRuta = mejorPos;
+    est.enRuta = mejorDist <= UMBRAL_RUTA_M;
+  }
+
+  estaciones
+    .filter(e => e.enRuta)
+    .sort((a, b) => a.posEnRuta - b.posEnRuta)
+    .forEach((e, i) => { e.ordenRuta = i + 1; });
+
+  return estaciones;
+}
+
+window.MuseoEstaciones = { PETROGLIFOS_POR_PARADA, UMBRAL_RUTA_M, cargarTrack, construirEstaciones, clasificarPorRuta };

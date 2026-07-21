@@ -101,7 +101,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     estacionesDatos = window.MuseoEstaciones.construirEstaciones(paradasTrack);
   }
 
-  estacionesDatos.sort((a, b) => a.orden - b.orden);
+  // Normalizar coordenadas (la API las devuelve como strings) y clasificar
+  // cada estación respecto al sendero: cuáles pasan por el recorrido
+  // (enRuta, con su orden de caminata) y cuáles quedan fuera.
+  estacionesDatos.forEach(est => {
+    est.latitud = parseFloat(est.latitud);
+    est.longitud = parseFloat(est.longitud);
+  });
+  window.MuseoEstaciones.clasificarPorRuta(estacionesDatos, geojsonCoords);
+
+  // Orden: primero las del sendero en sentido de la caminata, luego el resto
+  // por cercanía al sendero.
+  estacionesDatos.sort((a, b) => {
+    if (a.enRuta !== b.enRuta) return a.enRuta ? -1 : 1;
+    if (a.enRuta) return a.ordenRuta - b.ordenRuta;
+    return (a.distARuta || 0) - (b.distARuta || 0);
+  });
 
   const historial = JSON.parse(localStorage.getItem('museo_historial') || '[]');
 
@@ -114,23 +129,35 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (est.tipo_marcador === 'parada') color = '#e6a23c'; // Naranja
     if (est.tipo_marcador === 'continuar') color = '#409eff'; // Azul
 
-    const char = est.tipo_marcador === 'parada' ? 'P' : (est.tipo_marcador === 'continuar' ? '→' : (est.orden || est.id));
+    const char = est.tipo_marcador === 'parada' ? 'P' : (est.tipo_marcador === 'continuar' ? '→' : (est.ordenRuta || '·'));
 
-    const icono = L.divIcon({
-      className: '',
-      html: `<div style="width:30px;height:30px;border-radius:50%;background:${color};border:2px solid rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;box-shadow:0 2px 8px rgba(0,0,0,.6);">${char}</div>`,
-      iconSize:[30,30], iconAnchor:[15,15]
-    });
+    // Los petroglifos fuera del sendero se ven atenuados y más pequeños:
+    // están documentados pero el recorrido actual no pasa junto a ellos.
+    const icono = est.enRuta
+      ? L.divIcon({
+          className: '',
+          html: `<div style="width:30px;height:30px;border-radius:50%;background:${color};border:2px solid rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;box-shadow:0 2px 8px rgba(0,0,0,.6);">${char}</div>`,
+          iconSize:[30,30], iconAnchor:[15,15]
+        })
+      : L.divIcon({
+          className: '',
+          html: `<div style="width:14px;height:14px;border-radius:50%;background:#777;opacity:.55;border:2px solid rgba(0,0,0,.4);box-shadow:0 1px 4px rgba(0,0,0,.5);"></div>`,
+          iconSize:[14,14], iconAnchor:[7,7]
+        });
 
     // HTML del Popup interactivo
     const imgHtml = est.petroglifo_imagen_url
       ? `<img src="${est.petroglifo_imagen_url}" style="width:100%;height:120px;object-fit:cover;border-radius:8px;margin-bottom:8px;" onerror="this.style.display='none'">`
       : '';
 
+    const notaFueraRuta = est.enRuta ? '' :
+      `<p style="margin:0 0 8px;font-size:11px;color:#a06a2c;">⚠ Fuera del sendero principal (a ${Math.round(est.distARuta || 0)} m del camino)</p>`;
+
     const popupHtml = `
       <div style="min-width:180px;">
         ${imgHtml}
         <h4 style="margin:0 0 5px;color:#0D2049;">${est.nombre}</h4>
+        ${notaFueraRuta}
         <p style="margin:0 0 10px;font-size:12px;color:#555;">${est.petroglifo_categoria || 'Petroglifo'}</p>
         <div style="display:flex;gap:5px;">
            <button onclick="escucharVoz(${est.id})" class="btn btn--primario btn--sm" style="flex:1;padding:4px;"><span style="font-size:16px;">🔊</span></button>
@@ -217,6 +244,17 @@ function referenciaEspacial(lat, lng, est) {
 // DETECCIÓN DE PROXIMIDAD (RADIO + COOLDOWN + REGISTRO DE VISITADOS)
 // ============================================================================
 
+/**
+ * Radio de aviso de cada estación. Los petroglifos del sendero que quedan a
+ * 10-35 m del camino nunca estarían a menos de 10 m del usuario (que camina
+ * por el sendero), así que su radio crece hasta cubrir su distancia al
+ * camino + un margen: al pasar por el punto más cercano, el bot los anuncia.
+ */
+function radioActivacion(est) {
+  if (!est.enRuta) return CONFIG_GPS.RADIO_ACTIVACION_M;
+  return Math.min(42, Math.max(CONFIG_GPS.RADIO_ACTIVACION_M, (est.distARuta || 0) + 8));
+}
+
 function comprobarProximidad(lat, lng) {
   const ahora = Date.now();
   let candidata = null;
@@ -227,15 +265,16 @@ function comprobarProximidad(lat, lng) {
 
     const distancia = calcularDistancia(lat, lng, est.latitud, est.longitud);
     const reg = registroParadas[est.id] || (registroParadas[est.id] = { narradaEn: 0, dentro: false });
+    const radio = radioActivacion(est);
 
-    if (distancia <= CONFIG_GPS.RADIO_ACTIVACION_M) {
+    if (distancia <= radio) {
       // Puede haber paradas con radios solapados (a metros una de otra):
       // atendemos siempre la MÁS CERCANA al usuario.
       if (distancia < distCandidata) {
         candidata = est;
         distCandidata = distancia;
       }
-    } else if (reg.dentro && distancia > CONFIG_GPS.RADIO_SALIDA_M) {
+    } else if (reg.dentro && distancia > radio + 8) {
       // Para "salir" de una parada hay que alejarse más allá del radio de
       // salida (evita parpadeos dentro/fuera por el ruido del GPS).
       reg.dentro = false;
@@ -289,8 +328,9 @@ function alLlegarAParada(est, lat, lng, distancia) {
   }
 
   // 5. En modo navegación: avanzar automáticamente a la siguiente pendiente
+  //    del sendero (las estaciones fuera de ruta no guían la navegación)
   if (modoNavegacion && est.id === estacionDestinoId) {
-    const pendientes = estacionesDatos.filter(e => !e.completada);
+    const pendientes = estacionesDatos.filter(e => e.enRuta && !e.completada);
     if (pendientes.length > 0) {
       estacionDestinoId = pendientes[0].id;
     } else {
@@ -462,13 +502,13 @@ function iniciarNavegacion() {
   document.getElementById('panel-navegacion').classList.add('activo');
   document.getElementById('modal-normas').classList.remove('activo');
 
-  // Buscar primera estación no completada
-  const pendientes = estacionesDatos.filter(e => !e.completada);
+  // Buscar primera estación del sendero no completada (en orden de caminata)
+  const pendientes = estacionesDatos.filter(e => e.enRuta && !e.completada);
   if (pendientes.length > 0) {
     estacionDestinoId = pendientes[0].id;
   } else {
     window.Museo?.mostrarToast('¡Ya completaste todas las estaciones!', 'info');
-    estacionDestinoId = estacionesDatos[0]?.id; // Guiar al inicio si terminó
+    estacionDestinoId = estacionesDatos.find(e => e.enRuta)?.id || estacionesDatos[0]?.id;
   }
 
   solicitarWakeLock();
@@ -502,7 +542,7 @@ function actualizarPanelNavegacion(lat, lng) {
 
   distEl.textContent = Math.round(dist) + ' m';
 
-  if (dist < CONFIG_GPS.RADIO_ACTIVACION_M) {
+  if (dist < radioActivacion(destino)) {
     distEl.style.color = '#80D090';
     nombreEl.textContent = '¡Has llegado!';
     if (direccionEl) direccionEl.textContent = destino.nombre;
@@ -530,8 +570,8 @@ document.getElementById('btn-ya-llegue').addEventListener('click', () => {
 
   renderizarGridEstaciones(estacionesDatos);
 
-  // Pasar a la siguiente
-  const pendientes = estacionesDatos.filter(e => !e.completada);
+  // Pasar a la siguiente del sendero
+  const pendientes = estacionesDatos.filter(e => e.enRuta && !e.completada);
   if (pendientes.length > 0) {
     estacionDestinoId = pendientes[0].id;
     window.Museo?.mostrarToast(`Dirígete a: ${pendientes[0].nombre}`, 'info');
@@ -677,18 +717,36 @@ function descargarOffline() {
 document.getElementById('btn-offline-mapa')?.addEventListener('click', descargarOffline);
 document.getElementById('btn-descargar-mapa-2').addEventListener('click', descargarOffline);
 
-function renderizarGridEstaciones(estaciones) {
-  const grid = document.getElementById('grid-estaciones-mapa');
-  grid.innerHTML = estaciones.map(est => `
+function tarjetaEstacion(est, atenuada) {
+  return `
     <button onclick="mapa.setView([${est.latitud || 10.3009},${est.longitud || -67.8877}],18); if(marcadores[${est.id}]) marcadores[${est.id}].openPopup();"
-      style="background:var(--grad-card);border:1px solid ${est.completada?'rgba(60,160,80,.3)':'var(--glass-border)'};border-radius:.75rem;padding:.85rem;text-align:left;cursor:pointer;transition:all .2s;width:100%;font-family:inherit;"
+      style="background:var(--grad-card);border:1px solid ${est.completada?'rgba(60,160,80,.3)':'var(--glass-border)'};border-radius:.75rem;padding:.85rem;text-align:left;cursor:pointer;transition:all .2s;width:100%;font-family:inherit;${atenuada?'opacity:.55;':''}"
       onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform=''"
       id="est-mapa-btn-${est.id}">
       <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.25rem;">
-        <div style="width:24px;height:24px;border-radius:50%;background:${est.completada?'rgba(60,160,80,.3)':'rgba(122, 186, 88,.15)'};border:1px solid ${est.completada?'rgba(60,160,80,.5)':'rgba(122, 186, 88,.3)'};display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:${est.completada?'#80D090':'var(--color-dorado-claro)'};flex-shrink:0;">${est.completada?'✓':(est.orden || est.id)}</div>
+        <div style="width:24px;height:24px;border-radius:50%;background:${est.completada?'rgba(60,160,80,.3)':'rgba(122, 186, 88,.15)'};border:1px solid ${est.completada?'rgba(60,160,80,.5)':'rgba(122, 186, 88,.3)'};display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:${est.completada?'#80D090':'var(--color-dorado-claro)'};flex-shrink:0;">${est.completada?'✓':(est.ordenRuta || '·')}</div>
         <span style="font-size:.85rem;font-weight:600;color:var(--color-texto);">${est.nombre}</span>
       </div>
-      <div style="font-size:.72rem;color:var(--color-texto-3);">${est.completada?'✅ Visitada':'⏳ Pendiente'}</div>
+      <div style="font-size:.72rem;color:var(--color-texto-3);">${atenuada ? `📍 A ${Math.round(est.distARuta || 0)} m del sendero` : (est.completada?'✅ Visitada':'⏳ Pendiente')}</div>
     </button>
-  `).join('');
+  `;
+}
+
+function renderizarGridEstaciones(estaciones) {
+  const grid = document.getElementById('grid-estaciones-mapa');
+  const enRuta = estaciones.filter(e => e.enRuta);
+  const fueraRuta = estaciones.filter(e => !e.enRuta);
+
+  let html = enRuta.map(e => tarjetaEstacion(e, false)).join('');
+
+  if (fueraRuta.length) {
+    html += `
+      <div style="grid-column:1/-1;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--glass-border);">
+        <div style="font-size:.85rem;font-weight:600;color:var(--color-texto-2);">Documentados fuera del sendero (${fueraRuta.length})</div>
+        <div style="font-size:.75rem;color:var(--color-texto-3);margin-top:.15rem;">El recorrido actual no pasa junto a estos petroglifos; se muestran en gris en el mapa.</div>
+      </div>`;
+    html += fueraRuta.map(e => tarjetaEstacion(e, true)).join('');
+  }
+
+  grid.innerHTML = html;
 }
