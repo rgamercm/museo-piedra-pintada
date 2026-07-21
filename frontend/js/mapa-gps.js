@@ -11,13 +11,9 @@ const CONFIG_GPS = {
   COOLDOWN_NARRACION_MS: 3 * 60 * 1000, // No repetir la narración de una parada antes de 3 min
 };
 
-// PROVISIONAL: qué petroglifo corresponde a cada parada del track (fin de cada
-// tramo del GeoJSON, en orden). El museo definirá el mapeo real; basta con
-// reemplazar los IDs de esta lista (deben existir en MOCK_PETROGLIFOS / la BD).
-const PETROGLIFOS_POR_PARADA = [
-  'S9R1', 'S9R2', 'S9R3', 'S9R4', 'S9R5', 'S9R6', 'S9R7',
-  'S9R8', 'S9R9', 'S9R10', 'S9R11', 'S9R12', 'S9R13', 'S9R14',
-];
+// El mapeo parada→petroglifo y la construcción de estaciones de respaldo
+// (sin API/BD) viven en estaciones-datos.js, compartido con recorrido.html
+// (Escáner QR) para que ambas páginas muestren los mismos petroglifos.
 
 // ============================================================================
 // ESTADO GLOBAL
@@ -80,32 +76,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   //     personalizada, que no trae esa información).
   let paradasTrack = [];
   try {
-    const res = await fetch('../assets/data/track.geojson');
-    if (res.ok) {
-      const geojson = await res.json();
-      const feature = geojson.features[0];
+    const { coords: coordsTrack, paradas } = await window.MuseoEstaciones.cargarTrack();
+    paradasTrack = paradas;
 
-      let coordsTrack = [];
-      if (feature.geometry.type === 'LineString') {
-        coordsTrack = feature.geometry.coordinates;
-        paradasTrack = [coordsTrack[coordsTrack.length - 1]];
-      } else if (feature.geometry.type === 'MultiLineString') {
-        // Aplanar TODOS los tramos (antes solo se usaba el primero) para que
-        // el snap-to-route y el simulador cubran la ruta completa.
-        coordsTrack = feature.geometry.coordinates.flat();
-        // Una parada por tramo: su último punto (ahí se pausó la grabación).
-        paradasTrack = feature.geometry.coordinates.map(tramo => tramo[tramo.length - 1]);
-      }
-
-      if (!rutaCargada) {
-        geojsonCoords = coordsTrack;
-        capaRuta = L.geoJSON(geojson, {
-          style: { color: '#7ABA58', weight: 4, opacity: 0.8 }
-        }).addTo(mapa);
-        mapa.fitBounds(capaRuta.getBounds());
-      }
-    } else {
-      console.warn('No se pudo cargar track.geojson');
+    if (!rutaCargada && coordsTrack.length > 1) {
+      geojsonCoords = coordsTrack;
+      const latLngs = coordsTrack.map(c => [c[1], c[0]]);
+      capaRuta = L.polyline(latLngs, { color: '#7ABA58', weight: 4, opacity: 0.8 }).addTo(mapa);
+      mapa.fitBounds(capaRuta.getBounds());
     }
   } catch (err) {
     console.error('Error cargando GeoJSON:', err);
@@ -120,7 +98,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     estacionesDatos = [];
   }
   if (!Array.isArray(estacionesDatos) || estacionesDatos.length === 0) {
-    estacionesDatos = construirEstacionesDesdeTrack(paradasTrack);
+    estacionesDatos = window.MuseoEstaciones.construirEstaciones(paradasTrack);
   }
 
   estacionesDatos.sort((a, b) => a.orden - b.orden);
@@ -170,35 +148,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   renderizarGridEstaciones(estacionesDatos);
 });
-
-/**
- * Construye las estaciones del recorrido a partir de las paradas del track
- * (fin de cada tramo del GeoJSON) y las vincula con las fichas técnicas
- * (MOCK_PETROGLIFOS) usando los IDs de PETROGLIFOS_POR_PARADA.
- * @param {Array<Array<number>>} paradasTrack  puntos [lng, lat, ...]
- */
-function construirEstacionesDesdeTrack(paradasTrack) {
-  const fichas = window.MOCK_PETROGLIFOS || [];
-  return paradasTrack.map((punto, i) => {
-    const idPetroglifo = PETROGLIFOS_POR_PARADA[i] || null;
-    const ficha = fichas.find(p => p.id === idPetroglifo) || null;
-    return {
-      id: i + 1,
-      orden: i + 1,
-      nombre: ficha ? `Estación ${i + 1} · ${ficha.nombre}` : `Estación ${i + 1}`,
-      latitud: punto[1],
-      longitud: punto[0],
-      tipo_marcador: null,
-      petroglifo_id: idPetroglifo,
-      petroglifo_codigo_qr: idPetroglifo,
-      petroglifo_imagen_url: ficha?.imagen_url || null,
-      petroglifo_categoria: ficha?.categoria || null,
-      // La narración usa texto_asistente si existe; si no, la descripción de la ficha.
-      petroglifo_texto_asistente: ficha?.texto_asistente || ficha?.descripcion || null,
-      completada: false,
-    };
-  });
-}
 
 
 // ============================================================================

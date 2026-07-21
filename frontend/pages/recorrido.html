@@ -274,8 +274,10 @@
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="../js/mock-data.js"></script>
+<script src="../js/estaciones-datos.js"></script>
 <script src="../js/componentes.js?v=2.2"></script>
-<script src="../js/api.js?v=1.3"></script>
+<script src="../js/api.js?v=1.5"></script>
 <script src="../js/app.js?v=1.3"></script>
 <script>
 'use strict';
@@ -287,7 +289,7 @@ let mapa = null;
 
 /*  Iniciar Mapa Leaflet  */
 function iniciarMapa() {
-  mapa = L.map('mapa-leaflet', { zoomControl: true }).setView([7.4225, -65.029], 15);
+  mapa = L.map('mapa-leaflet', { zoomControl: true }).setView([10.3009, -67.8877], 15);
 
   // Estilo oscuro
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
@@ -312,7 +314,8 @@ function iniciarMapa() {
 
   // Línea de recorrido
   const latlngs = ESTACIONES.map(e => [e.lat, e.lng]);
-  L.polyline(latlngs, { color: 'rgba(140, 115, 85,0.5)', weight: 3, dashArray: '6,6' }).addTo(mapa);
+  const linea = L.polyline(latlngs, { color: 'rgba(140, 115, 85,0.5)', weight: 3, dashArray: '6,6' }).addTo(mapa);
+  if (latlngs.length > 1) mapa.fitBounds(linea.getBounds(), { padding: [30, 30] });
 }
 
 /*  Lista de estaciones  */
@@ -375,6 +378,13 @@ document.getElementById('btn-completar-estacion').addEventListener('click', () =
   const est = ESTACIONES.find(e => e.id === estActiva);
   if (est && !est.completada) {
     est.completada = true;
+    if (est.petroglifo_id) {
+      const historial = JSON.parse(localStorage.getItem('museo_historial') || '[]');
+      if (!historial.includes(est.petroglifo_id)) {
+        historial.push(est.petroglifo_id);
+        localStorage.setItem('museo_historial', JSON.stringify(historial));
+      }
+    }
     renderLista();
     actualizarProgreso();
     window.Museo?.mostrarToast(` Estación ${est.id} — ${est.nombre} completada`, 'exito');
@@ -507,22 +517,37 @@ document.getElementById('btn-narrar').addEventListener('click', () => {
 
 /*  Iniciar  */
 document.addEventListener('DOMContentLoaded', async () => {
+  // Prioridad: API (BD real). Si no responde o viene vacía, se derivan las
+  // estaciones localmente desde las paradas del track GPS + fichas técnicas
+  // (mismo respaldo que usa el Mapa GPS, para que ambas páginas coincidan).
+  let estacionesFuente = [];
   try {
-    const data = await window.api.estaciones.obtenerTodas();
-    ESTACIONES = data.map((e, idx) => ({
-      id: e.id,
-      nombre: e.nombre,
-      qr: e.petroglifo ? e.petroglifo.codigo_qr : `QR-00${e.id}`,
-      lat: e.latitud,
-      lng: e.longitud,
-      completada: idx < 3, // simular las primeras 3 completadas
-      petroglifo_id: e.petroglifo_id,
-      petroglifo: e.petroglifo
-    }));
-    if (ESTACIONES.length > 0) estActiva = ESTACIONES.find(e => !e.completada)?.id || ESTACIONES[0].id;
-  } catch(err) {
-    console.error(err);
+    estacionesFuente = await window.api.estaciones.obtenerTodas();
+  } catch (err) {
+    estacionesFuente = [];
   }
+  if (!Array.isArray(estacionesFuente) || estacionesFuente.length === 0) {
+    try {
+      const { paradas } = await window.MuseoEstaciones.cargarTrack();
+      estacionesFuente = window.MuseoEstaciones.construirEstaciones(paradas);
+    } catch (err) {
+      console.error('No se pudieron derivar estaciones del track:', err);
+    }
+  }
+
+  const historial = JSON.parse(localStorage.getItem('museo_historial') || '[]');
+
+  ESTACIONES = estacionesFuente.map(e => ({
+    id: e.id,
+    nombre: e.nombre,
+    qr: e.petroglifo_codigo_qr || (e.petroglifo ? e.petroglifo.codigo_qr : `QR-00${e.id}`),
+    lat: e.latitud,
+    lng: e.longitud,
+    completada: e.petroglifo_id ? historial.includes(e.petroglifo_id) : false,
+    petroglifo_id: e.petroglifo_id,
+    petroglifo: e.petroglifo
+  }));
+  if (ESTACIONES.length > 0) estActiva = ESTACIONES.find(e => !e.completada)?.id || ESTACIONES[0].id;
 
   if (ESTACIONES.length > 0) {
     iniciarMapa();
