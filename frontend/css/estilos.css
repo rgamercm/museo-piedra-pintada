@@ -112,6 +112,7 @@ html {
   scroll-behavior: smooth;
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
+  touch-action: manipulation;
 }
 
 body {
@@ -410,6 +411,7 @@ h6 { font-size: var(--text-base); }
   transform: translateY(-20px);
   transition: opacity 0.4s var(--ease-out), transform 0.4s var(--ease-out), visibility 0.4s;
   overflow-y: auto;
+  overscroll-behavior-y: contain;
   padding: var(--sp-8) var(--sp-6);
 }
 .nav-movil.abierto {
@@ -417,6 +419,7 @@ h6 { font-size: var(--text-base); }
   pointer-events: auto;
   opacity: 1;
   transform: translateY(0);
+  touch-action: auto;
 }
 .nav-movil__enlace {
   font-family: var(--font-titulo);
@@ -1136,7 +1139,7 @@ h6 { font-size: var(--text-base); }
   border: 0;
 }
 
-.overflow-hidden { overflow: hidden; }
+.overflow-hidden { overflow: hidden !important; touch-action: none; }
 .relative { position: relative; }
 .w-full { width: 100%; }
 .text-left { text-align: left; }
