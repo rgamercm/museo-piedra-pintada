@@ -1440,8 +1440,9 @@ h1, h2, h3, h4, h5, h6, p, a, span, li, td, th, .tarjeta__titulo, .tarjeta__text
     align-items: flex-start !important;
     gap: 1.5rem !important;
     text-align: left;
+    padding-block: 0 !important;
   }
-  .hero { min-height: auto; padding-block: calc(var(--header-h) + 2rem) 3rem; }
+  .hero { min-height: auto; padding-block: calc(var(--header-h) + 1.5rem) 3rem; }
   .hero__stats { gap: 1.25rem !important; }
   .hero__scroll { display: none; }
 }
