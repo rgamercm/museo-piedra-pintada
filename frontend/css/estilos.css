@@ -351,13 +351,19 @@ h6 { font-size: var(--text-base); }
   gap: var(--sp-3);
 }
 
-/* En móvil: ocultar botones de acción del header, solo mostrar hamburguesa */
-@media (max-width: 768px) {
+/* En móvil: ocultar navegación y botones, mostrar hamburguesa */
+@media (max-width: 1024px) {
+  .nav {
+    display: none;
+  }
   .header__acciones .btn:not(:last-child) {
     display: none;
   }
   .header__acciones {
     gap: var(--sp-2);
+  }
+  .hamburguesa {
+    display: flex !important;
   }
 }
 
