@@ -27,30 +27,48 @@ document.addEventListener('DOMContentLoaded', async () => {
     maxZoom: 19
   }).addTo(mapa);
 
-  // 2. Cargar Ruta GeoJSON
+  // 2. Cargar Ruta (Intentar primero API personalizada, si no GeoJSON)
+  let rutaCargada = false;
   try {
-    const res = await fetch('../assets/data/track.geojson');
-    if (res.ok) {
-      const geojson = await res.json();
-      capaRuta = L.geoJSON(geojson, {
-        style: { color: '#7ABA58', weight: 4, opacity: 0.8 }
+    const resApi = await window.api.cliente('/api/ruta_simulador');
+    if (resApi.datos && Array.isArray(resApi.datos.coordenadas) && resApi.datos.coordenadas.length > 0) {
+      geojsonCoords = resApi.datos.coordenadas; // ya está en [lng, lat]
+      
+      // Convertir a [lat, lng] para Leaflet Polyline
+      const latLngs = geojsonCoords.map(c => [c[1], c[0]]);
+      capaRuta = L.polyline(latLngs, {
+        color: '#7ABA58', weight: 4, opacity: 0.8, dashArray: '10, 10'
       }).addTo(mapa);
-      
-      // Ajustar la vista a la ruta
       mapa.fitBounds(capaRuta.getBounds());
-      
-      // Extraer coordenadas para el simulador (asumiendo MultiLineString o LineString)
-      const feature = geojson.features[0];
-      if (feature.geometry.type === 'LineString') {
-        geojsonCoords = feature.geometry.coordinates; // [lng, lat]
-      } else if (feature.geometry.type === 'MultiLineString') {
-        geojsonCoords = feature.geometry.coordinates[0]; // [lng, lat]
-      }
-    } else {
-      console.warn('No se pudo cargar track.geojson');
+      rutaCargada = true;
     }
-  } catch (err) {
-    console.error('Error cargando GeoJSON:', err);
+  } catch (e) {
+    console.warn('No hay ruta personalizada del simulador', e);
+  }
+
+  if (!rutaCargada) {
+    try {
+      const res = await fetch('../assets/data/track.geojson');
+      if (res.ok) {
+        const geojson = await res.json();
+        capaRuta = L.geoJSON(geojson, {
+          style: { color: '#7ABA58', weight: 4, opacity: 0.8 }
+        }).addTo(mapa);
+        
+        mapa.fitBounds(capaRuta.getBounds());
+        
+        const feature = geojson.features[0];
+        if (feature.geometry.type === 'LineString') {
+          geojsonCoords = feature.geometry.coordinates; // [lng, lat]
+        } else if (feature.geometry.type === 'MultiLineString') {
+          geojsonCoords = feature.geometry.coordinates[0]; // [lng, lat]
+        }
+      } else {
+        console.warn('No se pudo cargar track.geojson');
+      }
+    } catch (err) {
+      console.error('Error cargando GeoJSON:', err);
+    }
   }
 
   // 3. Cargar Estaciones / Petroglifos

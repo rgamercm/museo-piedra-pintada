@@ -713,6 +713,12 @@ let estacionesDatosAdmin = [];
 let adminGpsTracker = null;
 let adminGpsLayer = null;
 
+// Lógica de Trazado de Ruta
+let modoDibujoRuta = false;
+let rutaSimuladorCoordenadas = [];
+let rutaSimuladorPolyline = null;
+let puntosSimuladorCapa = L.layerGroup();
+
 async function inicializarMapaAdmin() {
   if (mapaAdmin) {
     setTimeout(() => mapaAdmin.invalidateSize(), 300);
@@ -735,6 +741,13 @@ async function inicializarMapaAdmin() {
     }
 
     await cargarMarcadoresAdmin();
+    await cargarRutaSimuladorAdmin();
+    puntosSimuladorCapa.addTo(mapaAdmin);
+    
+    // UI Eventos
+    document.getElementById('btn-dibujar-ruta').addEventListener('click', toggleModoDibujo);
+    document.getElementById('btn-limpiar-ruta').addEventListener('click', limpiarRutaDibujada);
+    document.getElementById('btn-guardar-ruta').addEventListener('click', guardarRutaSimulador);
   } catch(e) {
     console.error('Error al inicializar editor de mapa:', e);
   }
@@ -812,6 +825,14 @@ async function cargarMarcadoresAdmin() {
 }
 
 async function onMapClickAdmin(e) {
+  if (modoDibujoRuta) {
+    const lat = e.latlng.lat;
+    const lng = e.latlng.lng;
+    rutaSimuladorCoordenadas.push([lat, lng]);
+    redibujarRutaSimulador();
+    return;
+  }
+
   if (marcadorTemporalAdmin) {
     mapaAdmin.removeLayer(marcadorTemporalAdmin);
   }
@@ -892,3 +913,99 @@ window.eliminarMarcadorAdmin = async function(id) {
     window.Museo?.mostrarToast('Error al eliminar', 'error');
   }
 };
+
+// --- LOGICA DE RUTA SIMULADOR ---
+
+async function cargarRutaSimuladorAdmin() {
+  try {
+    const res = await window.api.cliente(`/api/ruta_simulador`);
+    if (res.datos && Array.isArray(res.datos.coordenadas) && res.datos.coordenadas.length > 0) {
+      rutaSimuladorCoordenadas = res.datos.coordenadas.map(c => [c[1], c[0]]); // GeoJSON a Leaflet [lat, lng]
+      redibujarRutaSimulador();
+    }
+  } catch(e) {
+    console.error('Error cargando ruta simulador', e);
+  }
+}
+
+function redibujarRutaSimulador() {
+  puntosSimuladorCapa.clearLayers();
+  
+  if (rutaSimuladorPolyline) {
+    mapaAdmin.removeLayer(rutaSimuladorPolyline);
+  }
+
+  if (rutaSimuladorCoordenadas.length === 0) return;
+
+  rutaSimuladorPolyline = L.polyline(rutaSimuladorCoordenadas, {
+    color: '#4080FF',
+    weight: 4,
+    opacity: 0.8,
+    dashArray: '10, 10'
+  }).addTo(mapaAdmin);
+
+  rutaSimuladorCoordenadas.forEach((coord, i) => {
+    L.circleMarker(coord, {
+      radius: 5,
+      color: '#fff',
+      fillColor: '#4080FF',
+      fillOpacity: 1
+    }).bindTooltip(`Punto ${i+1}`).addTo(puntosSimuladorCapa);
+  });
+}
+
+function toggleModoDibujo() {
+  modoDibujoRuta = !modoDibujoRuta;
+  const btnDibujar = document.getElementById('btn-dibujar-ruta');
+  const btnGuardar = document.getElementById('btn-guardar-ruta');
+  const btnLimpiar = document.getElementById('btn-limpiar-ruta');
+  const txtInstrucciones = document.getElementById('instrucciones-mapa');
+
+  if (modoDibujoRuta) {
+    btnDibujar.innerHTML = '❌ Cancelar Dibujo';
+    btnDibujar.classList.replace('btn--contorno', 'btn--rojo');
+    btnGuardar.style.display = 'inline-block';
+    btnLimpiar.style.display = 'inline-block';
+    txtInstrucciones.innerHTML = '<strong>Modo Dibujo:</strong> Haz clic en el mapa para trazar la ruta punto por punto. Se guardará con líneas rectas.';
+    document.getElementById('mapa-editor').style.cursor = 'crosshair';
+  } else {
+    btnDibujar.innerHTML = '✏️ Dibujar Ruta';
+    btnDibujar.classList.replace('btn--rojo', 'btn--contorno');
+    btnGuardar.style.display = 'none';
+    btnLimpiar.style.display = 'none';
+    txtInstrucciones.innerHTML = '<strong>Modo Marcadores:</strong> Haz clic en cualquier parte del mapa para añadir un nuevo punto (Parada, Dirección o Petroglifo).';
+    document.getElementById('mapa-editor').style.cursor = '';
+    cargarRutaSimuladorAdmin(); // recargar original
+  }
+}
+
+function limpiarRutaDibujada() {
+  rutaSimuladorCoordenadas = [];
+  redibujarRutaSimulador();
+}
+
+async function guardarRutaSimulador() {
+  if (rutaSimuladorCoordenadas.length < 2) {
+    window.Museo?.mostrarToast('La ruta debe tener al menos 2 puntos', 'aviso');
+    return;
+  }
+  
+  // Convertir [lat, lng] a [lng, lat] para GeoJSON format
+  const geojsonCoords = rutaSimuladorCoordenadas.map(c => [c[1], c[0]]);
+
+  try {
+    const res = await window.api.cliente('/api/ruta_simulador', {
+      method: 'PUT',
+      body: JSON.stringify({ coordenadas: geojsonCoords })
+    });
+    
+    if (res.ok) {
+      window.Museo?.mostrarToast('Ruta de simulador guardada', 'exito');
+      toggleModoDibujo(); // Salir del modo dibujo
+    }
+  } catch(e) {
+    console.error(e);
+    window.Museo?.mostrarToast('Error al guardar ruta', 'error');
+  }
+}
+

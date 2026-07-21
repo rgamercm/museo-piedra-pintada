@@ -270,15 +270,19 @@
     <!-- EDITOR DE MAPA -->
     <section class="seccion-admin" id="sec-editor-mapa">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
-        <h1 style="font-size:1.5rem;">Editor de Rutas (Puntos de Interés)</h1>
+        <h1 style="font-size:1.5rem;">Editor de Rutas (Puntos de Interés y GPS)</h1>
         <div style="display:flex; gap:0.5rem;">
+          <button class="btn btn--contorno btn--sm" id="btn-dibujar-ruta" style="border-color:#4080FF;color:#4080FF;">✏️ Dibujar Ruta</button>
+          <button class="btn btn--primario btn--sm" id="btn-guardar-ruta" style="display:none;background:#4080FF;">💾 Guardar Ruta</button>
+          <button class="btn btn--contorno btn--sm" id="btn-limpiar-ruta" style="display:none;color:#F09090;">🗑️ Limpiar</button>
+          <div style="width:1px;background:var(--glass-border);margin:0 .5rem;"></div>
           <button class="btn btn--primario btn--sm" id="btn-gps-admin">📍 Rastrear mi GPS</button>
           <button class="btn btn--contorno btn--sm" id="btn-mi-pos-mapa">Ver ruta completa</button>
         </div>
       </div>
       
-      <div style="font-size: 0.85rem; color:var(--color-texto-2); margin-bottom: 1rem;">
-        <strong>Instrucciones:</strong> Haz clic en cualquier parte del mapa para añadir un nuevo punto (Parada, Dirección o Petroglifo). El algoritmo GPS atraerá a los visitantes a esta ruta.
+      <div style="font-size: 0.85rem; color:var(--color-texto-2); margin-bottom: 1rem;" id="instrucciones-mapa">
+        <strong>Modo Marcadores:</strong> Haz clic en cualquier parte del mapa para añadir un nuevo punto (Parada, Dirección o Petroglifo).
       </div>
 
       <div style="background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1rem;overflow:hidden;">
