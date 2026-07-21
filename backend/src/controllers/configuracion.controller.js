@@ -1,24 +1,20 @@
-const { supabase } = require('../config/supabase');
+const db = require('../config/db');
 
 const configuracionController = {
   // Obtener una configuración por clave (Público)
   obtenerConfiguracion: async (req, res) => {
     try {
       const { clave } = req.params;
-      const { data, error } = await supabase
-        .from('configuracion_sistema')
-        .select('valor')
-        .eq('clave', clave)
-        .single();
+      const { rows } = await db.query(
+        'SELECT valor FROM configuracion_sistema WHERE clave = $1',
+        [clave]
+      );
 
-      if (error) {
-        if (error.code === 'PGRST116') {
-          return res.status(404).json({ error: 'Configuración no encontrada.' });
-        }
-        throw error;
+      if (!rows || rows.length === 0) {
+        return res.status(404).json({ error: 'Configuración no encontrada.' });
       }
 
-      res.json(data.valor);
+      res.json(rows[0].valor);
     } catch (error) {
       console.error(`Error al obtener configuracion ${req.params.clave}:`, error);
       res.status(500).json({ error: 'Error interno al obtener configuración.' });
@@ -35,16 +31,17 @@ const configuracionController = {
         return res.status(400).json({ error: 'El valor debe ser un objeto JSON.' });
       }
 
-      // Upsert para actualizar o crear si no existe
-      const { data, error } = await supabase
-        .from('configuracion_sistema')
-        .upsert({ clave, valor, actualizado_en: new Date() })
-        .select('valor')
-        .single();
+      // Upsert (Insert on conflict update)
+      const { rows } = await db.query(
+        `INSERT INTO configuracion_sistema (clave, valor, actualizado_en)
+         VALUES ($1, $2, NOW())
+         ON CONFLICT (clave) 
+         DO UPDATE SET valor = EXCLUDED.valor, actualizado_en = EXCLUDED.actualizado_en
+         RETURNING valor`,
+        [clave, JSON.stringify(valor)]
+      );
 
-      if (error) throw error;
-
-      res.json({ mensaje: 'Configuración actualizada', valor: data.valor });
+      res.json({ mensaje: 'Configuración actualizada', valor: rows[0].valor });
     } catch (error) {
       console.error(`Error al actualizar configuracion ${req.params.clave}:`, error);
       res.status(500).json({ error: 'Error interno al actualizar configuración.' });
