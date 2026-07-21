@@ -13,6 +13,11 @@ let idSimulador = null;
 let indiceSimulador = 0;
 let estacionActualNarrada = null; // Para no narrar la misma estación 10 veces seguidas
 
+// --- ESTADO DE NAVEGACIÓN ---
+let modoNavegacion = false;
+let estacionDestinoId = null;
+let idWatchPosition = null;
+
 document.addEventListener('DOMContentLoaded', async () => {
   // 1. Inicializar mapa
   mapa = L.map('mapa-parque').setView([10.3009, -67.8877], 15);
@@ -242,26 +247,148 @@ function actualizarPuntoUsuario(rawLat, rawLng) {
   }
   
   prevPos = { lat, lng };
-  comprobarProximidad(lat, lng);
+  
+  if (modoNavegacion) {
+    actualizarPanelNavegacion(lat, lng);
+  } else {
+    comprobarProximidad(lat, lng);
+  }
+  
   return { lat, lng }; // Retornar coordenada corregida
 }
+
+// ============================================================================
+// NAVEGACIÓN ACTIVA (ESTILO GOOGLE MAPS)
+// ============================================================================
+
+function iniciarNavegacion() {
+  modoNavegacion = true;
+  document.getElementById('panel-navegacion').classList.add('activo');
+  document.getElementById('modal-normas').classList.remove('activo');
+  
+  // Buscar primera estación no completada
+  const pendientes = estacionesDatos.filter(e => !e.completada);
+  if (pendientes.length > 0) {
+    estacionDestinoId = pendientes[0].id;
+  } else {
+    window.Museo?.mostrarToast('¡Ya completaste todas las estaciones!', 'info');
+    estacionDestinoId = estacionesDatos[0].id; // Guiar al inicio si terminó
+  }
+  
+  arrancarRastreoGps();
+}
+
+function detenerNavegacion() {
+  modoNavegacion = false;
+  document.getElementById('panel-navegacion').classList.remove('activo');
+  if (idWatchPosition !== null) {
+    navigator.geolocation.clearWatch(idWatchPosition);
+    idWatchPosition = null;
+  }
+  if (idSimulador !== null) {
+    clearInterval(idSimulador);
+    idSimulador = null;
+  }
+}
+
+function actualizarPanelNavegacion(lat, lng) {
+  if (!estacionDestinoId) return;
+  const destino = estacionesDatos.find(e => e.id === estacionDestinoId);
+  if (!destino) return;
+  
+  document.getElementById('nav-prox-nombre').textContent = destino.nombre;
+  
+  const dist = calcularDistancia(lat, lng, destino.latitud, destino.longitud);
+  document.getElementById('nav-distancia').textContent = Math.round(dist) + ' m';
+  
+  // Si está muy cerca (<15m)
+  if (dist < 15) {
+    document.getElementById('nav-distancia').style.color = '#80D090';
+    document.getElementById('nav-prox-nombre').textContent = '¡Has llegado!';
+    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+    if (estacionActualNarrada !== destino.id) {
+       estacionActualNarrada = destino.id;
+       if (destino.petroglifo_texto_asistente && !window.MuseoVoz.estaNarrando()) {
+         window.MuseoVoz.narrar(destino.petroglifo_texto_asistente);
+       }
+       marcadores[destino.id]?.openPopup();
+    }
+  } else {
+    document.getElementById('nav-distancia').style.color = 'var(--color-dorado)';
+  }
+}
+
+document.getElementById('btn-ya-llegue').addEventListener('click', () => {
+  if (!estacionDestinoId) return;
+  
+  // Marcar como completada en UI
+  const est = estacionesDatos.find(e => e.id === estacionDestinoId);
+  if (est) est.completada = true;
+  
+  // Guardar en localStorage
+  const historial = JSON.parse(localStorage.getItem('museo_historial') || '[]');
+  if (!historial.includes(est.petroglifo_id)) {
+    historial.push(est.petroglifo_id);
+    localStorage.setItem('museo_historial', JSON.stringify(historial));
+  }
+  
+  renderizarGridEstaciones(estacionesDatos);
+  
+  // Pasar a la siguiente
+  const pendientes = estacionesDatos.filter(e => !e.completada);
+  if (pendientes.length > 0) {
+    estacionDestinoId = pendientes[0].id;
+    window.Museo?.mostrarToast(`Dirígete a: ${pendientes[0].nombre}`, 'info');
+  } else {
+    window.Museo?.mostrarToast('¡Felicidades, has completado todo el recorrido!', 'exito');
+    detenerNavegacion();
+  }
+});
+
+document.getElementById('btn-salir-nav').addEventListener('click', detenerNavegacion);
+
+// ============================================================================
+// MODAL DE NORMAS
+// ============================================================================
+document.getElementById('btn-iniciar-navegacion').addEventListener('click', () => {
+  document.getElementById('modal-normas').classList.add('activo');
+});
+
+document.getElementById('btn-cerrar-modal').addEventListener('click', () => {
+  document.getElementById('modal-normas').classList.remove('activo');
+});
+
+document.getElementById('check-normas').addEventListener('change', (e) => {
+  const btn = document.getElementById('btn-aceptar-normas');
+  if (e.target.checked) {
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = 'auto';
+  } else {
+    btn.disabled = true;
+    btn.style.opacity = '0.5';
+    btn.style.pointerEvents = 'none';
+  }
+});
+
+document.getElementById('btn-aceptar-normas').addEventListener('click', iniciarNavegacion);
 
 
 // ============================================================================
 // BOTONES E INTERFAZ
 // ============================================================================
 
-// Botón: Mi Ubicación Real (GPS)
-document.getElementById('btn-mi-pos-mapa').addEventListener('click', () => {
+function arrancarRastreoGps() {
   if (idSimulador) { clearInterval(idSimulador); idSimulador = null; }
+  if (idWatchPosition) { navigator.geolocation.clearWatch(idWatchPosition); idWatchPosition = null; }
   
   if (!navigator.geolocation) { 
     window.Museo?.mostrarToast('GPS no disponible en tu navegador', 'aviso'); 
     return; 
   }
   
-  window.Museo?.mostrarToast('Buscando señal GPS...', 'info');
-  navigator.geolocation.watchPosition(
+  window.Museo?.mostrarToast('Buscando señal GPS y activando rastreo...', 'info');
+  idWatchPosition = navigator.geolocation.watchPosition(
     pos => {
       const {latitude:rawLat, longitude:rawLng} = pos.coords;
       const { lat, lng } = actualizarPuntoUsuario(rawLat, rawLng);
@@ -271,9 +398,12 @@ document.getElementById('btn-mi-pos-mapa').addEventListener('click', () => {
       console.warn('Error GPS:', err);
       window.Museo?.mostrarToast('Asegúrate de darle permisos de ubicación al navegador.', 'aviso');
     },
-    { enableHighAccuracy: true, maximumAge: 10000, timeout: 5000 }
+    { enableHighAccuracy: true, maximumAge: 5000, timeout: 5000 }
   );
-});
+}
+
+// Botón: Mi Ubicación Real (GPS)
+document.getElementById('btn-mi-pos-mapa').addEventListener('click', arrancarRastreoGps);
 
 // Botón: Simulador (Dev)
 document.getElementById('btn-simular-gps').addEventListener('click', () => {
