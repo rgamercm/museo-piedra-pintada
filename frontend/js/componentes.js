@@ -169,11 +169,7 @@ function generarFooter() {
     <div class="footer__grid">
       <div>
         <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;">
-          <div class="logo__icono" aria-hidden="true"></div>
-          <div class="logo__texto">
-            <span class="logo__nombre" style="font-weight: normal;">Museo Parque Arqueológico</span>
-            <span class="logo__subtitulo" style="font-weight: bold;">Piedra Pintada</span>
-          </div>
+          <img src="${base}assets/img/logo-museo.png" alt="Logo Museo Piedra Pintada" style="height: 60px; width: auto; object-fit: contain;">
         </div>
         <p class="footer__descripcion">
           Un viaje al corazón de la historia precolombina venezolana a través de sus petroglifos únicos en el mundo.
@@ -203,8 +199,7 @@ function generarFooter() {
       <div>
         <h3 class="footer__titulo">Contacto</h3>
         <ul class="footer__lista">
-          <li><span class="footer__enlace">Parque Piedra Pintada, Venezuela</span></li>
-          <li><span class="footer__enlace">+58 XXX-XXXXXXX</span></li>
+          <li><span class="footer__enlace">Sector Tronconero Norte de Vigirima,<br>Municipio Guacara, Edo. Carabobo,<br>Venezuela</span></li>
           <li><span class="footer__enlace">contacto@piedrapintada.ve</span></li>
         </ul>
       </div>
