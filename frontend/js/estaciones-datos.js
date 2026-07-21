@@ -80,9 +80,8 @@ function construirEstaciones(paradas) {
 
 // ── Clasificación de estaciones respecto al sendero ──────────────────────
 // Un petroglifo "pasa por el recorrido" si está a menos de este umbral del
-// sendero. Según los datos reales: 57 de 99 quedan dentro de 35 m; el resto
-// está a 40 m – 1.4 km (otras zonas del sitio que la ruta actual no visita).
-const UMBRAL_RUTA_M = 35;
+// sendero. Se aumentó a 150m para asegurar que S9R81 y otros importantes entren.
+const UMBRAL_RUTA_M = 150;
 
 function _haversine(lat1, lon1, lat2, lon2) {
   const R = 6371e3;

@@ -177,7 +177,7 @@
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:1rem;">
       <div>
         <h1 style="font-size:1.8rem;margin-bottom:.25rem;">Recorrido Interactivo</h1>
-        <p style="color:var(--color-texto-3);font-size:.9rem;">12 estaciones · ~2 horas · Con guía de voz y QR</p>
+        <p style="color:var(--color-texto-3);font-size:.9rem;">Petroglifos documentados · Con guía de voz y QR</p>
       </div>
       <!-- Progreso -->
       <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
@@ -231,7 +231,7 @@
 
         <!-- Estación activa -->
         <div class="panel-card" id="panel-estacion">
-          <div class="panel-card__titulo"> Estación Activa</div>
+          <div class="panel-card__titulo"> Petroglifo Activo</div>
           <div style="margin-bottom:1rem;">
             <img id="est-img" src="../assets/img/petroglifo-01.png" alt="" style="width:100%;border-radius:.75rem;aspect-ratio:16/9;object-fit:cover;" loading="lazy">
           </div>
@@ -259,8 +259,11 @@
 
         <!-- Lista de estaciones -->
         <div class="panel-card">
-          <div class="panel-card__titulo">Estaciones del recorrido</div>
-          <ul class="estaciones-lista" id="lista-estaciones" aria-label="Lista de estaciones del recorrido"></ul>
+          <div class="panel-card__titulo">Petroglifos del recorrido</div>
+          <div style="margin-bottom:1rem;">
+            <input type="text" id="buscador-petroglifos" placeholder="Buscar por código (ej. S9R81) o nombre..." style="width:100%;padding:.7rem;border-radius:.5rem;border:1px solid var(--glass-border);background:var(--bg-body);color:var(--color-texto-1);font-size:.9rem;">
+          </div>
+          <ul class="estaciones-lista" id="lista-estaciones" aria-label="Lista de petroglifos del recorrido"></ul>
         </div>
 
       </div><!-- fin panel-lateral -->
@@ -319,9 +322,16 @@ function iniciarMapa() {
 }
 
 /*  Lista de estaciones  */
-function renderLista() {
+function renderLista(filtro = '') {
   const ul = document.getElementById('lista-estaciones');
-  ul.innerHTML = ESTACIONES.map(est => `
+  const term = filtro.toLowerCase().trim();
+  
+  const filtradas = term ? ESTACIONES.filter(e => 
+    e.nombre.toLowerCase().includes(term) || 
+    (e.qr && e.qr.toLowerCase().includes(term))
+  ) : ESTACIONES;
+
+  ul.innerHTML = filtradas.map(est => `
     <li>
       <button class="estacion-item ${est.completada?'completada':''} ${est.id===estActiva?'activa':''}"
         onclick="activarEstacion(${est.id})" id="estacion-btn-${est.id}"
@@ -335,7 +345,15 @@ function renderLista() {
       </button>
     </li>
   `).join('');
+  
+  if (filtradas.length === 0) {
+    ul.innerHTML = '<li style="text-align:center;padding:1rem;color:var(--color-texto-3);font-size:.85rem;">No se encontraron petroglifos</li>';
+  }
 }
+
+document.getElementById('buscador-petroglifos')?.addEventListener('input', (e) => {
+  renderLista(e.target.value);
+});
 
 /*  Activar estación  */
 function activarEstacion(id) {
@@ -344,7 +362,7 @@ function activarEstacion(id) {
   if (!est) return;
 
   document.getElementById('est-nombre').textContent = est.nombre;
-  document.getElementById('est-qr').textContent = ` Estación ${est.id} · ${est.qr}`;
+  document.getElementById('est-qr').textContent = ` Petroglifo ${est.id} · ${est.qr}`;
   if (est.petroglifo_id) {
     document.getElementById('btn-ver-detalle-est').href = `petroglifo-detalle.html?id=${est.petroglifo_id}`;
     document.getElementById('btn-ver-detalle-est').style.display = 'flex';
@@ -387,7 +405,7 @@ document.getElementById('btn-completar-estacion').addEventListener('click', () =
     }
     renderLista();
     actualizarProgreso();
-    window.Museo?.mostrarToast(` Estación ${est.id} — ${est.nombre} completada`, 'exito');
+    window.Museo?.mostrarToast(` Petroglifo ${est.id} — ${est.nombre} completado`, 'exito');
     // Ir a la siguiente
     const siguiente = ESTACIONES.find(e => !e.completada);
     if (siguiente) setTimeout(() => activarEstacion(siguiente.id), 1000);
