@@ -212,6 +212,7 @@
           <div class="panel-card__titulo"> Escáner QR</div>
           <div class="qr-scanner-area" id="qr-area">
             <video id="qr-video" playsinline autoplay style="display:none;"></video>
+            <canvas id="qr-canvas" hidden></canvas>
             <div id="qr-placeholder" style="text-align:center;padding:1rem;">
               <div style="font-size:3rem;margin-bottom:.75rem;"></div>
               <div style="font-size:.85rem;color:var(--color-texto-2);margin-bottom:1rem;">Activa la cámara para escanear el código QR de la estación</div>
@@ -269,6 +270,8 @@
 
 <div id="footer-placeholder"></div>
 
+<!-- jsQR para escaneo de códigos desde cámara -->
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="../js/componentes.js?v=2.2"></script>
@@ -393,16 +396,66 @@ document.getElementById('btn-simular-qr').addEventListener('click', () => {
   setTimeout(() => document.getElementById('btn-narrar').click(), 500);
 });
 
-/*  Cámara (GPS)  */
+/*  Cámara (GPS y QR Scanner)  */
+let qrInterval = null;
+let streamGlobal = null;
+
+function detenerCamara() {
+  if (qrInterval) cancelAnimationFrame(qrInterval);
+  if (streamGlobal) {
+    streamGlobal.getTracks().forEach(t => t.stop());
+    streamGlobal = null;
+  }
+  document.getElementById('qr-video').style.display = 'none';
+  document.getElementById('qr-placeholder').style.display = '';
+  document.getElementById('qr-linea').style.display = 'none';
+}
+
 document.getElementById('btn-activar-camara').addEventListener('click', async () => {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+    streamGlobal = stream;
     const video = document.getElementById('qr-video');
+    const canvas = document.getElementById('qr-canvas');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    
     video.srcObject = stream;
+    video.setAttribute("playsinline", true);
+    video.play();
+    
     video.style.display = '';
     document.getElementById('qr-placeholder').style.display = 'none';
     document.getElementById('qr-linea').style.display = '';
     window.Museo?.mostrarToast('Cámara activa — apunta al código QR de la estación', 'info');
+    
+    const escanearFrame = () => {
+      if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        canvas.height = video.videoHeight;
+        canvas.width = video.videoWidth;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        
+        if (window.jsQR) {
+          const codigo = jsQR(imageData.data, imageData.width, imageData.height, {
+            inversionAttempts: "dontInvert",
+          });
+          
+          if (codigo && codigo.data) {
+            const est = ESTACIONES.find(e => e.qr === codigo.data || codigo.data.includes(e.qr));
+            if (est) {
+              window.Museo?.mostrarToast(`QR escaneado: ${est.nombre}`, 'exito');
+              activarEstacion(est.id);
+              detenerCamara();
+              setTimeout(() => document.getElementById('btn-narrar').click(), 800);
+              return;
+            }
+          }
+        }
+      }
+      qrInterval = requestAnimationFrame(escanearFrame);
+    };
+    
+    qrInterval = requestAnimationFrame(escanearFrame);
   } catch(e) {
     window.Museo?.mostrarToast('No se pudo acceder a la cámara. Verifica los permisos en ajustes.', 'aviso');
   }
