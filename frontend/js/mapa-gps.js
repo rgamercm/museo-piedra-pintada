@@ -1,129 +1,177 @@
 'use strict';
 
 // ============================================================================
-// CONFIGURACIÓN Y MAPA BASE
+// CONFIGURACIÓN DEL RECORRIDO GUIADO
+// ============================================================================
+const CONFIG_GPS = {
+  RADIO_ACTIVACION_M: 10,      // Radio (metros) para considerar que llegaste a una parada
+  RADIO_SALIDA_M: 18,          // Hay que alejarse más de esto para poder re-disparar la misma parada
+  PRECISION_MAXIMA_M: 30,      // Lecturas GPS con precisión peor que esto se descartan
+  VELOCIDAD_MAXIMA_MS: 8,      // Saltos que impliquen ir a más de 8 m/s (a pie) se descartan
+  COOLDOWN_NARRACION_MS: 3 * 60 * 1000, // No repetir la narración de una parada antes de 3 min
+};
+
+// PROVISIONAL: qué petroglifo corresponde a cada parada del track (fin de cada
+// tramo del GeoJSON, en orden). El museo definirá el mapeo real; basta con
+// reemplazar los IDs de esta lista (deben existir en MOCK_PETROGLIFOS / la BD).
+const PETROGLIFOS_POR_PARADA = [
+  'S9R1', 'S9R2', 'S9R3', 'S9R4', 'S9R5', 'S9R6', 'S9R7',
+  'S9R8', 'S9R9', 'S9R10', 'S9R11', 'S9R12', 'S9R13', 'S9R14',
+];
+
+// ============================================================================
+// ESTADO GLOBAL
 // ============================================================================
 let mapa;
 let capaRuta;
 let capaUsuario;
 let estacionesDatos = [];
 let marcadores = {}; // Diccionario id_estacion -> L.marker
-let geojsonCoords = []; // Coordenadas del GeoJSON para el simulador
+let geojsonCoords = []; // Coordenadas [lng, lat] de TODA la ruta (tramos aplanados)
 let idSimulador = null;
 let indiceSimulador = 0;
-let estacionActualNarrada = null; // Para no narrar la misma estación 10 veces seguidas
 
 // --- ESTADO DE NAVEGACIÓN ---
 let modoNavegacion = false;
 let estacionDestinoId = null;
 let idWatchPosition = null;
+let wakeLock = null;            // Screen Wake Lock (pantalla siempre encendida)
+let rumboUsuario = null;        // Rumbo de movimiento del usuario (grados 0-360)
+let ultimaLectura = null;       // Última lectura GPS aceptada {lat, lng, t}
+let avisoPrecisionMostrado = false;
+
+// Registro de disparos por estación: id -> { narradaEn: timestamp, dentro: bool }
+const registroParadas = {};
 
 document.addEventListener('DOMContentLoaded', async () => {
   // 1. Inicializar mapa
   mapa = L.map('mapa-parque').setView([10.3009, -67.8877], 15);
-  
+
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
     attribution: '© OpenStreetMap © CARTO',
     maxZoom: 19
   }).addTo(mapa);
 
-  // 2. Cargar Ruta (Intentar primero API personalizada, si no GeoJSON)
-  let rutaCargada = false;
+  // 2. Cargar la línea del recorrido desde el GeoJSON.
+  //    El archivo contiene SOLO la ruta (MultiLineString). Los fines de cada
+  //    tramo son las pausas de la grabación = paradas frente a un petroglifo.
+  let paradasTrack = [];
   try {
-    const resApi = await window.api.cliente('/api/ruta_simulador');
-    if (resApi.datos && Array.isArray(resApi.datos.coordenadas) && resApi.datos.coordenadas.length > 0) {
-      geojsonCoords = resApi.datos.coordenadas; // ya está en [lng, lat]
-      
-      // Convertir a [lat, lng] para Leaflet Polyline
-      const latLngs = geojsonCoords.map(c => [c[1], c[0]]);
-      capaRuta = L.polyline(latLngs, {
-        color: '#7ABA58', weight: 4, opacity: 0.8, dashArray: '10, 10'
+    const res = await fetch('../assets/data/track.geojson');
+    if (res.ok) {
+      const geojson = await res.json();
+      capaRuta = L.geoJSON(geojson, {
+        style: { color: '#7ABA58', weight: 4, opacity: 0.8 }
       }).addTo(mapa);
+
       mapa.fitBounds(capaRuta.getBounds());
-      rutaCargada = true;
-    }
-  } catch (e) {
-    console.warn('No hay ruta personalizada del simulador', e);
-  }
 
-  if (!rutaCargada) {
-    try {
-      const res = await fetch('../assets/data/track.geojson');
-      if (res.ok) {
-        const geojson = await res.json();
-        capaRuta = L.geoJSON(geojson, {
-          style: { color: '#7ABA58', weight: 4, opacity: 0.8 }
-        }).addTo(mapa);
-        
-        mapa.fitBounds(capaRuta.getBounds());
-        
-        const feature = geojson.features[0];
-        if (feature.geometry.type === 'LineString') {
-          geojsonCoords = feature.geometry.coordinates; // [lng, lat]
-        } else if (feature.geometry.type === 'MultiLineString') {
-          geojsonCoords = feature.geometry.coordinates[0]; // [lng, lat]
-        }
-      } else {
-        console.warn('No se pudo cargar track.geojson');
+      const feature = geojson.features[0];
+      if (feature.geometry.type === 'LineString') {
+        geojsonCoords = feature.geometry.coordinates;
+        paradasTrack = [feature.geometry.coordinates[feature.geometry.coordinates.length - 1]];
+      } else if (feature.geometry.type === 'MultiLineString') {
+        // Aplanar TODOS los tramos (antes solo se usaba el primero) para que
+        // el snap-to-route y el simulador cubran la ruta completa.
+        geojsonCoords = feature.geometry.coordinates.flat();
+        // Una parada por tramo: su último punto (ahí se pausó la grabación).
+        paradasTrack = feature.geometry.coordinates.map(tramo => tramo[tramo.length - 1]);
       }
-    } catch (err) {
-      console.error('Error cargando GeoJSON:', err);
+    } else {
+      console.warn('No se pudo cargar track.geojson');
     }
+  } catch (err) {
+    console.error('Error cargando GeoJSON:', err);
   }
 
-  // 3. Cargar Estaciones / Petroglifos
+  // 3. Cargar Estaciones. Prioridad: API (BD real). Si la API no responde o
+  //    viene vacía, se construyen localmente desde las paradas del track,
+  //    vinculando cada una con su ficha técnica (mock-data) por ID.
   try {
     estacionesDatos = await window.api.estaciones.obtenerTodas();
-    estacionesDatos.sort((a, b) => a.orden - b.orden);
-    
-    const historial = JSON.parse(localStorage.getItem('museo_historial') || '[]');
-    
-    estacionesDatos.forEach(est => {
-      est.completada = historial.includes(est.petroglifo_id);
-      if (!est.latitud || !est.longitud) return;
-      
-      let color = '#35882F'; // Verde por defecto (Pendiente)
-      if (est.completada) color = '#60C080';
-      if (est.tipo_marcador === 'parada') color = '#e6a23c'; // Naranja
-      if (est.tipo_marcador === 'continuar') color = '#409eff'; // Azul
-      
-      const char = est.tipo_marcador === 'parada' ? 'P' : (est.tipo_marcador === 'continuar' ? '→' : (est.orden || est.id));
+  } catch (e) {
+    estacionesDatos = [];
+  }
+  if (!Array.isArray(estacionesDatos) || estacionesDatos.length === 0) {
+    estacionesDatos = construirEstacionesDesdeTrack(paradasTrack);
+  }
 
-      const icono = L.divIcon({
-        className: '',
-        html: `<div style="width:30px;height:30px;border-radius:50%;background:${color};border:2px solid rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;box-shadow:0 2px 8px rgba(0,0,0,.6);">${char}</div>`,
-        iconSize:[30,30], iconAnchor:[15,15]
-      });
-      
-      // HTML del Popup interactivo
-      const imgHtml = est.petroglifo_imagen_url 
-        ? `<img src="${est.petroglifo_imagen_url}" style="width:100%;height:120px;object-fit:cover;border-radius:8px;margin-bottom:8px;" onerror="this.style.display='none'">` 
-        : '';
-        
-      const popupHtml = `
-        <div style="min-width:180px;">
-          ${imgHtml}
-          <h4 style="margin:0 0 5px;color:#0D2049;">${est.nombre}</h4>
-          <p style="margin:0 0 10px;font-size:12px;color:#555;">${est.petroglifo_categoria || 'Petroglifo'}</p>
-          <div style="display:flex;gap:5px;">
-             <button onclick="escucharVoz(${est.id})" class="btn btn--primario btn--sm" style="flex:1;padding:4px;"><span style="font-size:16px;">🔊</span></button>
-             <a href="petroglifo-detalle.html?qr=${est.petroglifo_codigo_qr}" class="btn btn--contorno btn--sm" style="flex:1;padding:4px;text-align:center;">Ficha</a>
-          </div>
-        </div>
-      `;
+  estacionesDatos.sort((a, b) => a.orden - b.orden);
 
-      const marcador = L.marker([est.latitud, est.longitud], { icon: icono })
-        .addTo(mapa)
-        .bindPopup(popupHtml, { minWidth: 200 });
-        
-      marcadores[est.id] = marcador;
+  const historial = JSON.parse(localStorage.getItem('museo_historial') || '[]');
+
+  estacionesDatos.forEach(est => {
+    est.completada = historial.includes(est.petroglifo_id);
+    if (!est.latitud || !est.longitud) return;
+
+    let color = '#35882F'; // Verde por defecto (Pendiente)
+    if (est.completada) color = '#60C080';
+    if (est.tipo_marcador === 'parada') color = '#e6a23c'; // Naranja
+    if (est.tipo_marcador === 'continuar') color = '#409eff'; // Azul
+
+    const char = est.tipo_marcador === 'parada' ? 'P' : (est.tipo_marcador === 'continuar' ? '→' : (est.orden || est.id));
+
+    const icono = L.divIcon({
+      className: '',
+      html: `<div style="width:30px;height:30px;border-radius:50%;background:${color};border:2px solid rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;box-shadow:0 2px 8px rgba(0,0,0,.6);">${char}</div>`,
+      iconSize:[30,30], iconAnchor:[15,15]
     });
 
-    renderizarGridEstaciones(estacionesDatos);
-  } catch(e) {
-    console.error('Error al cargar estaciones:', e);
-  }
+    // HTML del Popup interactivo
+    const imgHtml = est.petroglifo_imagen_url
+      ? `<img src="${est.petroglifo_imagen_url}" style="width:100%;height:120px;object-fit:cover;border-radius:8px;margin-bottom:8px;" onerror="this.style.display='none'">`
+      : '';
+
+    const popupHtml = `
+      <div style="min-width:180px;">
+        ${imgHtml}
+        <h4 style="margin:0 0 5px;color:#0D2049;">${est.nombre}</h4>
+        <p style="margin:0 0 10px;font-size:12px;color:#555;">${est.petroglifo_categoria || 'Petroglifo'}</p>
+        <div style="display:flex;gap:5px;">
+           <button onclick="escucharVoz(${est.id})" class="btn btn--primario btn--sm" style="flex:1;padding:4px;"><span style="font-size:16px;">🔊</span></button>
+           <a href="petroglifo-detalle.html?qr=${est.petroglifo_codigo_qr}" class="btn btn--contorno btn--sm" style="flex:1;padding:4px;text-align:center;">Ficha</a>
+        </div>
+      </div>
+    `;
+
+    const marcador = L.marker([est.latitud, est.longitud], { icon: icono })
+      .addTo(mapa)
+      .bindPopup(popupHtml, { minWidth: 200 });
+
+    marcadores[est.id] = marcador;
+  });
+
+  renderizarGridEstaciones(estacionesDatos);
 });
+
+/**
+ * Construye las estaciones del recorrido a partir de las paradas del track
+ * (fin de cada tramo del GeoJSON) y las vincula con las fichas técnicas
+ * (MOCK_PETROGLIFOS) usando los IDs de PETROGLIFOS_POR_PARADA.
+ * @param {Array<Array<number>>} paradasTrack  puntos [lng, lat, ...]
+ */
+function construirEstacionesDesdeTrack(paradasTrack) {
+  const fichas = window.MOCK_PETROGLIFOS || [];
+  return paradasTrack.map((punto, i) => {
+    const idPetroglifo = PETROGLIFOS_POR_PARADA[i] || null;
+    const ficha = fichas.find(p => p.id === idPetroglifo) || null;
+    return {
+      id: i + 1,
+      orden: i + 1,
+      nombre: ficha ? `Estación ${i + 1} · ${ficha.nombre}` : `Estación ${i + 1}`,
+      latitud: punto[1],
+      longitud: punto[0],
+      tipo_marcador: null,
+      petroglifo_id: idPetroglifo,
+      petroglifo_codigo_qr: idPetroglifo,
+      petroglifo_imagen_url: ficha?.imagen_url || null,
+      petroglifo_categoria: ficha?.categoria || null,
+      // La narración usa texto_asistente si existe; si no, la descripción de la ficha.
+      petroglifo_texto_asistente: ficha?.texto_asistente || ficha?.descripcion || null,
+      completada: false,
+    };
+  });
+}
 
 
 // ============================================================================
@@ -141,7 +189,7 @@ window.escucharVoz = function(idEstacion) {
 
 
 // ============================================================================
-// LÓGICA DE UBICACIÓN Y PROXIMIDAD
+// GEOMETRÍA: DISTANCIA, RUMBO Y REFERENCIA ESPACIAL
 // ============================================================================
 
 // Fórmula de Haversine para distancia en metros entre dos coordenadas
@@ -159,41 +207,162 @@ function calcularDistancia(lat1, lon1, lat2, lon2) {
   return R * c;
 }
 
-// Verifica si estamos cerca de alguna estación (< 15 metros)
+// Rumbo (bearing) en grados 0-360 desde el punto 1 hacia el punto 2
+function calcularRumbo(lat1, lon1, lat2, lon2) {
+  const φ1 = lat1 * Math.PI/180;
+  const φ2 = lat2 * Math.PI/180;
+  const Δλ = (lon2-lon1) * Math.PI/180;
+
+  const y = Math.sin(Δλ) * Math.cos(φ2);
+  const x = Math.cos(φ1) * Math.sin(φ2) - Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
+  return (Math.atan2(y, x) * 180/Math.PI + 360) % 360;
+}
+
+/**
+ * Convierte el ángulo entre el rumbo del usuario y la dirección al petroglifo
+ * en una referencia hablada: "Frente a ti", "A tu derecha", etc.
+ * Si aún no conocemos el rumbo del usuario, devuelve una frase neutra.
+ */
+function referenciaEspacial(lat, lng, est) {
+  if (rumboUsuario === null) return 'Muy cerca de ti';
+
+  const rumboAlPunto = calcularRumbo(lat, lng, est.latitud, est.longitud);
+  // Diferencia normalizada a [-180, 180]
+  let dif = ((rumboAlPunto - rumboUsuario + 540) % 360) - 180;
+
+  if (dif >= -35 && dif <= 35)   return 'Frente a ti';
+  if (dif > 35 && dif < 145)     return 'A tu derecha';
+  if (dif < -35 && dif > -145)   return 'A tu izquierda';
+  return 'Detrás de ti';
+}
+
+
+// ============================================================================
+// DETECCIÓN DE PROXIMIDAD (RADIO + COOLDOWN + REGISTRO DE VISITADOS)
+// ============================================================================
+
 function comprobarProximidad(lat, lng) {
+  const ahora = Date.now();
+  let candidata = null;
+  let distCandidata = Infinity;
+
   for (const est of estacionesDatos) {
     if (!est.latitud || !est.longitud) continue;
-    
+
     const distancia = calcularDistancia(lat, lng, est.latitud, est.longitud);
-    
-    if (distancia <= 15) { // 15 metros de radio
-      if (estacionActualNarrada !== est.id) {
-        // Acabamos de llegar a esta estación
-        estacionActualNarrada = est.id;
-        
-        // 1. Vibración si el teléfono lo soporta (200ms encendido, 100ms apagado, 200ms encendido)
-        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-        
-        // 2. Abrir Popup
-        const marcador = marcadores[est.id];
-        if (marcador) {
-          marcador.openPopup();
-          mapa.panTo([est.latitud, est.longitud]);
-        }
-        
-        // 3. Notificación interactiva / Voz
-        window.Museo?.mostrarToast(`¡Has llegado a: ${est.nombre}!`, 'exito');
-        if (est.petroglifo_texto_asistente && !window.MuseoVoz.estaNarrando()) {
-           window.MuseoVoz.narrar(est.petroglifo_texto_asistente);
-        }
+    const reg = registroParadas[est.id] || (registroParadas[est.id] = { narradaEn: 0, dentro: false });
+
+    if (distancia <= CONFIG_GPS.RADIO_ACTIVACION_M) {
+      // Puede haber paradas con radios solapados (a metros una de otra):
+      // atendemos siempre la MÁS CERCANA al usuario.
+      if (distancia < distCandidata) {
+        candidata = est;
+        distCandidata = distancia;
       }
-      return; // Solo alertamos de una estación a la vez
+    } else if (reg.dentro && distancia > CONFIG_GPS.RADIO_SALIDA_M) {
+      // Para "salir" de una parada hay que alejarse más allá del radio de
+      // salida (evita parpadeos dentro/fuera por el ruido del GPS).
+      reg.dentro = false;
     }
   }
-  
-  // Si salimos del radio de todas las estaciones, reseteamos
-  estacionActualNarrada = null;
+
+  if (candidata) {
+    // Histéresis + cooldown: solo se dispara al ENTRAR al radio, y no se
+    // repite aunque el usuario se quede parado frente al petroglifo.
+    const reg = registroParadas[candidata.id];
+    const enCooldown = (ahora - reg.narradaEn) < CONFIG_GPS.COOLDOWN_NARRACION_MS;
+    if (!reg.dentro && !enCooldown) {
+      reg.dentro = true;
+      reg.narradaEn = ahora;
+      alLlegarAParada(candidata, lat, lng, distCandidata);
+    }
+  }
 }
+
+/** Flujo completo al entrar al radio de una parada. */
+function alLlegarAParada(est, lat, lng, distancia) {
+  // 1. Vibración si el teléfono lo soporta
+  if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+
+  // 2. Abrir su tarjeta (popup) en el mapa
+  const marcador = marcadores[est.id];
+  if (marcador) {
+    marcador.openPopup();
+    mapa.panTo([est.latitud, est.longitud]);
+  }
+
+  // 3. Marcar como visitada (registro persistente) y refrescar la UI
+  est.completada = true;
+  if (est.petroglifo_id) {
+    const historial = JSON.parse(localStorage.getItem('museo_historial') || '[]');
+    if (!historial.includes(est.petroglifo_id)) {
+      historial.push(est.petroglifo_id);
+      localStorage.setItem('museo_historial', JSON.stringify(historial));
+    }
+  }
+  renderizarGridEstaciones(estacionesDatos);
+
+  // 4. Notificación + narración con referencia espacial
+  window.Museo?.mostrarToast(`¡Has llegado a: ${est.nombre}!`, 'exito');
+
+  if (est.petroglifo_texto_asistente && !window.MuseoVoz.estaNarrando()) {
+    const referencia = referenciaEspacial(lat, lng, est);
+    const metros = Math.max(1, Math.round(distancia));
+    const texto = `${referencia} se encuentra ${est.nombre}, a unos ${metros} metros. ${est.petroglifo_texto_asistente}`;
+    window.MuseoVoz.narrar(texto);
+  }
+
+  // 5. En modo navegación: avanzar automáticamente a la siguiente pendiente
+  if (modoNavegacion && est.id === estacionDestinoId) {
+    const pendientes = estacionesDatos.filter(e => !e.completada);
+    if (pendientes.length > 0) {
+      estacionDestinoId = pendientes[0].id;
+    } else {
+      window.Museo?.mostrarToast('¡Felicidades, has completado todo el recorrido!', 'exito');
+    }
+  }
+}
+
+
+// ============================================================================
+// FILTROS DE GPS (PRECISIÓN Y SALTOS ERRÓNEOS)
+// ============================================================================
+
+/**
+ * Valida una lectura del GPS antes de usarla.
+ * Descarta lecturas imprecisas (accuracy alta) y saltos imposibles a pie.
+ * @returns {boolean} true si la lectura es confiable
+ */
+function lecturaConfiable(pos) {
+  const { accuracy, latitude, longitude } = pos.coords;
+
+  // Filtro 1: precisión reportada por el dispositivo
+  if (typeof accuracy === 'number' && accuracy > CONFIG_GPS.PRECISION_MAXIMA_M) {
+    if (!avisoPrecisionMostrado) {
+      avisoPrecisionMostrado = true;
+      window.Museo?.mostrarToast(`Señal GPS imprecisa (±${Math.round(accuracy)} m). Buscando mejor señal…`, 'aviso');
+    }
+    return false;
+  }
+
+  // Filtro 2: salto imposible (teletransporte) respecto a la última lectura buena
+  if (ultimaLectura) {
+    const dt = (pos.timestamp - ultimaLectura.t) / 1000;
+    if (dt > 0) {
+      const d = calcularDistancia(ultimaLectura.lat, ultimaLectura.lng, latitude, longitude);
+      if (d / dt > CONFIG_GPS.VELOCIDAD_MAXIMA_MS) return false;
+    }
+  }
+
+  avisoPrecisionMostrado = false;
+  ultimaLectura = { lat: latitude, lng: longitude, t: pos.timestamp };
+  return true;
+}
+
+
+// ============================================================================
+// SNAP-TO-ROUTE Y PUNTO DEL USUARIO
+// ============================================================================
 
 let prevPos = null;
 
@@ -210,15 +379,15 @@ function snapToRoute(lat, lng) {
   if (!geojsonCoords || geojsonCoords.length < 2) return { lat, lng };
   let minDist = Infinity;
   let snapped = { lat, lng };
-  
+
   for (let i = 0; i < geojsonCoords.length - 1; i++) {
     const a = { x: geojsonCoords[i][0], y: geojsonCoords[i][1] };
     const b = { x: geojsonCoords[i+1][0], y: geojsonCoords[i+1][1] };
     const p = { x: lng, y: lat };
-    
+
     const proj = proyectarPuntoEnSegmento(p.x, p.y, a.x, a.y, b.x, b.y);
     const distSq = (proj.x - p.x)**2 + (proj.y - p.y)**2;
-    
+
     if (distSq < minDist) {
       minDist = distSq;
       snapped = { lat: proj.y, lng: proj.x };
@@ -228,19 +397,22 @@ function snapToRoute(lat, lng) {
 }
 
 // Actualizar posición del usuario en el mapa (Flecha direccional)
-function actualizarPuntoUsuario(rawLat, rawLng) {
+function actualizarPuntoUsuario(rawLat, rawLng, headingGps = null) {
   // Aplicar Snap-to-Route
   const { lat, lng } = snapToRoute(rawLat, rawLng);
 
-  // Calcular rotación (vector de movimiento)
-  let rotacion = 0;
-  if (prevPos) {
+  // Rumbo del usuario: preferimos el heading del GPS (si el dispositivo lo da
+  // y se está moviendo); si no, lo derivamos del vector de movimiento.
+  if (typeof headingGps === 'number' && !Number.isNaN(headingGps)) {
+    rumboUsuario = headingGps;
+  } else if (prevPos) {
     const dLng = lng - prevPos.lng;
     const dLat = lat - prevPos.lat;
     if (Math.abs(dLng) > 0.00001 || Math.abs(dLat) > 0.00001) {
-      rotacion = Math.atan2(dLng, dLat) * 180 / Math.PI;
+      rumboUsuario = (Math.atan2(dLng, dLat) * 180 / Math.PI + 360) % 360;
     }
   }
+  const rotacion = rumboUsuario ?? 0;
 
   const svgFlecha = `
     <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(${rotacion}deg); transition: transform 0.3s;">
@@ -263,17 +435,47 @@ function actualizarPuntoUsuario(rawLat, rawLng) {
     capaUsuario.setLatLng([lat, lng]);
     capaUsuario.setIcon(iconoNavegacion);
   }
-  
+
   prevPos = { lat, lng };
-  
+
+  // La detección de proximidad corre SIEMPRE (con o sin modo navegación);
+  // el panel inferior solo se refresca durante la navegación activa.
+  comprobarProximidad(lat, lng);
   if (modoNavegacion) {
     actualizarPanelNavegacion(lat, lng);
-  } else {
-    comprobarProximidad(lat, lng);
   }
-  
+
   return { lat, lng }; // Retornar coordenada corregida
 }
+
+// ============================================================================
+// SCREEN WAKE LOCK (PANTALLA ENCENDIDA DURANTE EL TRAYECTO)
+// ============================================================================
+
+async function solicitarWakeLock() {
+  if (!('wakeLock' in navigator)) return; // No soportado: se degrada sin romper
+  try {
+    wakeLock = await navigator.wakeLock.request('screen');
+    wakeLock.addEventListener('release', () => { wakeLock = null; });
+  } catch (e) {
+    console.warn('No se pudo activar el Wake Lock:', e.message);
+  }
+}
+
+function liberarWakeLock() {
+  if (wakeLock) {
+    wakeLock.release().catch(() => {});
+    wakeLock = null;
+  }
+}
+
+// El sistema libera el Wake Lock al cambiar de pestaña/bloquear; lo re-pedimos
+// al volver si la navegación sigue activa.
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && modoNavegacion) {
+    solicitarWakeLock();
+  }
+});
 
 // ============================================================================
 // NAVEGACIÓN ACTIVA (ESTILO GOOGLE MAPS)
@@ -283,16 +485,17 @@ function iniciarNavegacion() {
   modoNavegacion = true;
   document.getElementById('panel-navegacion').classList.add('activo');
   document.getElementById('modal-normas').classList.remove('activo');
-  
+
   // Buscar primera estación no completada
   const pendientes = estacionesDatos.filter(e => !e.completada);
   if (pendientes.length > 0) {
     estacionDestinoId = pendientes[0].id;
   } else {
     window.Museo?.mostrarToast('¡Ya completaste todas las estaciones!', 'info');
-    estacionDestinoId = estacionesDatos[0].id; // Guiar al inicio si terminó
+    estacionDestinoId = estacionesDatos[0]?.id; // Guiar al inicio si terminó
   }
-  
+
+  solicitarWakeLock();
   arrancarRastreoGps();
 }
 
@@ -307,51 +510,50 @@ function detenerNavegacion() {
     clearInterval(idSimulador);
     idSimulador = null;
   }
+  liberarWakeLock();
+  window.MuseoVoz?.detenerVoz();
 }
 
 function actualizarPanelNavegacion(lat, lng) {
   if (!estacionDestinoId) return;
   const destino = estacionesDatos.find(e => e.id === estacionDestinoId);
   if (!destino) return;
-  
-  document.getElementById('nav-prox-nombre').textContent = destino.nombre;
-  
+
   const dist = calcularDistancia(lat, lng, destino.latitud, destino.longitud);
-  document.getElementById('nav-distancia').textContent = Math.round(dist) + ' m';
-  
-  // Si está muy cerca (<15m)
-  if (dist < 15) {
-    document.getElementById('nav-distancia').style.color = '#80D090';
-    document.getElementById('nav-prox-nombre').textContent = '¡Has llegado!';
-    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-    if (estacionActualNarrada !== destino.id) {
-       estacionActualNarrada = destino.id;
-       if (destino.petroglifo_texto_asistente && !window.MuseoVoz.estaNarrando()) {
-         window.MuseoVoz.narrar(destino.petroglifo_texto_asistente);
-       }
-       marcadores[destino.id]?.openPopup();
-    }
+  const distEl = document.getElementById('nav-distancia');
+  const nombreEl = document.getElementById('nav-prox-nombre');
+  const direccionEl = document.getElementById('nav-direccion');
+
+  distEl.textContent = Math.round(dist) + ' m';
+
+  if (dist < CONFIG_GPS.RADIO_ACTIVACION_M) {
+    distEl.style.color = '#80D090';
+    nombreEl.textContent = '¡Has llegado!';
+    if (direccionEl) direccionEl.textContent = destino.nombre;
   } else {
-    document.getElementById('nav-distancia').style.color = 'var(--color-dorado)';
+    distEl.style.color = 'var(--color-dorado)';
+    nombreEl.textContent = destino.nombre;
+    // Referencia espacial en vivo hacia la próxima parada
+    if (direccionEl) direccionEl.textContent = referenciaEspacial(lat, lng, destino);
   }
 }
 
 document.getElementById('btn-ya-llegue').addEventListener('click', () => {
   if (!estacionDestinoId) return;
-  
-  // Marcar como completada en UI
+
+  // Marcar como completada en UI (fallback manual si el GPS no disparó)
   const est = estacionesDatos.find(e => e.id === estacionDestinoId);
   if (est) est.completada = true;
-  
+
   // Guardar en localStorage
   const historial = JSON.parse(localStorage.getItem('museo_historial') || '[]');
-  if (!historial.includes(est.petroglifo_id)) {
+  if (est?.petroglifo_id && !historial.includes(est.petroglifo_id)) {
     historial.push(est.petroglifo_id);
     localStorage.setItem('museo_historial', JSON.stringify(historial));
   }
-  
+
   renderizarGridEstaciones(estacionesDatos);
-  
+
   // Pasar a la siguiente
   const pendientes = estacionesDatos.filter(e => !e.completada);
   if (pendientes.length > 0) {
@@ -393,30 +595,33 @@ document.getElementById('btn-aceptar-normas').addEventListener('click', iniciarN
 
 
 // ============================================================================
-// BOTONES E INTERFAZ
+// RASTREO GPS EN TIEMPO REAL
 // ============================================================================
 
 function arrancarRastreoGps() {
   if (idSimulador) { clearInterval(idSimulador); idSimulador = null; }
   if (idWatchPosition) { navigator.geolocation.clearWatch(idWatchPosition); idWatchPosition = null; }
-  
-  if (!navigator.geolocation) { 
-    window.Museo?.mostrarToast('GPS no disponible en tu navegador', 'aviso'); 
-    return; 
+
+  if (!navigator.geolocation) {
+    window.Museo?.mostrarToast('GPS no disponible en tu navegador', 'aviso');
+    return;
   }
-  
+
   window.Museo?.mostrarToast('Buscando señal GPS y activando rastreo...', 'info');
   idWatchPosition = navigator.geolocation.watchPosition(
     pos => {
-      const {latitude:rawLat, longitude:rawLng} = pos.coords;
-      const { lat, lng } = actualizarPuntoUsuario(rawLat, rawLng);
+      // Filtro de precisión y saltos antes de mover nada en pantalla
+      if (!lecturaConfiable(pos)) return;
+
+      const { latitude: rawLat, longitude: rawLng, heading } = pos.coords;
+      const { lat, lng } = actualizarPuntoUsuario(rawLat, rawLng, heading);
       mapa.setView([lat, lng], 18);
     },
     err => {
       console.warn('Error GPS:', err);
       window.Museo?.mostrarToast('Asegúrate de darle permisos de ubicación al navegador.', 'aviso');
     },
-    { enableHighAccuracy: true, maximumAge: 5000, timeout: 5000 }
+    { enableHighAccuracy: true, maximumAge: 3000, timeout: 10000 }
   );
 }
 
@@ -429,21 +634,18 @@ document.getElementById('btn-simular-gps').addEventListener('click', () => {
     window.Museo?.mostrarToast('El GeoJSON aún no carga o no tiene coordenadas válidas.', 'aviso');
     return;
   }
-  
+
   if (idSimulador) {
     clearInterval(idSimulador);
     idSimulador = null;
     window.Museo?.mostrarToast('Simulador detenido', 'info');
     return;
   }
-  
+
   window.Museo?.mostrarToast('Simulador iniciado. Recorriendo la ruta...', 'exito');
   indiceSimulador = 0;
-  
-  // Acelerar la simulación tomando saltos en los puntos del track
-  // Un track de GPS puede tener miles de puntos separados por milisegundos.
-  const saltos = Math.max(1, Math.floor(geojsonCoords.length / 100)); 
-  
+
+  // Recorrer TODOS los puntos del track (aplanado) sin saltarse las paradas.
   idSimulador = setInterval(() => {
     if (indiceSimulador >= geojsonCoords.length) {
       clearInterval(idSimulador);
@@ -451,22 +653,22 @@ document.getElementById('btn-simular-gps').addEventListener('click', () => {
       window.Museo?.mostrarToast('Simulador finalizado. Llegaste al final.', 'exito');
       return;
     }
-    
+
     // GeoJSON es [lng, lat]
     const rawLng = geojsonCoords[indiceSimulador][0];
     const rawLat = geojsonCoords[indiceSimulador][1];
-    
+
     // Al simulador le pasamos algo "ligeramente desviado" para probar el Snap-to-Route
     const jitterLat = rawLat + (Math.random() - 0.5) * 0.0002;
     const jitterLng = rawLng + (Math.random() - 0.5) * 0.0002;
 
     const { lat, lng } = actualizarPuntoUsuario(jitterLat, jitterLng);
-    
+
     // Mantener la cámara centrada suavemente en el usuario simulado
     mapa.panTo([lat, lng]);
-    
-    indiceSimulador += saltos;
-  }, 1000); // Mueve el punto cada segundo
+
+    indiceSimulador += 1;
+  }, 600); // Punto a punto para no saltarse el radio de ninguna parada
 });
 
 
@@ -483,7 +685,7 @@ function descargarOffline() {
       bounds: capaRuta ? capaRuta.getBounds() : null
     });
   }
-  
+
   setTimeout(() => {
     document.getElementById('offline-status').innerHTML = `
       <span style="font-size:1.3rem;">✅</span>
@@ -496,7 +698,7 @@ function descargarOffline() {
   }, 2000);
 }
 
-document.getElementById('btn-offline-mapa').addEventListener('click', descargarOffline);
+document.getElementById('btn-offline-mapa')?.addEventListener('click', descargarOffline);
 document.getElementById('btn-descargar-mapa-2').addEventListener('click', descargarOffline);
 
 function renderizarGridEstaciones(estaciones) {
