@@ -183,6 +183,8 @@
 
     </div>
 
+    <!-- Paginación -->
+    <nav class="paginacion" id="paginacion" aria-label="Paginación del catálogo"></nav>
   </div>
 </section>
 
@@ -196,6 +198,8 @@
 'use strict';
 
 let PETROGLIFOS = [];
+const POR_PAGINA = 12;
+let paginaActual = 1;
 
 const COLORES_CAT = {
   'Erosionado':      'badge--dorado',
@@ -205,25 +209,36 @@ const COLORES_CAT = {
 function colorCategoria(cat) { return COLORES_CAT[cat] || 'badge--gris'; }
 
 const grid = document.getElementById('grid-petroglifos');
+const navPag = document.getElementById('paginacion');
 let vistaActual = 'grid';
 let filtroActual = 'todos';
 let busquedaActual = '';
 
-function renderPetroglifos() {
-  const filtrados = PETROGLIFOS.filter(p => {
+function obtenerFiltrados() {
+  return PETROGLIFOS.filter(p => {
     const coincideCat = filtroActual === 'todos' || p.categoria === filtroActual;
     const coincideBusq = !busquedaActual ||
       (p.nombre || '').toLowerCase().includes(busquedaActual) ||
       (p.descripcion || '').toLowerCase().includes(busquedaActual);
     return coincideCat && coincideBusq;
   });
+}
+
+function renderPetroglifos() {
+  const filtrados = obtenerFiltrados();
+  const totalPaginas = Math.max(1, Math.ceil(filtrados.length / POR_PAGINA));
+  if (paginaActual > totalPaginas) paginaActual = totalPaginas;
+
+  const inicio = (paginaActual - 1) * POR_PAGINA;
+  const pagina = filtrados.slice(inicio, inicio + POR_PAGINA);
 
   if (!filtrados.length) {
     grid.innerHTML = `<div class="sin-resultados"><span></span><p>No se encontraron petroglifos con ese criterio.</p></div>`;
+    navPag.innerHTML = '';
     return;
   }
 
-  grid.innerHTML = filtrados.map(p => `
+  grid.innerHTML = pagina.map(p => `
     <a href="petroglifo-detalle.html?id=${p.id}" class="petroglifo-card revelar" data-categoria="${p.categoria}" id="card-petroglifo-${p.id}">
       <div class="petroglifo-card__top">
         <div class="petroglifo-card__img">
@@ -241,9 +256,46 @@ function renderPetroglifos() {
     </a>
   `).join('');
 
-  // Re-activar scroll reveal
+  renderPaginacion(totalPaginas);
   window.Museo && iniciarScrollReveal();
 }
+
+function renderPaginacion(totalPaginas) {
+  if (totalPaginas <= 1) { navPag.innerHTML = ''; return; }
+
+  let botones = '';
+  botones += `<button class="paginacion__btn" ${paginaActual === 1 ? 'disabled' : ''} data-pag="${paginaActual - 1}" aria-label="Página anterior">‹</button>`;
+
+  const rango = generarRango(paginaActual, totalPaginas);
+  for (const val of rango) {
+    if (val === '...') {
+      botones += `<span style="color:var(--color-texto-3);padding:.5rem;">…</span>`;
+    } else {
+      botones += `<button class="paginacion__btn${val === paginaActual ? ' activo' : ''}" data-pag="${val}" ${val === paginaActual ? 'aria-current="page"' : ''}>${val}</button>`;
+    }
+  }
+
+  botones += `<button class="paginacion__btn" ${paginaActual === totalPaginas ? 'disabled' : ''} data-pag="${paginaActual + 1}" aria-label="Página siguiente">›</button>`;
+  navPag.innerHTML = botones;
+}
+
+function generarRango(actual, total) {
+  if (total <= 7) return Array.from({length: total}, (_, i) => i + 1);
+  const rango = [1];
+  if (actual > 3) rango.push('...');
+  for (let i = Math.max(2, actual - 1); i <= Math.min(total - 1, actual + 1); i++) rango.push(i);
+  if (actual < total - 2) rango.push('...');
+  rango.push(total);
+  return rango;
+}
+
+navPag.addEventListener('click', e => {
+  const btn = e.target.closest('[data-pag]');
+  if (!btn || btn.disabled) return;
+  paginaActual = parseInt(btn.dataset.pag);
+  renderPetroglifos();
+  grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
 
 function iniciarScrollReveal() {
   const obs = new IntersectionObserver(entries => {
@@ -257,6 +309,7 @@ function iniciarScrollReveal() {
 // Buscador
 document.getElementById('buscador-petroglifos').addEventListener('input', e => {
   busquedaActual = e.target.value.toLowerCase().trim();
+  paginaActual = 1;
   renderPetroglifos();
 });
 
@@ -269,6 +322,7 @@ if (chipsContainer) {
     document.querySelectorAll('#filtros-chips .chip').forEach(c => c.classList.remove('activo'));
     chip.classList.add('activo');
     filtroActual = chip.dataset.filtro;
+    paginaActual = 1;
     renderPetroglifos();
   });
 }
