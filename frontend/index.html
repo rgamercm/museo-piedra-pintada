@@ -173,13 +173,11 @@
       }
     }
 
-    /* Imagen flotante derecha */
-    .hero__imagen-wrapper {
-      position: absolute;
-      right: 5%;
-      top: 50%;
-      transform: translateY(-50%);
-      width: min(420px, 40%);
+    /* Imagen flotante fluida (Flexbox) */
+    .hero__imagen-wrapper-fluid {
+      position: relative;
+      width: 100%;
+      max-width: 450px;
       animation: entrar-derecha 1s .2s var(--ease-out) both;
       display: none;
     }
@@ -187,22 +185,22 @@
     @keyframes entrar-derecha {
       from {
         opacity: 0;
-        transform: translateY(-50%) translateX(40px);
+        transform: translateX(40px);
       }
 
       to {
         opacity: 1;
-        transform: translateY(-50%) translateX(0);
+        transform: translateX(0);
       }
     }
 
     @media (min-width: 1024px) {
-      .hero__imagen-wrapper {
+      .hero__imagen-wrapper-fluid {
         display: block;
       }
     }
 
-    .hero__imagen-wrapper img {
+    .hero__imagen-wrapper-fluid img {
       border-radius: 1.5rem;
       box-shadow: 0 20px 80px rgba(0, 0, 0, 0.7), 0 0 60px rgba(140, 115, 85, 0.15);
       border: 1px solid rgba(140, 115, 85, 0.20);
@@ -417,9 +415,52 @@
 
 
 
-    <div class="container hero__contenido" style="position: relative;">
-      <!-- Imagen decorativa derecha alineada al contenedor en PC -->
-      <div class="hero__imagen-wrapper" aria-hidden="true" style="right: 0;">
+    <div class="container hero__contenido" style="display: flex; align-items: center; justify-content: space-between; gap: 3rem;">
+      
+      <!-- Contenedor del texto -->
+      <div class="hero__texto-wrapper" style="flex: 1; max-width: 650px;">
+        <span class="hero__badge"> Museo Parque Arqueológico Piedra Pintada</span>
+
+        <h1 class="hero__titulo">
+          Voces de Piedra,<br>
+          <span>Memorias Eternas</span>
+        </h1>
+
+        <p class="hero__subtitulo" style="max-width: 100%;">
+          Explora el Museo Arqueológico Piedra Pintada: petroglifos únicos en el mundo, recorridos guiados con QR y
+          asistente de voz, y una ventana viva hacia nuestra historia precolombina.
+        </p>
+
+        <div class="hero__acciones">
+          <a href="pages/recorrido.html" class="btn btn--primario btn--lg" id="btn-iniciar-recorrido">Iniciar Recorrido
+          </a>
+          <a href="pages/informacion.html" class="btn btn--contorno btn--lg" id="btn-mas-info">
+            Más información
+          </a>
+        </div>
+
+        <div class="hero__stats">
+          <div class="hero__stat">
+            <span class="hero__stat-num" id="hero-stat-petroglifos" data-contador="0">0</span>
+            <span class="hero__stat-lbl">Petroglifos</span>
+          </div>
+          <div class="hero__stat">
+            <span class="hero__stat-num" id="hero-stat-estaciones" data-contador="0">0</span>
+            <span class="hero__stat-lbl">Estaciones</span>
+          </div>
+          <div class="hero__stat">
+            <span class="hero__stat-num" data-contador="0">0</span>
+            <span class="hero__stat-lbl">Años de historia</span>
+          </div>
+          <div class="hero__stat">
+            <span class="hero__stat-num" data-contador="0">0</span>
+            <span class="hero__stat-lbl">Visitantes al año</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Imagen decorativa derecha fluida -->
+      <div class="hero__imagen-wrapper-fluid" aria-hidden="true" style="flex: 0 1 450px;">
         <img src="assets/img/petroglifo-01.png" alt="" loading="lazy">
         <div class="hero__imagen-badge">
           <span class="hero__imagen-badge-icon"></span>
@@ -430,44 +471,7 @@
           </div>
         </div>
       </div>
-      <span class="hero__badge"> Museo Parque Arqueológico Piedra Pintada</span>
 
-      <h1 class="hero__titulo">
-        Voces de Piedra,<br>
-        <span>Memorias Eternas</span>
-      </h1>
-
-      <p class="hero__subtitulo">
-        Explora el Museo Arqueológico Piedra Pintada: petroglifos únicos en el mundo, recorridos guiados con QR y
-        asistente de voz, y una ventana viva hacia nuestra historia precolombina.
-      </p>
-
-      <div class="hero__acciones">
-        <a href="pages/recorrido.html" class="btn btn--primario btn--lg" id="btn-iniciar-recorrido">Iniciar Recorrido
-        </a>
-        <a href="pages/informacion.html" class="btn btn--contorno btn--lg" id="btn-mas-info">
-          Más información
-        </a>
-      </div>
-
-      <div class="hero__stats">
-        <div class="hero__stat">
-          <span class="hero__stat-num" id="hero-stat-petroglifos" data-contador="0">0</span>
-          <span class="hero__stat-lbl">Petroglifos</span>
-        </div>
-        <div class="hero__stat">
-          <span class="hero__stat-num" id="hero-stat-estaciones" data-contador="0">0</span>
-          <span class="hero__stat-lbl">Estaciones</span>
-        </div>
-        <div class="hero__stat">
-          <span class="hero__stat-num" data-contador="0">0</span>
-          <span class="hero__stat-lbl">Años de historia</span>
-        </div>
-        <div class="hero__stat">
-          <span class="hero__stat-num" data-contador="0">0</span>
-          <span class="hero__stat-lbl">Visitantes al año</span>
-        </div>
-      </div>
     </div>
 
     <a href="#accesos" class="hero__scroll" aria-label="Desplazar hacia abajo">
