@@ -393,7 +393,9 @@ h6 { font-size: var(--text-base); }
 
 /* Menú móvil overlay */
 .nav-movil {
-  display: none;
+  display: flex;
+  visibility: hidden;
+  pointer-events: none;
   position: fixed;
   inset: 0;
   background: rgba(26, 26, 26, 0.98);
@@ -405,13 +407,16 @@ h6 { font-size: var(--text-base); }
   justify-content: center;
   gap: var(--sp-3);
   opacity: 0;
-  transition: opacity var(--dur-media) var(--ease-out);
+  transform: translateY(-20px);
+  transition: opacity 0.4s var(--ease-out), transform 0.4s var(--ease-out), visibility 0.4s;
   overflow-y: auto;
   padding: var(--sp-8) var(--sp-6);
 }
 .nav-movil.abierto {
-  display: flex;
+  visibility: visible;
+  pointer-events: auto;
   opacity: 1;
+  transform: translateY(0);
 }
 .nav-movil__enlace {
   font-family: var(--font-titulo);
