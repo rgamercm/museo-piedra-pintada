@@ -352,11 +352,11 @@
         <div class="info-bloque__titulo">Horario de Visitas</div>
         <table class="horario-tabla" aria-label="Horario semanal">
           <tbody>
-            <tr><td>Lunes</td><td class="horario-cerrado">Cerrado</td></tr>
-            <tr><td>Martes – Viernes</td><td>8:00 am – 5:00 pm</td></tr>
-            <tr><td>Sábado</td><td>8:00 am – 6:00 pm</td></tr>
-            <tr><td>Domingo</td><td>9:00 am – 4:00 pm</td></tr>
-            <tr><td>Feriados nacionales</td><td class="horario-cerrado">Consultar</td></tr>
+            <tr><td>Lunes</td><td id="horario-td-lunes" class="horario-cerrado">Cargando...</td></tr>
+            <tr><td>Martes – Viernes</td><td id="horario-td-martes-viernes">Cargando...</td></tr>
+            <tr><td>Sábado</td><td id="horario-td-sabado">Cargando...</td></tr>
+            <tr><td>Domingo</td><td id="horario-td-domingo">Cargando...</td></tr>
+            <tr><td>Feriados nacionales</td><td id="horario-td-feriados" class="horario-cerrado">Cargando...</td></tr>
           </tbody>
         </table>
         <style>.horario-tabla{width:100%;border-collapse:collapse}.horario-tabla tr{border-bottom:1px solid var(--glass-border)}.horario-tabla td{padding:.75rem .5rem;font-size:.9rem}.horario-tabla td:first-child{color:var(--color-texto-2)}.horario-tabla td:last-child{color:var(--color-dorado-claro);text-align:right}.horario-cerrado{color:var(--color-texto-3)!important;text-decoration:line-through}</style>
@@ -1086,18 +1086,6 @@
     color: var(--color-dorado-claro);
     margin-bottom: .5rem;
   }
-    border-radius: .75rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--font-titulo);
-    font-weight: 700;
-    font-size: .7rem;
-    color: var(--color-dorado-claro);
-    flex-shrink: 0;
-    letter-spacing: -.02em;
-  }
-  .s9-roca-card__body { flex: 1; }
   .s9-roca-card__nota {
     font-size: .88rem;
     color: var(--color-texto-2);
@@ -1234,7 +1222,34 @@
 <script src="../js/componentes.js?v=2.3"></script>
 <script src="../js/app.js?v=1.3"></script>
 <script>
+  async function cargarHorarioInfo() {
+    try {
+      const config = await window.api.cliente('/api/configuracion/horario_atencion');
+      if (!config) return;
+
+      const setTd = (id, valor) => {
+        const td = document.getElementById(id);
+        if (!td) return;
+        td.textContent = valor;
+        if (valor.toLowerCase().includes('cerrado')) {
+          td.classList.add('horario-cerrado');
+        } else {
+          td.classList.remove('horario-cerrado');
+        }
+      };
+
+      setTd('horario-td-lunes', config.lunes || 'Cerrado');
+      setTd('horario-td-martes-viernes', config.martes_viernes || '8:00 am - 5:00 pm');
+      setTd('horario-td-sabado', config.sabado || '8:00 am - 6:00 pm');
+      setTd('horario-td-domingo', config.domingo || '9:00 am - 4:00 pm');
+      setTd('horario-td-feriados', config.feriados || 'Consultar');
+    } catch (e) {
+      console.error('Error al cargar el horario', e);
+    }
+  }
+  
   document.addEventListener('DOMContentLoaded', () => {
+    cargarHorarioInfo();
     document.querySelectorAll('[data-contador]').forEach(el => {
       const obs = new IntersectionObserver(entries => {
         entries.forEach(e => {

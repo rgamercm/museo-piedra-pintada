@@ -37,5 +37,6 @@ router.use('/noticias',    require('./noticias.routes'));
 router.use('/trivia',      require('./trivia.routes'));
 router.use('/visitas',     require('./visitas.routes'));
 router.use('/ruta_simulador', require('./ruta_simulador.routes'));
+router.use('/configuracion', require('./configuracion.routes'));
 
 module.exports = router;

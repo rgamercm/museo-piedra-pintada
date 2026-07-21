@@ -180,3 +180,10 @@ CREATE INDEX idx_preguntas_publicada        ON preguntas_respuestas(publicada);
 CREATE INDEX idx_noticias_activa            ON noticias_eventos(activa, fecha_publicacion DESC);
 
 -- Fin del esquema.
+
+-- -- 14. configuracion_sistema ----------------------------------
+CREATE TABLE configuracion_sistema (
+  clave VARCHAR(50) PRIMARY KEY,
+  valor JSONB NOT NULL,
+  actualizado_en TIMESTAMP NOT NULL DEFAULT NOW()
+);

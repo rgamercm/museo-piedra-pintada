@@ -602,23 +602,23 @@
               <tbody>
                 <tr>
                   <td>Lunes</td>
-                  <td class="horario-cerrado">Cerrado</td>
+                  <td id="horario-td-lunes" class="horario-cerrado">Cargando...</td>
                 </tr>
                 <tr>
                   <td>Martes – Viernes</td>
-                  <td>8:00 am – 5:00 pm</td>
+                  <td id="horario-td-martes-viernes">Cargando...</td>
                 </tr>
                 <tr>
                   <td>Sábado</td>
-                  <td>8:00 am – 6:00 pm</td>
+                  <td id="horario-td-sabado">Cargando...</td>
                 </tr>
                 <tr>
                   <td>Domingo</td>
-                  <td>9:00 am – 4:00 pm</td>
+                  <td id="horario-td-domingo">Cargando...</td>
                 </tr>
                 <tr>
                   <td>Feriados</td>
-                  <td class="horario-cerrado">Consultar</td>
+                  <td id="horario-td-feriados" class="horario-cerrado">Cargando...</td>
                 </tr>
               </tbody>
             </table>
@@ -762,33 +762,85 @@
       }
     }
 
-    /* Estado del museo (abierto/cerrado) */
-    function actualizarEstado() {
-      const estadoEl = document.getElementById('estado-museo');
-      if (!estadoEl) return;
-      const hora = new Date().getHours();
-      const dia = new Date().getDay(); // 0 dom, 1 lun
-      let abierto = false;
-      if (dia === 0 && hora >= 9 && hora < 16) abierto = true;
-      if (dia >= 2 && dia <= 5 && hora >= 8 && hora < 17) abierto = true;
-      if (dia === 6 && hora >= 8 && hora < 18) abierto = true;
+    /* Lógica de Horario Dinámico y Estado */
+    async function cargarHorarioPublico() {
+      try {
+        const config = await window.api.cliente('/api/configuracion/horario_atencion');
+        if (!config) return;
 
-      if (abierto) {
-        estadoEl.innerHTML = `
-        <span class="badge badge--verde badge--punto">Abierto ahora</span>
-        <span style="font-size:.85rem;color:var(--color-texto-2);">Cerramos pronto — planifica tu visita</span>
-      `;
-        estadoEl.style.background = 'rgba(60,160,80,0.08)';
-        estadoEl.style.borderColor = 'rgba(60,160,80,0.20)';
-      } else {
-        estadoEl.innerHTML = `
-        <span class="badge badge--rojo badge--punto">Cerrado ahora</span>
-        <span style="font-size:.85rem;color:var(--color-texto-2);">Abrimos mañana a las <strong style="color:var(--color-dorado-claro);">8:00 am</strong></span>
-      `;
-        estadoEl.style.background = 'rgba(200,60,60,0.08)';
-        estadoEl.style.borderColor = 'rgba(200,60,60,0.20)';
+        const setTd = (id, valor) => {
+          const td = document.getElementById(id);
+          if (!td) return;
+          td.textContent = valor;
+          if (valor.toLowerCase().includes('cerrado')) {
+            td.classList.add('horario-cerrado');
+          } else {
+            td.classList.remove('horario-cerrado');
+          }
+        };
+
+        setTd('horario-td-lunes', config.lunes || 'Cerrado');
+        setTd('horario-td-martes-viernes', config.martes_viernes || '8:00 am - 5:00 pm');
+        setTd('horario-td-sabado', config.sabado || '8:00 am - 6:00 pm');
+        setTd('horario-td-domingo', config.domingo || '9:00 am - 4:00 pm');
+        setTd('horario-td-feriados', config.feriados || 'Consultar');
+
+        // Logica basica para parsing de "8:00 am - 5:00 pm"
+        function parseHora(str) {
+          const matches = str.match(/(\d+):(\d+)\s*(am|pm)/i);
+          if (!matches) return null;
+          let h = parseInt(matches[1]);
+          if (matches[3].toLowerCase() === 'pm' && h < 12) h += 12;
+          if (matches[3].toLowerCase() === 'am' && h === 12) h = 0;
+          return h; // Solo la hora para simplificar
+        }
+
+        const ahora = new Date();
+        const hora = ahora.getHours();
+        const dia = ahora.getDay(); // 0 dom, 1 lun...
+        const estadoEl = document.getElementById('estado-museo');
+
+        let abierto = false;
+        let strHorario = '';
+        if (dia === 1) strHorario = config.lunes;
+        else if (dia >= 2 && dia <= 5) strHorario = config.martes_viernes;
+        else if (dia === 6) strHorario = config.sabado;
+        else if (dia === 0) strHorario = config.domingo;
+
+        if (strHorario && !strHorario.toLowerCase().includes('cerrado')) {
+          const partes = strHorario.split('-');
+          if (partes.length >= 2) {
+            const hApertura = parseHora(partes[0]);
+            const hCierre = parseHora(partes[1]);
+            if (hApertura !== null && hCierre !== null) {
+              if (hora >= hApertura && hora < hCierre) abierto = true;
+            }
+          }
+        }
+
+        if (estadoEl) {
+          if (abierto) {
+            estadoEl.innerHTML = `
+              <span class="badge badge--verde badge--punto">Abierto ahora</span>
+              <span style="font-size:.85rem;color:var(--color-texto-2);">Cerramos pronto – planifica tu visita</span>
+            `;
+            estadoEl.style.background = 'rgba(60,160,80,0.08)';
+            estadoEl.style.borderColor = 'rgba(60,160,80,0.20)';
+          } else {
+            estadoEl.innerHTML = `
+              <span class="badge badge--rojo badge--punto">Cerrado ahora</span>
+              <span style="font-size:.85rem;color:var(--color-texto-2);">Revisa nuestro horario de atención</span>
+            `;
+            estadoEl.style.background = 'rgba(200,60,60,0.08)';
+            estadoEl.style.borderColor = 'rgba(200,60,60,0.20)';
+          }
+        }
+      } catch (e) {
+        console.error('Error al cargar el horario', e);
       }
     }
+    
+    cargarHorarioPublico();
 
     /* CSS responsive para stack en móvil */
     const style = document.createElement('style');

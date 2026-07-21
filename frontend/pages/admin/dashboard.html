@@ -127,6 +127,8 @@
     <div class="admin-nav-titulo">Contenido</div>
     <button class="admin-nav-item" onclick="mostrarSeccion('noticias-admin')" id="nav-noticias-admin"> Noticias</button>
     <button class="admin-nav-item" onclick="mostrarSeccion('trivia-admin')" id="nav-trivia-admin"> Trivia</button>
+    <div class="admin-nav-titulo">Configuración</div>
+    <button class="admin-nav-item" onclick="mostrarSeccion('configuracion')" id="nav-configuracion"> Horarios</button>
     <div class="admin-nav-titulo">Accesos</div>
     <a href="../../index.html" class="admin-nav-item"> Ver sitio público</a>
     <button class="admin-nav-item" style="color:#F09090;" onclick="window.Museo?.mostrarToast('Sesión cerrada','info');setTimeout(()=>location.href='login.html',1000)"> Cerrar sesión</button>
@@ -167,6 +169,38 @@
             <button class="btn btn--primario btn--sm" onclick="mostrarSeccion('preguntas-admin')">Responder</button>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- CONFIGURACION -->
+    <section class="seccion-admin" id="sec-configuracion">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:1rem;">
+        <h1 style="font-size:1.5rem;">Horario de Atención</h1>
+        <button class="btn btn--primario btn--sm" onclick="guardarHorarioAdmin()">Guardar Horario</button>
+      </div>
+      <div style="background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1rem;padding:2rem;max-width:600px;">
+        <form id="form-horario" style="display:flex; flex-direction:column; gap:1.5rem;">
+          <div>
+            <label style="font-size:.9rem;color:var(--color-dorado-claro);display:block;margin-bottom:.5rem;">Lunes</label>
+            <input type="text" id="horario-lunes" class="form-input" placeholder="Ej: Cerrado">
+          </div>
+          <div>
+            <label style="font-size:.9rem;color:var(--color-dorado-claro);display:block;margin-bottom:.5rem;">Martes – Viernes</label>
+            <input type="text" id="horario-martes-viernes" class="form-input" placeholder="Ej: 8:00 am - 5:00 pm">
+          </div>
+          <div>
+            <label style="font-size:.9rem;color:var(--color-dorado-claro);display:block;margin-bottom:.5rem;">Sábado</label>
+            <input type="text" id="horario-sabado" class="form-input" placeholder="Ej: 8:00 am - 6:00 pm">
+          </div>
+          <div>
+            <label style="font-size:.9rem;color:var(--color-dorado-claro);display:block;margin-bottom:.5rem;">Domingo</label>
+            <input type="text" id="horario-domingo" class="form-input" placeholder="Ej: 9:00 am - 4:00 pm">
+          </div>
+          <div>
+            <label style="font-size:.9rem;color:var(--color-dorado-claro);display:block;margin-bottom:.5rem;">Feriados</label>
+            <input type="text" id="horario-feriados" class="form-input" placeholder="Ej: Consultar">
+          </div>
+        </form>
       </div>
     </section>
 
@@ -415,7 +449,7 @@ document.getElementById('fecha-admin').textContent = new Date().toLocaleDateStri
 function mostrarSeccion(id) {
   document.querySelectorAll('.seccion-admin').forEach(s => s.classList.remove('activa'));
   document.querySelectorAll('.admin-nav-item').forEach(b => b.classList.remove('activo'));
-  const mapa = { resumen:'sec-resumen', petroglifos:'sec-petroglifos', reservas:'sec-reservas', moderacion:'sec-moderacion', 'preguntas-admin':'sec-preguntas-admin', 'noticias-admin':'sec-noticias-admin', 'trivia-admin':'sec-trivia-admin', 'editor-mapa':'sec-editor-mapa' };
+  const mapa = { resumen:'sec-resumen', petroglifos:'sec-petroglifos', reservas:'sec-reservas', moderacion:'sec-moderacion', 'preguntas-admin':'sec-preguntas-admin', 'noticias-admin':'sec-noticias-admin', 'trivia-admin':'sec-trivia-admin', 'editor-mapa':'sec-editor-mapa', 'configuracion':'sec-configuracion' };
   const sec = document.getElementById(mapa[id]);
   const btn = document.getElementById('nav-'+id);
   if (sec) sec.classList.add('activa');

@@ -706,6 +706,42 @@ window.cambiarSeccion = function(id) {
   if(id === 'noticias-admin') cargarNoticiasAdmin();
   if(id === 'trivia-admin') cargarTriviaAdmin();
   if(id === 'editor-mapa') inicializarMapaAdmin();
+  if(id === 'configuracion') cargarConfiguracion();
+}
+
+async function cargarConfiguracion() {
+  try {
+    const config = await window.api.cliente('/api/configuracion/horario_atencion');
+    if (config) {
+      document.getElementById('horario-lunes').value = config.lunes || '';
+      document.getElementById('horario-martes-viernes').value = config.martes_viernes || '';
+      document.getElementById('horario-sabado').value = config.sabado || '';
+      document.getElementById('horario-domingo').value = config.domingo || '';
+      document.getElementById('horario-feriados').value = config.feriados || '';
+    }
+  } catch (e) {
+    console.error('Error cargando horario:', e);
+  }
+}
+
+async function guardarHorarioAdmin() {
+  const datos = {
+    lunes: document.getElementById('horario-lunes').value,
+    martes_viernes: document.getElementById('horario-martes-viernes').value,
+    sabado: document.getElementById('horario-sabado').value,
+    domingo: document.getElementById('horario-domingo').value,
+    feriados: document.getElementById('horario-feriados').value
+  };
+  try {
+    await window.api.cliente('/api/configuracion/horario_atencion', {
+      method: 'PUT',
+      body: JSON.stringify(datos)
+    });
+    window.Museo?.mostrarToast('Horario guardado exitosamente', 'exito');
+  } catch (e) {
+    console.error('Error guardando horario:', e);
+    window.Museo?.mostrarToast('Error al guardar el horario', 'error');
+  }
 }
 
 // -----------------------------------------------------
