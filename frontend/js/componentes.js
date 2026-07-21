@@ -69,10 +69,6 @@ function generarHeader() {
   <div class="container header__inner">
     <a href="${base}index.html" class="logo" aria-label="Ir al inicio">
       <img src="${base}assets/img/logo-museo.png" alt="Logo Museo Piedra Pintada" style="height: 60px; width: auto; object-fit: contain;">
-      <div class="logo__texto">
-        <span class="logo__nombre" style="font-weight: normal; color: #FFFFFF;">Museo Parque Arqueológico</span>
-        <span class="logo__subtitulo" style="font-weight: bold; color: rgba(255, 255, 255, 0.9);">Piedra Pintada</span>
-      </div>
     </a>
 
     <nav class="nav" aria-label="Navegación principal">
