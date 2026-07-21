@@ -52,30 +52,57 @@ document.addEventListener('DOMContentLoaded', async () => {
     maxZoom: 19
   }).addTo(mapa);
 
-  // 2. Cargar la línea del recorrido desde el GeoJSON.
-  //    El archivo contiene SOLO la ruta (MultiLineString). Los fines de cada
-  //    tramo son las pausas de la grabación = paradas frente a un petroglifo.
+  // 2a. Ruta personalizada del simulador (dibujada en el panel admin).
+  //     Si existe en la BD, su trazado tiene prioridad sobre el GeoJSON
+  //     para la línea del mapa y el recorrido del simulador.
+  let rutaCargada = false;
+  try {
+    const resApi = await window.api.cliente('/api/ruta_simulador');
+    if (resApi.datos && Array.isArray(resApi.datos.coordenadas) && resApi.datos.coordenadas.length > 0) {
+      geojsonCoords = resApi.datos.coordenadas; // ya está en [lng, lat]
+
+      // Convertir a [lat, lng] para Leaflet Polyline
+      const latLngs = geojsonCoords.map(c => [c[1], c[0]]);
+      capaRuta = L.polyline(latLngs, {
+        color: '#7ABA58', weight: 4, opacity: 0.8, dashArray: '10, 10'
+      }).addTo(mapa);
+      mapa.fitBounds(capaRuta.getBounds());
+      rutaCargada = true;
+    }
+  } catch (e) {
+    console.warn('No hay ruta personalizada del simulador');
+  }
+
+  // 2b. Línea del recorrido desde el GeoJSON.
+  //     El archivo contiene SOLO la ruta (MultiLineString). Los fines de cada
+  //     tramo son las pausas de la grabación = paradas frente a un petroglifo,
+  //     así que las paradas se derivan de aquí SIEMPRE (aunque haya ruta
+  //     personalizada, que no trae esa información).
   let paradasTrack = [];
   try {
     const res = await fetch('../assets/data/track.geojson');
     if (res.ok) {
       const geojson = await res.json();
-      capaRuta = L.geoJSON(geojson, {
-        style: { color: '#7ABA58', weight: 4, opacity: 0.8 }
-      }).addTo(mapa);
-
-      mapa.fitBounds(capaRuta.getBounds());
-
       const feature = geojson.features[0];
+
+      let coordsTrack = [];
       if (feature.geometry.type === 'LineString') {
-        geojsonCoords = feature.geometry.coordinates;
-        paradasTrack = [feature.geometry.coordinates[feature.geometry.coordinates.length - 1]];
+        coordsTrack = feature.geometry.coordinates;
+        paradasTrack = [coordsTrack[coordsTrack.length - 1]];
       } else if (feature.geometry.type === 'MultiLineString') {
         // Aplanar TODOS los tramos (antes solo se usaba el primero) para que
         // el snap-to-route y el simulador cubran la ruta completa.
-        geojsonCoords = feature.geometry.coordinates.flat();
+        coordsTrack = feature.geometry.coordinates.flat();
         // Una parada por tramo: su último punto (ahí se pausó la grabación).
         paradasTrack = feature.geometry.coordinates.map(tramo => tramo[tramo.length - 1]);
+      }
+
+      if (!rutaCargada) {
+        geojsonCoords = coordsTrack;
+        capaRuta = L.geoJSON(geojson, {
+          style: { color: '#7ABA58', weight: 4, opacity: 0.8 }
+        }).addTo(mapa);
+        mapa.fitBounds(capaRuta.getBounds());
       }
     } else {
       console.warn('No se pudo cargar track.geojson');

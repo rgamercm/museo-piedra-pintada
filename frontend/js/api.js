@@ -60,7 +60,29 @@ const api = {
     return data.datos;
   },
 
-  //  Módulos 
+  /**
+   * Petición genérica de bajo nivel. Recibe la ruta completa (p. ej.
+   * '/api/ruta_simulador') y devuelve el sobre {ok, datos} tal cual.
+   * No muestra toasts: el llamador decide cómo manejar el error.
+   * La usan el editor de rutas del admin y el mapa GPS.
+   */
+  cliente: async (ruta, options = {}) => {
+    const res = await fetch(ruta, {
+      headers: api.getHeaders(true),
+      ...options,
+    });
+    const texto = await res.text();
+    let data;
+    try {
+      data = texto ? JSON.parse(texto) : {};
+    } catch (e) {
+      throw new Error(`Respuesta no válida del servidor (HTTP ${res.status})`);
+    }
+    if (!res.ok) throw new Error(data.error || `Error en la petición (${res.status})`);
+    return data;
+  },
+
+  //  Módulos
 
   auth: {
     login: (correo, contrasena) => api.request('/auth/login', {
