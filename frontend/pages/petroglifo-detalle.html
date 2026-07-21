@@ -105,7 +105,12 @@
     @media(max-width:768px) {
       .detalle-grid { grid-template-columns: 1fr; }
       .imagen-principal { position: static; }
+      .qr-container { flex-direction: column; align-items: stretch; text-align: center; }
+      .nav-petroglifos { flex-direction: column; align-items: stretch; }
+      .nav-petroglifos .btn { width: 100%; text-align: center; }
     }
+    .qr-container { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+    .nav-petroglifos { display: flex; gap: 1rem; justify-content: space-between; flex-wrap: wrap; }
   </style>
 </head>
 <body>
@@ -190,8 +195,8 @@
 
         <!-- Código QR trasladado a la columna derecha -->
         <div style="margin-bottom:2rem;background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1.2rem;padding:1.5rem;">
-          <div style="font-family:var(--font-titulo);font-size:1rem;color:var(--color-dorado-claro);margin-bottom:1rem;">Código QR de la estación</div>
-          <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;">
+          <div style="font-family:var(--font-titulo);font-size:1rem;color:var(--color-dorado-claro);margin-bottom:1rem;text-align:center;">Código QR de la estación</div>
+          <div class="qr-container">
             <div class="qr-display">
               <!-- QR real generado por qr-voz.js -->
               <div id="qr-real" style="background:#fff;border-radius:.5rem;padding:8px;display:inline-block;"></div>
@@ -209,7 +214,7 @@
         </div>
 
         <!-- Navegación entre petroglifos -->
-        <div style="display:flex;gap:1rem;justify-content:space-between;">
+        <div class="nav-petroglifos">
           <a href="petroglifo-detalle.html?id=3" class="btn btn--contorno" id="btn-anterior-petroglifo">Petroglifo anterior</a>
           <a href="petroglifos.html" class="btn btn--fantasma" id="btn-volver-catalogo">Ver catálogo</a>
           <a href="petroglifo-detalle.html?id=2" class="btn btn--contorno" id="btn-siguiente-petroglifo">Siguiente ?</a>
