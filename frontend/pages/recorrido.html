@@ -448,6 +448,11 @@ document.getElementById('btn-activar-camara').addEventListener('click', async ()
               detenerCamara();
               setTimeout(() => document.getElementById('btn-narrar').click(), 800);
               return;
+            } else {
+              window.Museo?.mostrarToast('Código QR no reconocido como estación válida.', 'aviso');
+              // Pequeño delay para no spammar el toast
+              qrInterval = setTimeout(() => requestAnimationFrame(escanearFrame), 2000);
+              return;
             }
           }
         }
