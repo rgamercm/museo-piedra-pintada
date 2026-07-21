@@ -9,8 +9,8 @@
   <style>
     .catalogo-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
     }
     .catalogo-controles {
       display: flex;
@@ -20,107 +20,86 @@
       margin-bottom: 2rem;
       flex-wrap: wrap;
     }
-    .filtros-chips {
-      display: flex;
-      gap: .5rem;
-      flex-wrap: wrap;
-    }
-    .vista-btns {
-      display: flex;
-      gap: .25rem;
-      background: var(--grad-card);
-      border: 1px solid var(--glass-border);
-      border-radius: var(--radius-md);
-      padding: .25rem;
-    }
-    .vista-btn {
-      padding: .4rem .7rem;
-      border: none;
-      background: none;
-      border-radius: 5px;
-      cursor: pointer;
-      color: var(--color-texto-3);
-      transition: all .2s;
-    }
-    .vista-btn.activo {
-      background: var(--color-piedra-2);
-      color: var(--color-dorado-claro);
-    }
     .petroglifo-card {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
       background: var(--grad-card);
       border: 1px solid var(--glass-border);
-      border-radius: var(--radius-lg);
-      padding: 1.5rem;
-      transition: transform var(--dur-media) var(--ease-out), box-shadow var(--dur-media) var(--ease-out);
+      border-radius: 1.2rem;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
       text-decoration: none;
+      position: relative;
     }
     .petroglifo-card:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--shadow-md);
-      border-color: rgba(140, 115, 85,0.4);
+      transform: translateY(-8px);
+      border-color: rgba(140, 115, 85, 0.5);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.6);
     }
-    .petroglifo-card__top {
-      display: flex;
-      gap: 1.5rem;
-      align-items: flex-start;
-    }
-    .petroglifo-card__img {
-      width: 80px;
-      height: 80px;
-      flex-shrink: 0;
-      border-radius: var(--radius-md);
+    .petroglifo-card__img-wrap {
+      width: 100%;
+      height: 220px;
+      position: relative;
       overflow: hidden;
-      background: rgba(0,0,0,0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: var(--shadow-sm);
+      background: #1a1a1a;
     }
-    .petroglifo-card__img img {
+    .petroglifo-card__img-wrap img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      transition: transform 0.7s ease;
     }
-    .petroglifo-card__info {
+    .petroglifo-card:hover .petroglifo-card__img-wrap img {
+      transform: scale(1.08);
+    }
+    .petroglifo-card__badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(20, 20, 20, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      padding: 0.35rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      z-index: 2;
+    }
+    .petroglifo-card__content {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
       flex: 1;
     }
-    .petroglifo-card__id {
+    .petroglifo-card__title {
       font-family: var(--font-titulo);
-      font-size: 1.1rem;
+      font-size: 1.4rem;
       color: var(--color-dorado-claro);
-      background: rgba(140, 115, 85, 0.1);
-      border: 1px solid rgba(140, 115, 85, 0.3);
-      padding: 0.25rem 0.75rem;
-      border-radius: var(--radius-md);
-      display: inline-block;
+      margin: 0;
     }
     .petroglifo-card__meta {
+      font-size: 0.85rem;
       color: var(--color-texto-3);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
-    .petroglifo-card__nota {
-      font-size: .95rem;
+    .petroglifo-card__desc {
+      font-size: 0.95rem;
       color: var(--color-texto-2);
+      line-height: 1.6;
+      margin: 0;
       display: -webkit-box;
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
-    /* Vista lista */
-    .catalogo-grid.lista { grid-template-columns: 1fr; }
-    .catalogo-grid.lista .petroglifo-card {
-      display: flex;
-      flex-direction: row;
-    }
-    .catalogo-grid.lista .petroglifo-card__img {
-      width: 120px;
-      height: 120px;
-      flex-shrink: 0;
-    }
-    .catalogo-grid.lista .petroglifo-card__info { flex: 1; }
-    .catalogo-grid.lista .petroglifo-card__nota { -webkit-line-clamp: 4; }
+    
     /* Sin resultados */
     .sin-resultados {
       grid-column: 1 / -1;
@@ -129,10 +108,27 @@
       color: var(--color-texto-3);
     }
     .sin-resultados span { font-size: 4rem; display: block; margin-bottom: 1rem; }
-
-    @media(max-width:600px){
-      .catalogo-grid.lista .petroglifo-card { flex-direction: column; }
-      .catalogo-grid.lista .petroglifo-card__img { width: 100%; aspect-ratio: 16/9; }
+    
+    /* Botón Cargar Más */
+    .btn-cargar-mas {
+      display: inline-flex;
+      margin: 3rem auto 1rem;
+      padding: 1rem 3rem;
+      border-radius: 50px;
+      background: rgba(140, 115, 85, 0.1);
+      border: 1px solid rgba(140, 115, 85, 0.3);
+      color: var(--color-dorado-claro);
+      font-family: var(--font-cuerpo);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .btn-cargar-mas:hover {
+      background: rgba(140, 115, 85, 0.2);
+      border-color: var(--color-dorado);
+      transform: translateY(-2px);
     }
   </style>
 </head>
@@ -166,13 +162,7 @@
       </div>
 
       <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
-
-
-        <!-- Vista -->
-        <div class="vista-btns" role="group" aria-label="Cambiar vista">
-          <button class="vista-btn activo" id="btn-vista-grid" aria-label="Vista cuadrícula" title="Vista cuadrícula"></button>
-          <button class="vista-btn" id="btn-vista-lista" aria-label="Vista lista" title="Vista lista"></button>
-        </div>
+        <!-- El diseño anterior con vista grid/lista y filtros se simplificó por el nuevo estilo más unificado -->
       </div>
     </div>
 
@@ -183,8 +173,10 @@
 
     </div>
 
-    <!-- Paginación -->
-    <nav class="paginacion" id="paginacion" aria-label="Paginación del catálogo"></nav>
+    <!-- Botón Cargar Más -->
+    <div style="text-align: center;">
+      <button class="btn-cargar-mas" id="btn-cargar-mas" style="display: none;">Ver más petroglifos</button>
+    </div>
   </div>
 </section>
 
@@ -209,8 +201,7 @@ const COLORES_CAT = {
 function colorCategoria(cat) { return COLORES_CAT[cat] || 'badge--gris'; }
 
 const grid = document.getElementById('grid-petroglifos');
-const navPag = document.getElementById('paginacion');
-let vistaActual = 'grid';
+const btnCargarMas = document.getElementById('btn-cargar-mas');
 let filtroActual = 'todos';
 let busquedaActual = '';
 
@@ -224,77 +215,58 @@ function obtenerFiltrados() {
   });
 }
 
-function renderPetroglifos() {
+function renderPetroglifos(reset = false) {
   const filtrados = obtenerFiltrados();
-  const totalPaginas = Math.max(1, Math.ceil(filtrados.length / POR_PAGINA));
-  if (paginaActual > totalPaginas) paginaActual = totalPaginas;
+  
+  if (reset) {
+    grid.innerHTML = '';
+  }
 
-  const inicio = (paginaActual - 1) * POR_PAGINA;
-  const pagina = filtrados.slice(inicio, inicio + POR_PAGINA);
+  const mostrarHasta = paginaActual * POR_PAGINA;
+  const pagina = filtrados.slice((paginaActual - 1) * POR_PAGINA, mostrarHasta);
 
-  if (!filtrados.length) {
-    grid.innerHTML = `<div class="sin-resultados"><span></span><p>No se encontraron petroglifos con ese criterio.</p></div>`;
-    navPag.innerHTML = '';
+  if (!filtrados.length && reset) {
+    grid.innerHTML = `<div class="sin-resultados"><span>🔍</span><p>No se encontraron petroglifos con ese criterio.</p></div>`;
+    btnCargarMas.style.display = 'none';
     return;
   }
 
-  grid.innerHTML = pagina.map(p => `
-    <a href="petroglifo-detalle.html?id=${p.id}" class="petroglifo-card revelar" data-categoria="${p.categoria}" id="card-petroglifo-${p.id}">
-      <div class="petroglifo-card__top">
-        <div class="petroglifo-card__img">
-          <img src="${(p.imagen_url || '').replace(/^\/assets\//, '../assets/') || '../assets/img/petroglifo-01.png'}" alt="${p.nombre}" loading="lazy">
-        </div>
-        <div class="petroglifo-card__info">
-          <div class="petroglifo-card__id">${p.nombre}</div>
-          <div class="petroglifo-card__meta" style="margin-top: .5rem; font-size: .85rem;">
-            <div style="margin-bottom: .25rem;">📍 ${p.estacion_nombre || '530 m.s.n.m'}</div>
-            <div>🧭 ${p.categoria || 'Grabado'}</div>
-          </div>
-        </div>
+  const html = pagina.map(p => `
+    <a href="petroglifo-detalle.html?id=${p.id}" class="petroglifo-card revelar" id="card-petroglifo-${p.id}">
+      <div class="petroglifo-card__img-wrap">
+        <img src="${(p.imagen_url || '').replace(/^\/assets\//, '../assets/') || '../assets/img/petroglifo-01.png'}" alt="${p.nombre}" loading="lazy">
+        ${p.categoria ? `<span class="petroglifo-card__badge">${p.categoria}</span>` : ''}
       </div>
-      <p class="petroglifo-card__nota">${p.descripcion}</p>
+      <div class="petroglifo-card__content">
+        <h3 class="petroglifo-card__title">${p.nombre}</h3>
+        <div class="petroglifo-card__meta">
+          <span>📍 ${p.estacion_nombre || 'Múltiples estaciones'}</span>
+        </div>
+        <p class="petroglifo-card__desc">${p.descripcion}</p>
+      </div>
     </a>
   `).join('');
 
-  renderPaginacion(totalPaginas);
-  window.Museo && iniciarScrollReveal();
-}
-
-function renderPaginacion(totalPaginas) {
-  if (totalPaginas <= 1) { navPag.innerHTML = ''; return; }
-
-  let botones = '';
-  botones += `<button class="paginacion__btn" ${paginaActual === 1 ? 'disabled' : ''} data-pag="${paginaActual - 1}" aria-label="Página anterior">‹</button>`;
-
-  const rango = generarRango(paginaActual, totalPaginas);
-  for (const val of rango) {
-    if (val === '...') {
-      botones += `<span style="color:var(--color-texto-3);padding:.5rem;">…</span>`;
-    } else {
-      botones += `<button class="paginacion__btn${val === paginaActual ? ' activo' : ''}" data-pag="${val}" ${val === paginaActual ? 'aria-current="page"' : ''}>${val}</button>`;
-    }
+  if (reset) {
+    grid.innerHTML = html;
+  } else {
+    grid.insertAdjacentHTML('beforeend', html);
   }
 
-  botones += `<button class="paginacion__btn" ${paginaActual === totalPaginas ? 'disabled' : ''} data-pag="${paginaActual + 1}" aria-label="Página siguiente">›</button>`;
-  navPag.innerHTML = botones;
+  // Lógica del botón Cargar Más
+  if (mostrarHasta >= filtrados.length) {
+    btnCargarMas.style.display = 'none';
+  } else {
+    btnCargarMas.style.display = 'inline-flex';
+  }
+
+  window.Museo && window.Museo.iniciarScrollReveal && window.Museo.iniciarScrollReveal();
+  iniciarScrollReveal();
 }
 
-function generarRango(actual, total) {
-  if (total <= 7) return Array.from({length: total}, (_, i) => i + 1);
-  const rango = [1];
-  if (actual > 3) rango.push('...');
-  for (let i = Math.max(2, actual - 1); i <= Math.min(total - 1, actual + 1); i++) rango.push(i);
-  if (actual < total - 2) rango.push('...');
-  rango.push(total);
-  return rango;
-}
-
-navPag.addEventListener('click', e => {
-  const btn = e.target.closest('[data-pag]');
-  if (!btn || btn.disabled) return;
-  paginaActual = parseInt(btn.dataset.pag);
-  renderPetroglifos();
-  grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+btnCargarMas.addEventListener('click', () => {
+  paginaActual++;
+  renderPetroglifos(false);
 });
 
 function iniciarScrollReveal() {
@@ -310,7 +282,7 @@ function iniciarScrollReveal() {
 document.getElementById('buscador-petroglifos').addEventListener('input', e => {
   busquedaActual = e.target.value.toLowerCase().trim();
   paginaActual = 1;
-  renderPetroglifos();
+  renderPetroglifos(true);
 });
 
 // Chips de filtro
@@ -323,21 +295,11 @@ if (chipsContainer) {
     chip.classList.add('activo');
     filtroActual = chip.dataset.filtro;
     paginaActual = 1;
-    renderPetroglifos();
+    renderPetroglifos(true);
   });
 }
 
-// Cambio de vista
-document.getElementById('btn-vista-grid').addEventListener('click', () => {
-  grid.classList.remove('lista');
-  document.getElementById('btn-vista-grid').classList.add('activo');
-  document.getElementById('btn-vista-lista').classList.remove('activo');
-});
-document.getElementById('btn-vista-lista').addEventListener('click', () => {
-  grid.classList.add('lista');
-  document.getElementById('btn-vista-lista').classList.add('activo');
-  document.getElementById('btn-vista-grid').classList.remove('activo');
-});
+// Cambio de vista - Eliminado por nuevo diseño unificado
 
 // Iniciar
 document.addEventListener('DOMContentLoaded', async () => {
@@ -348,7 +310,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   } catch (e) {
     console.error(e);
   }
-  renderPetroglifos();
+  paginaActual = 1;
+  renderPetroglifos(true);
 });
 </script>
 </body>
