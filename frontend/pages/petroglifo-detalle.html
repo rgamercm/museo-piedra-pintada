@@ -126,29 +126,10 @@
 <section class="section--sm">
   <div class="container">
     <div class="detalle-grid">
-      <!-- Columna izquierda: imagen + QR -->
+      <!-- Columna izquierda: imagen -->
       <div>
         <div class="imagen-principal revelar">
           <img id="detalle-img" src="../assets/img/petroglifo-01.png" alt="El Guardián — Petroglifo antropomorfo">
-        </div>
-
-        <div style="margin-top:1.5rem;background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1.2rem;padding:1.5rem;">
-          <div style="font-family:var(--font-titulo);font-size:1rem;color:var(--color-dorado-claro);margin-bottom:1rem;">Código QR de la estación</div>
-          <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;">
-            <div class="qr-display">
-              <!-- QR real generado por qr-voz.js -->
-              <div id="qr-real" style="background:#fff;border-radius:.5rem;padding:8px;display:inline-block;"></div>
-              <div class="qr-display__codigo">—</div>
-              <div class="qr-display__lbl">Escanear en el parque</div>
-            </div>
-            <div style="flex:1;min-width:200px;">
-              <p style="font-size:.85rem;color:var(--color-texto-2);line-height:1.7;">Escanea este código en la piedra física para abrir esta ficha y escuchar la historia narrada por el asistente de voz.</p>
-              <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem;">
-                <button class="btn btn--contorno btn--sm" id="btn-imprimir-qr">Imprimir QR</button>
-                <a href="recorrido.html" class="btn btn--primario btn--sm" id="btn-ir-recorrido">Ir al recorrido</a>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -200,6 +181,26 @@
             <li class="meta-item"><span>Datación aprox.</span><strong>800 – 1200 d.C.</strong></li>
             <li class="meta-item"><span>Código QR</span><strong id="meta-qr">QR-003</strong></li>
           </ul>
+        </div>
+
+        <!-- Código QR trasladado a la columna derecha -->
+        <div style="margin-bottom:2rem;background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1.2rem;padding:1.5rem;">
+          <div style="font-family:var(--font-titulo);font-size:1rem;color:var(--color-dorado-claro);margin-bottom:1rem;">Código QR de la estación</div>
+          <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;">
+            <div class="qr-display">
+              <!-- QR real generado por qr-voz.js -->
+              <div id="qr-real" style="background:#fff;border-radius:.5rem;padding:8px;display:inline-block;"></div>
+              <div class="qr-display__codigo">—</div>
+              <div class="qr-display__lbl">Escanear en el parque</div>
+            </div>
+            <div style="flex:1;min-width:200px;">
+              <p style="font-size:.85rem;color:var(--color-texto-2);line-height:1.7;">Escanea este código en la piedra física para abrir esta ficha y escuchar la historia narrada por el asistente de voz.</p>
+              <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem;">
+                <button class="btn btn--contorno btn--sm" id="btn-imprimir-qr">Imprimir QR</button>
+                <a href="recorrido.html" class="btn btn--primario btn--sm" id="btn-ir-recorrido">Ir al recorrido</a>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Navegación entre petroglifos -->
