@@ -39,8 +39,21 @@ async function listarPendientes(req, res, next) {
 async function crear(req, res, next) {
   try {
     // Si hay sesión, usamos el usuario_id. Si no, queda null (pregunta anónima).
-    const usuario_id = req.usuario ? req.usuario.id : null;
+    let usuario_id = req.usuario ? req.usuario.id : null;
     const { pregunta, nombre, correo } = req.body;
+
+    if (!usuario_id && !correo) {
+      return error(res, 'Debes proporcionar tu correo para hacer una pregunta.', 400);
+    }
+
+    if (!usuario_id && correo) {
+      const { rows: usuarios } = await db.query('SELECT id FROM usuarios WHERE email = $1', [correo]);
+      if (usuarios.length > 0) {
+        usuario_id = usuarios[0].id;
+      } else {
+        return error(res, 'Correo no registrado. Por favor, regístrate para hacer una pregunta.', 400);
+      }
+    }
 
     const { rows } = await db.query(
       `INSERT INTO preguntas_respuestas
