@@ -800,6 +800,7 @@ async function inicializarMapaAdmin() {
     document.getElementById('btn-guardar-ruta').addEventListener('click', guardarRutaSimulador);
     document.getElementById('btn-agregar-poi')?.addEventListener('click', agregarPuntoManualSimulador);
     document.getElementById('btn-actualizar-ruta-sim')?.addEventListener('click', guardarRutaSimulador);
+    inicializarToggleUbicaciones();
   } catch(e) {
     console.error('Error al inicializar editor de mapa:', e);
   }
@@ -878,9 +879,7 @@ async function cargarMarcadoresAdmin() {
 
 async function onMapClickAdmin(e) {
   if (modoDibujoRuta) {
-    const lat = e.latlng.lat;
-    const lng = e.latlng.lng;
-    rutaSimuladorCoordenadas.push([lat, lng]);
+    rutaSimuladorCoordenadas.push({ lat: e.latlng.lat, lng: e.latlng.lng, desc: '' });
     redibujarRutaSimulador();
     return;
   }
@@ -968,15 +967,22 @@ window.eliminarMarcadorAdmin = async function(id) {
 
 // --- LOGICA DE RUTA SIMULADOR ---
 
+// Normaliza un punto de interés desde la BD a { lat, lng, desc }. Acepta el
+// formato nuevo {lng, lat, descripcion} y el antiguo [lng, lat] (sin desc).
+function normalizarPuntoPOI(c) {
+  if (Array.isArray(c)) return { lat: +c[1], lng: +c[0], desc: '' };
+  return { lat: +c.lat, lng: +c.lng, desc: c.descripcion || c.desc || '' };
+}
+
 async function cargarRutaSimuladorAdmin() {
   try {
     const res = await window.api.cliente(`/api/ruta_simulador`);
     if (res.datos && Array.isArray(res.datos.coordenadas) && res.datos.coordenadas.length > 0) {
-      rutaSimuladorCoordenadas = res.datos.coordenadas.map(c => [c[1], c[0]]); // GeoJSON a Leaflet [lat, lng]
+      rutaSimuladorCoordenadas = res.datos.coordenadas.map(normalizarPuntoPOI);
       redibujarRutaSimulador();
     }
   } catch(e) {
-    console.error('Error cargando ruta simulador', e);
+    console.error('Error cargando puntos de interés', e);
   }
 }
 
@@ -994,13 +1000,14 @@ function redibujarRutaSimulador() {
 
   if (rutaSimuladorCoordenadas.length === 0) return;
 
-  rutaSimuladorCoordenadas.forEach((coord, i) => {
+  rutaSimuladorCoordenadas.forEach((p, i) => {
     const icono = L.divIcon({
       className: '',
       html: `<div style="width:24px;height:24px;border-radius:50%;background:#E0A94B;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;font-size:12px;color:#3a2a00;">★</div>`,
       iconSize: [24, 24], iconAnchor: [12, 12],
     });
-    L.marker(coord, { icon: icono }).bindTooltip(`Punto de interés ${i + 1}`).addTo(puntosSimuladorCapa);
+    const tip = p.desc ? `Punto ${i + 1}: ${p.desc}` : `Punto de interés ${i + 1}`;
+    L.marker([p.lat, p.lng], { icon: icono }).bindTooltip(tip).addTo(puntosSimuladorCapa);
   });
 }
 
@@ -1018,19 +1025,25 @@ function renderListaPuntosSimulador() {
   }
 
   const ult = rutaSimuladorCoordenadas.length - 1;
-  cont.innerHTML = rutaSimuladorCoordenadas.map((c, i) => `
-    <div style="display:flex;align-items:center;gap:.5rem;background:rgba(0,0,0,.2);border:1px solid var(--glass-border);border-radius:.5rem;padding:.35rem .5rem;">
-      <span style="min-width:1.5rem;height:1.5rem;display:flex;align-items:center;justify-content:center;background:#4080FF;color:#fff;border-radius:50%;font-size:.72rem;font-weight:700;flex:none;">${i + 1}</span>
-      <span style="flex:1;font-size:.8rem;font-family:monospace;color:var(--color-texto);">Lat ${(+c[0]).toFixed(6)}, Lng ${(+c[1]).toFixed(6)}</span>
-      <button title="Subir" onclick="moverPuntoSimulador(${i}, -1)" style="background:none;border:none;color:${i === 0 ? '#555' : '#4080FF'};cursor:${i === 0 ? 'default' : 'pointer'};font-size:1rem;padding:0 .2rem;" ${i === 0 ? 'disabled' : ''}>▲</button>
-      <button title="Bajar" onclick="moverPuntoSimulador(${i}, 1)" style="background:none;border:none;color:${i === ult ? '#555' : '#4080FF'};cursor:${i === ult ? 'default' : 'pointer'};font-size:1rem;padding:0 .2rem;" ${i === ult ? 'disabled' : ''}>▼</button>
-      <button title="Eliminar" onclick="eliminarPuntoSimulador(${i})" style="background:none;border:none;color:#F09090;cursor:pointer;font-size:1rem;padding:0 .2rem;">✕</button>
+  const esc = (s) => (s || '').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+  cont.innerHTML = rutaSimuladorCoordenadas.map((p, i) => `
+    <div style="display:flex;flex-direction:column;gap:.4rem;background:rgba(0,0,0,.2);border:1px solid var(--glass-border);border-radius:.5rem;padding:.4rem .5rem;">
+      <div style="display:flex;align-items:center;gap:.5rem;">
+        <span style="min-width:1.5rem;height:1.5rem;display:flex;align-items:center;justify-content:center;background:#E0A94B;color:#3a2a00;border-radius:50%;font-size:.72rem;font-weight:700;flex:none;">${i + 1}</span>
+        <span style="flex:1;font-size:.8rem;font-family:monospace;color:var(--color-texto);">Lat ${(+p.lat).toFixed(6)}, Lng ${(+p.lng).toFixed(6)}</span>
+        <button title="Subir" onclick="moverPuntoSimulador(${i}, -1)" style="background:none;border:none;color:${i === 0 ? '#555' : '#E0A94B'};cursor:${i === 0 ? 'default' : 'pointer'};font-size:1rem;padding:0 .2rem;" ${i === 0 ? 'disabled' : ''}>▲</button>
+        <button title="Bajar" onclick="moverPuntoSimulador(${i}, 1)" style="background:none;border:none;color:${i === ult ? '#555' : '#E0A94B'};cursor:${i === ult ? 'default' : 'pointer'};font-size:1rem;padding:0 .2rem;" ${i === ult ? 'disabled' : ''}>▼</button>
+        <button title="Eliminar" onclick="eliminarPuntoSimulador(${i})" style="background:none;border:none;color:#F09090;cursor:pointer;font-size:1rem;padding:0 .2rem;">✕</button>
+      </div>
+      <input type="text" value="${esc(p.desc)}" placeholder="Descripción (opcional)" onchange="actualizarDescPOI(${i}, this.value)"
+        style="width:100%;padding:.35rem .5rem;border-radius:.4rem;border:1px solid var(--glass-border);background:rgba(0,0,0,.25);color:var(--color-texto);font-size:.78rem;">
     </div>`).join('');
 }
 
 function agregarPuntoManualSimulador() {
   const latEl = document.getElementById('poi-lat');
   const lngEl = document.getElementById('poi-lng');
+  const descEl = document.getElementById('poi-desc');
   const lat = parseFloat(latEl.value);
   const lng = parseFloat(lngEl.value);
 
@@ -1043,14 +1056,32 @@ function agregarPuntoManualSimulador() {
     return;
   }
 
-  rutaSimuladorCoordenadas.push([lat, lng]);
+  rutaSimuladorCoordenadas.push({ lat, lng, desc: (descEl?.value || '').trim() });
   redibujarRutaSimulador();
   latEl.value = '';
   lngEl.value = '';
+  if (descEl) descEl.value = '';
   latEl.focus();
   if (mapaAdmin) mapaAdmin.panTo([lat, lng]);
   window.Museo?.mostrarToast(`Punto ${rutaSimuladorCoordenadas.length} agregado`, 'exito');
 }
+
+// Actualiza la descripción de un punto desde el input inline de la lista.
+window.actualizarDescPOI = function (i, valor) {
+  if (i < 0 || i >= rutaSimuladorCoordenadas.length) return;
+  rutaSimuladorCoordenadas[i].desc = (valor || '').trim();
+  // Refrescar solo el tooltip del mapa (sin re-render de la lista para no perder foco)
+  puntosSimuladorCapa.clearLayers();
+  rutaSimuladorCoordenadas.forEach((p, k) => {
+    const icono = L.divIcon({
+      className: '',
+      html: `<div style="width:24px;height:24px;border-radius:50%;background:#E0A94B;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;font-size:12px;color:#3a2a00;">★</div>`,
+      iconSize: [24, 24], iconAnchor: [12, 12],
+    });
+    const tip = p.desc ? `Punto ${k + 1}: ${p.desc}` : `Punto de interés ${k + 1}`;
+    L.marker([p.lat, p.lng], { icon: icono }).bindTooltip(tip).addTo(puntosSimuladorCapa);
+  });
+};
 
 // Expuestas globalmente para los onclick del listado renderizado.
 window.eliminarPuntoSimulador = function (i) {
@@ -1104,13 +1135,15 @@ async function guardarRutaSimulador() {
     return;
   }
 
-  // Convertir [lat, lng] a [lng, lat] para formato GeoJSON
-  const geojsonCoords = rutaSimuladorCoordenadas.map(c => [c[1], c[0]]);
+  // Guardar como objetos {lng, lat, descripcion} (orden GeoJSON en lng/lat).
+  const coordenadas = rutaSimuladorCoordenadas.map(p => ({
+    lng: p.lng, lat: p.lat, descripcion: p.desc || ''
+  }));
 
   try {
     const res = await window.api.cliente('/api/ruta_simulador', {
       method: 'PUT',
-      body: JSON.stringify({ coordenadas: geojsonCoords })
+      body: JSON.stringify({ coordenadas })
     });
 
     if (res.ok) {
@@ -1121,5 +1154,44 @@ async function guardarRutaSimulador() {
     console.error(e);
     window.Museo?.mostrarToast('Error al guardar los puntos de interés', 'error');
   }
+}
+
+// --- Permiso: mostrar ubicaciones exactas de petroglifos en el Mapa GPS ---
+async function inicializarToggleUbicaciones() {
+  const chk = document.getElementById('toggle-ubic-petroglifos');
+  const txt = document.getElementById('toggle-ubic-petroglifos-txt');
+  if (!chk || chk.dataset.listo === '1') return; // evitar doble-cableado
+  chk.dataset.listo = '1';
+
+  const pintar = (on) => { if (txt) txt.textContent = on ? 'Activado' : 'Desactivado'; };
+
+  // Cargar estado actual (404 = nunca configurado => desactivado)
+  try {
+    const cfg = await window.api.cliente('/api/configuracion/ubicaciones_petroglifos');
+    chk.checked = !!(cfg && cfg.habilitado);
+  } catch (e) {
+    chk.checked = false;
+  }
+  pintar(chk.checked);
+
+  chk.addEventListener('change', async () => {
+    const habilitado = chk.checked;
+    pintar(habilitado);
+    try {
+      await window.api.cliente('/api/configuracion/ubicaciones_petroglifos', {
+        method: 'PUT',
+        body: JSON.stringify({ habilitado })
+      });
+      window.Museo?.mostrarToast(
+        habilitado ? 'Los visitantes ya pueden ver la ubicación exacta' : 'Ubicación exacta oculta para los visitantes',
+        'exito'
+      );
+    } catch (e) {
+      console.error('Error guardando permiso de ubicaciones', e);
+      window.Museo?.mostrarToast('No se pudo guardar el permiso', 'error');
+      chk.checked = !habilitado; // revertir
+      pintar(chk.checked);
+    }
+  });
 }
 

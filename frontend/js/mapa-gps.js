@@ -29,6 +29,8 @@ let monticuloSeleccionadoId = null; // Estación mostrada en el panel de petrogl
 let marcadores = {};                // id_petroglifo -> L.marker (solo rocas fuera de estaciones)
 let marcadoresMonticulos = {};      // id_monticulo -> L.marker
 let capaPuntosInteres = null;       // L.layerGroup con los puntos de interés del admin
+let capaPetroglifosExactos = null;  // L.layerGroup con cada petroglifo en su coord GPS real
+let ubicacionesExactasVisible = false;
 let geojsonCoords = []; // Coordenadas [lng, lat] de TODA la ruta (tramos aplanados)
 let idSimulador = null;
 let indiceSimulador = 0;
@@ -115,6 +117,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       nombre: p.nombre,
       latitud: lat,
       longitud: lng,
+      lat_real: lat,   // coord GPS real (agruparEnMonticulos puede reubicar latitud/longitud)
+      lng_real: lng,
       petroglifo_id: p.petroglifo_id ?? p.id ?? cod,
       petroglifo_codigo_qr: cod,
       petroglifo_imagen_url: p.imagen_url || p.petroglifo_imagen_url || ficha?.imagen_url || null,
@@ -186,6 +190,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Estación inicial seleccionada: la primera pendiente del recorrido
   const primera = monticulos.find(m => !m.completada) || monticulos[0];
   if (primera) seleccionarMonticulo(primera.id, { pan: false, scroll: false });
+
+  // Botón (si el admin lo habilitó) para ver la ubicación exacta de petroglifos
+  inicializarUbicacionesExactas();
 });
 
 /**
@@ -193,14 +200,18 @@ document.addEventListener('DOMContentLoaded', async () => {
  * marcadores sobre el mapa. NO forman parte del recorrido; solo resaltan
  * lugares a destacar. Recibe coordenadas en formato GeoJSON [lng, lat].
  */
-function renderizarPuntosInteres(coordsLngLat) {
+function renderizarPuntosInteres(puntos) {
   if (capaPuntosInteres) { mapa.removeLayer(capaPuntosInteres); capaPuntosInteres = null; }
-  if (!Array.isArray(coordsLngLat) || coordsLngLat.length === 0) return;
+  if (!Array.isArray(puntos) || puntos.length === 0) return;
 
   capaPuntosInteres = L.layerGroup();
-  coordsLngLat.forEach((c, i) => {
-    const lat = parseFloat(c[1]), lng = parseFloat(c[0]);
+  puntos.forEach((p, i) => {
+    // Acepta objetos {lng, lat, descripcion} y el formato antiguo [lng, lat].
+    const lat = parseFloat(Array.isArray(p) ? p[1] : p.lat);
+    const lng = parseFloat(Array.isArray(p) ? p[0] : p.lng);
+    const desc = Array.isArray(p) ? '' : (p.descripcion || p.desc || '');
     if (!isFinite(lat) || !isFinite(lng)) return;
+
     const icono = L.divIcon({
       className: '',
       html: `<div style="width:26px;height:26px;border-radius:50%;background:var(--color-dorado,#E0A94B);
@@ -208,11 +219,74 @@ function renderizarPuntosInteres(coordsLngLat) {
         justify-content:center;font-size:14px;line-height:1;">★</div>`,
       iconSize: [26, 26], iconAnchor: [13, 13],
     });
-    L.marker([lat, lng], { icon: icono, zIndexOffset: 500 })
-      .bindTooltip(`Punto de interés ${i + 1}`, { direction: 'top' })
-      .addTo(capaPuntosInteres);
+    const marcador = L.marker([lat, lng], { icon: icono, zIndexOffset: 500 }).addTo(capaPuntosInteres);
+    marcador.bindTooltip(`Punto de interés ${i + 1}`, { direction: 'top' });
+    if (desc) {
+      const safe = desc.replace(/</g, '&lt;');
+      marcador.bindPopup(`<div style="max-width:220px;"><strong>⭐ Punto de interés ${i + 1}</strong><br>${safe}</div>`);
+    }
   });
   capaPuntosInteres.addTo(mapa);
+}
+
+/**
+ * Construye la capa con la ubicación EXACTA (GPS real) de cada petroglifo.
+ * Se usa lat_real/lng_real porque agruparEnMonticulos reubica las rocas de GPS
+ * poco fiable junto al centro de su montículo. Marcadores pequeños, con popup.
+ */
+function construirCapaPetroglifosExactos() {
+  if (capaPetroglifosExactos) { mapa.removeLayer(capaPetroglifosExactos); capaPetroglifosExactos = null; }
+  capaPetroglifosExactos = L.layerGroup();
+
+  estacionesDatos.forEach(est => {
+    const lat = parseFloat(est.lat_real), lng = parseFloat(est.lng_real);
+    if (!isFinite(lat) || !isFinite(lng)) return;
+    const cod = est.petroglifo_codigo_qr || '';
+    const icono = L.divIcon({
+      className: '',
+      html: `<div style="width:14px;height:14px;border-radius:50%;background:#C0392B;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.5);"></div>`,
+      iconSize: [14, 14], iconAnchor: [7, 7],
+    });
+    L.marker([lat, lng], { icon: icono, zIndexOffset: 300 })
+      .bindTooltip(cod || est.nombre || 'Petroglifo', { direction: 'top' })
+      .bindPopup(`<strong>${cod || est.nombre || 'Petroglifo'}</strong><br>
+        <span style="font-size:11px;color:#888;">Ubicación GPS exacta<br>${lat.toFixed(6)}, ${lng.toFixed(6)}</span>`)
+      .addTo(capaPetroglifosExactos);
+  });
+}
+
+/** Muestra u oculta la capa de ubicaciones exactas de los petroglifos. */
+function alternarUbicacionesExactas() {
+  ubicacionesExactasVisible = !ubicacionesExactasVisible;
+  const btn = document.getElementById('btn-toggle-petroglifos-exactos');
+  if (ubicacionesExactasVisible) {
+    if (!capaPetroglifosExactos) construirCapaPetroglifosExactos();
+    capaPetroglifosExactos.addTo(mapa);
+    if (btn) { btn.classList.add('activo'); btn.innerHTML = '📍 Ocultar ubicación exacta'; }
+  } else {
+    if (capaPetroglifosExactos) mapa.removeLayer(capaPetroglifosExactos);
+    if (btn) { btn.classList.remove('activo'); btn.innerHTML = '📍 Ver ubicación exacta de petroglifos'; }
+  }
+}
+
+/**
+ * Consulta el permiso del admin (configuracion ubicaciones_petroglifos). Si está
+ * habilitado, muestra el botón para que el visitante alterne las ubicaciones
+ * exactas de los petroglifos en su mapa.
+ */
+async function inicializarUbicacionesExactas() {
+  const btn = document.getElementById('btn-toggle-petroglifos-exactos');
+  if (!btn) return;
+  let habilitado = false;
+  try {
+    const cfg = await window.api.cliente('/api/configuracion/ubicaciones_petroglifos');
+    habilitado = !!(cfg && cfg.habilitado);
+  } catch (e) {
+    habilitado = false; // 404 = nunca configurado
+  }
+  if (!habilitado) { btn.style.display = 'none'; return; }
+  btn.style.display = 'inline-block';
+  btn.addEventListener('click', alternarUbicacionesExactas);
 }
 
 /** Crea (o re-crea) el marcador de una estación en el mapa. */

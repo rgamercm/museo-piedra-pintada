@@ -340,6 +340,10 @@
             <label for="poi-lng" style="font-size:.75rem;color:var(--color-texto-2);">Longitud</label>
             <input id="poi-lng" type="number" step="any" placeholder="-67.887700" style="padding:.5rem;border-radius:.5rem;border:1px solid var(--glass-border);background:rgba(0,0,0,.25);color:var(--color-texto);width:160px;">
           </div>
+          <div style="display:flex;flex-direction:column;gap:.25rem;flex:1;min-width:180px;">
+            <label for="poi-desc" style="font-size:.75rem;color:var(--color-texto-2);">Descripción (opcional)</label>
+            <input id="poi-desc" type="text" placeholder="Ej: Mirador, entrada del sendero…" style="padding:.5rem;border-radius:.5rem;border:1px solid var(--glass-border);background:rgba(0,0,0,.25);color:var(--color-texto);width:100%;">
+          </div>
           <button class="btn btn--contorno btn--sm" id="btn-agregar-poi" style="border-color:#E0A94B;color:#E0A94B;">➕ Agregar punto</button>
           <button class="btn btn--primario btn--sm" id="btn-actualizar-ruta-sim" style="background:#E0A94B;">💾 Guardar Puntos de Interés</button>
         </div>
@@ -347,6 +351,20 @@
         <p style="font-size:.72rem;color:var(--color-texto-2);margin-top:.5rem;line-height:1.4;">
           Estos puntos <strong>no cambian el recorrido</strong> (la línea verde sigue siendo la de siempre): solo se muestran como marcadores ⭐ para <strong>destacar lugares de interés</strong> en el Mapa GPS. Escribe Latitud y Longitud y pulsa “Agregar punto”, o márcalos con clics usando “✏️ Marcar en el mapa”. Usa ✕ para quitarlos y pulsa <strong>Guardar Puntos de Interés</strong>.
         </p>
+      </div>
+
+      <!-- Permiso: mostrar ubicaciones exactas de petroglifos en el Mapa GPS -->
+      <div style="background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1rem;padding:1rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+        <div style="flex:1;min-width:240px;">
+          <strong style="color:#4080FF;">📍 Ubicación exacta de los petroglifos</strong>
+          <p style="font-size:.75rem;color:var(--color-texto-2);margin-top:.35rem;line-height:1.4;">
+            Al activarlo, en el <strong>Mapa GPS</strong> aparecerá un botón para que el visitante pueda mostrar/ocultar la ubicación exacta de cada petroglifo. Si lo desactivas, ese botón no se muestra a los visitantes.
+          </p>
+        </div>
+        <label style="display:inline-flex;align-items:center;gap:.6rem;cursor:pointer;user-select:none;">
+          <input type="checkbox" id="toggle-ubic-petroglifos" style="width:20px;height:20px;accent-color:#4080FF;cursor:pointer;">
+          <span id="toggle-ubic-petroglifos-txt" style="font-size:.85rem;color:var(--color-texto);">Desactivado</span>
+        </label>
       </div>
 
       <div style="background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1rem;overflow:hidden;">
@@ -470,7 +488,7 @@
 <script src="../../js/componentes.js?v=2.4"></script>
 <script src="../../js/api.js?v=1.5"></script>
 <script src="../../js/qr-voz.js?v=1.3"></script>
-<script src="../../js/admin.js?v=1.6"></script>
+<script src="../../js/admin.js?v=1.7"></script>
 <script src="../../js/app.js?v=1.3"></script>
 <script>
 'use strict';
