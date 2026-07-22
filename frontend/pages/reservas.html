@@ -85,13 +85,13 @@
           <form id="form-reserva" novalidate>
             <div class="form-grupo">
               <label class="form-etiqueta" for="res-institucion">Nombre de la institución *</label>
-              <input type="text" id="res-institucion" class="form-input" placeholder="Ej. Colegio San José" required>
-              <div class="form-error">El nombre de la institución es obligatorio</div>
+              <input type="text" id="res-institucion" class="form-input" placeholder="Ej. Colegio San José" maxlength="100" pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s\.,\-]+$" title="Solo letras, números y signos de puntuación básicos" required>
+              <div class="form-error">El nombre de la institución es obligatorio y sin caracteres especiales</div>
             </div>
             <div class="form-grupo">
               <label class="form-etiqueta" for="res-contacto">Nombre del responsable *</label>
-              <input type="text" id="res-contacto" class="form-input" placeholder="Tu nombre completo" required>
-              <div class="form-error">El nombre del responsable es obligatorio</div>
+              <input type="text" id="res-contacto" class="form-input" placeholder="Tu nombre completo" maxlength="100" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$" title="Solo letras y espacios" required>
+              <div class="form-error">El nombre es obligatorio y debe contener solo letras</div>
             </div>
             <div class="form-grupo">
               <label class="form-etiqueta" for="res-email">Correo electrónico *</label>
@@ -106,8 +106,8 @@
               </div>
               <div class="form-grupo">
                 <label class="form-etiqueta" for="res-personas">Nº de personas *</label>
-                <input type="number" id="res-personas" class="form-input" min="5" max="200" placeholder="Ej. 30" required>
-                <div class="form-error">Mínimo 5 personas</div>
+                <input type="number" id="res-personas" class="form-input" min="1" max="10000" placeholder="Ej. 30" required>
+                <div class="form-error">Debe ser entre 1 y 10000 personas</div>
               </div>
             </div>
             <div class="form-grupo">
@@ -147,9 +147,11 @@
 <script src="../js/app.js?v=1.3"></script>
 <script>
 'use strict';
-// Fecha mínima = mañana
+// Fecha mínima = mañana, máxima = 1 año en el futuro
 const manana = new Date(); manana.setDate(manana.getDate()+1);
+const limite = new Date(); limite.setFullYear(limite.getFullYear()+1);
 document.getElementById('res-fecha').min = manana.toISOString().split('T')[0];
+document.getElementById('res-fecha').max = limite.toISOString().split('T')[0];
 
 document.getElementById('form-reserva').addEventListener('submit', async e => {
   e.preventDefault();
