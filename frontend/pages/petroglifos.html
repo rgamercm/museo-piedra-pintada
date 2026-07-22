@@ -27,6 +27,22 @@
   </div>
 </section>
 
+<!-- Banner: acceso al informe completo de K. Juszczyk (2023) -->
+<section style="padding: 1.5rem 0 0;">
+  <div class="container">
+    <div id="banner-informe" style="background: linear-gradient(135deg, rgba(140,115,85,.10), rgba(224,169,75,.06)); border: 1px solid rgba(140,115,85,.35); border-radius: 1rem; padding: 1.25rem 1.5rem; display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;">
+      <div style="font-size: 2rem; line-height: 1;">📄</div>
+      <div style="flex: 1; min-width: 260px;">
+        <strong style="color: var(--color-dorado-claro); font-family: var(--font-titulo); font-size: 1.05rem;">Informe arqueológico completo</strong>
+        <p style="font-size: .85rem; color: var(--color-texto-2); margin: .35rem 0 0; line-height: 1.5;">
+          Documentación integral de las 111 rocas del Sitio 9 realizada por <strong>K. Juszczyk</strong> (Proyecto AmerGraph 2023, Universidad de Varsovia). Fichas, calqueos, coordenadas y análisis. Uso académico/educativo.
+        </p>
+      </div>
+      <button type="button" class="btn btn--primario" id="btn-abrir-solicitud-informe">📥 Descargar informe</button>
+    </div>
+  </div>
+</section>
+
 <section class="section--sm">
   <div class="container">
     <!-- Controles -->
@@ -55,6 +71,51 @@
     </div>
   </div>
 </section>
+
+<!-- Modal: solicitud del informe arqueológico -->
+<div id="modal-solicitud-informe" role="dialog" aria-modal="true" aria-labelledby="titulo-solicitud-informe" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,.75); align-items:center; justify-content:center; padding:1rem;">
+  <div style="background: linear-gradient(145deg, #12285A, #0A1A3C); color: var(--color-texto); border: 1px solid var(--glass-border); border-radius: 1rem; padding: 1.75rem; max-width: 520px; width: 100%; max-height: 92vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.6);">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; margin-bottom:1rem;">
+      <div>
+        <h2 id="titulo-solicitud-informe" style="font-family: var(--font-titulo); color: var(--color-dorado-claro); font-size: 1.25rem; margin:0;">Descargar informe arqueológico</h2>
+        <p style="font-size:.8rem; color: var(--color-texto-2); margin:.3rem 0 0;">K. Juszczyk (AmerGraph 2023). Completa tus datos y accederás al archivo.</p>
+      </div>
+      <button type="button" id="btn-cerrar-solicitud" aria-label="Cerrar" style="background:none; border:none; color: var(--color-texto-2); font-size: 1.5rem; cursor:pointer; line-height:1;">×</button>
+    </div>
+
+    <form id="form-solicitud-informe" style="display:flex; flex-direction:column; gap:.9rem;">
+      <div>
+        <label for="sol-nombre" style="display:block; font-size:.8rem; color: var(--color-texto-2); margin-bottom:.25rem;">Nombre completo *</label>
+        <input id="sol-nombre" type="text" required minlength="2" maxlength="120" autocomplete="name" class="form-input" style="width:100%; padding:.55rem .75rem; border-radius:.5rem; border:1px solid var(--glass-border); background: rgba(0,0,0,.25); color: var(--color-texto);">
+      </div>
+      <div>
+        <label for="sol-correo" style="display:block; font-size:.8rem; color: var(--color-texto-2); margin-bottom:.25rem;">Correo electrónico *</label>
+        <input id="sol-correo" type="email" required maxlength="120" autocomplete="email" class="form-input" style="width:100%; padding:.55rem .75rem; border-radius:.5rem; border:1px solid var(--glass-border); background: rgba(0,0,0,.25); color: var(--color-texto);">
+      </div>
+      <div>
+        <label for="sol-institucion" style="display:block; font-size:.8rem; color: var(--color-texto-2); margin-bottom:.25rem;">Institución u organización <span style="color: var(--color-texto-3); font-weight: normal;">(opcional)</span></label>
+        <input id="sol-institucion" type="text" maxlength="160" autocomplete="organization" class="form-input" placeholder="Universidad, escuela, medio…" style="width:100%; padding:.55rem .75rem; border-radius:.5rem; border:1px solid var(--glass-border); background: rgba(0,0,0,.25); color: var(--color-texto);">
+      </div>
+      <div>
+        <label for="sol-finalidad" style="display:block; font-size:.8rem; color: var(--color-texto-2); margin-bottom:.25rem;">¿Con qué finalidad usarás el documento? *</label>
+        <textarea id="sol-finalidad" required minlength="10" maxlength="600" rows="4" class="form-textarea" placeholder="Ej: Investigación académica sobre arte rupestre, material didáctico para alumnos de secundaria, artículo de divulgación…" style="width:100%; padding:.55rem .75rem; border-radius:.5rem; border:1px solid var(--glass-border); background: rgba(0,0,0,.25); color: var(--color-texto); resize:vertical; font-family: inherit;"></textarea>
+      </div>
+
+      <label style="display:flex; gap:.55rem; align-items:flex-start; font-size:.78rem; color: var(--color-texto-2); line-height:1.45;">
+        <input type="checkbox" id="sol-acepto" required style="margin-top:.2rem; accent-color: var(--color-dorado);">
+        <span>Doy uso académico/educativo al informe y acepto que el museo registre esta solicitud.</span>
+      </label>
+
+      <div style="display:flex; gap:.75rem; justify-content:flex-end; margin-top:.4rem; flex-wrap:wrap;">
+        <button type="button" class="btn btn--fantasma" id="btn-cancelar-solicitud">Cancelar</button>
+        <button type="submit" class="btn btn--primario" id="btn-enviar-solicitud">Descargar informe</button>
+      </div>
+      <p style="font-size:.72rem; color: var(--color-texto-3); margin:0; line-height:1.45;">
+        Al enviar el formulario abriremos el documento en una nueva pestaña. Tus datos quedan registrados para uso interno del museo.
+      </p>
+    </form>
+  </div>
+</div>
 
 <div id="footer-placeholder"></div>
 
@@ -176,6 +237,51 @@ if (chipsContainer) {
 }
 
 // Cambio de vista - Eliminado por nuevo diseño unificado
+
+// ── Solicitud de descarga del informe (K. Juszczyk 2023) ────────────────
+const URL_INFORME = 'https://drive.google.com/file/d/1QwdtU2cgSd3r2eG22pGPde0u6zpQxZqq/view?usp=sharing';
+const modalSolicitud = document.getElementById('modal-solicitud-informe');
+
+function abrirModalSolicitud() {
+  modalSolicitud.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => document.getElementById('sol-nombre')?.focus(), 60);
+}
+function cerrarModalSolicitud() {
+  modalSolicitud.style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+document.getElementById('btn-abrir-solicitud-informe')?.addEventListener('click', abrirModalSolicitud);
+document.getElementById('btn-cerrar-solicitud')?.addEventListener('click', cerrarModalSolicitud);
+document.getElementById('btn-cancelar-solicitud')?.addEventListener('click', cerrarModalSolicitud);
+modalSolicitud.addEventListener('click', e => { if (e.target === modalSolicitud) cerrarModalSolicitud(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && modalSolicitud.style.display === 'flex') cerrarModalSolicitud(); });
+
+document.getElementById('form-solicitud-informe').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const registro = {
+    nombre: document.getElementById('sol-nombre').value.trim(),
+    correo: document.getElementById('sol-correo').value.trim(),
+    institucion: document.getElementById('sol-institucion').value.trim() || null,
+    finalidad: document.getElementById('sol-finalidad').value.trim(),
+    fecha: new Date().toISOString(),
+  };
+
+  // Log local persistente (para que el museo pueda revisar quién lo pidió).
+  try {
+    const historial = JSON.parse(localStorage.getItem('museo_solicitudes_informe') || '[]');
+    historial.push(registro);
+    localStorage.setItem('museo_solicitudes_informe', JSON.stringify(historial));
+  } catch (err) { /* almacenamiento lleno o bloqueado, no es crítico */ }
+
+  cerrarModalSolicitud();
+  e.target.reset();
+  window.Museo?.mostrarToast('Abriendo el informe en una nueva pestaña…', 'exito');
+  const win = window.open(URL_INFORME, '_blank', 'noopener,noreferrer');
+  // Fallback si el navegador bloquea el pop-up.
+  if (!win) window.location.href = URL_INFORME;
+});
 
 // Iniciar
 document.addEventListener('DOMContentLoaded', async () => {
