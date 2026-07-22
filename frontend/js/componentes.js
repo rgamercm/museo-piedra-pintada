@@ -196,7 +196,7 @@ function generarFooter() {
       <div>
         <h3 class="footer__titulo">Contacto</h3>
         <ul class="footer__lista">
-          <li><span class="footer__enlace">Sector Tronconero Norte de Vigirima,<br>Municipio Guacara, Edo. Carabobo,<br>Venezuela</span></li>
+          <li><a href="https://maps.app.goo.gl/p6FLkBs1wx7HEK2S6?g_st=iw" target="_blank" rel="noopener noreferrer" class="footer__enlace" style="line-height:1.4; display:inline-block;">Sector Tronconero Norte de Vigirima,<br>Municipio Guacara, Edo. Carabobo,<br>Venezuela</a></li>
           <li><span class="footer__enlace">contacto@piedrapintada.ve</span></li>
         </ul>
       </div>
