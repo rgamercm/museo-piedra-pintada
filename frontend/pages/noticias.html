@@ -130,9 +130,8 @@
         <div class="sidebar-card revelar retraso-3" style="text-align:center;background:linear-gradient(135deg,rgba(140, 115, 85,.1),rgba(10,79,147,.20));">
           <div style="font-size:2.5rem;margin-bottom:.75rem;"></div>
           <div class="sidebar-titulo" style="margin-bottom:.5rem;">Recibe novedades</div>
-          <p style="font-size:.82rem;color:var(--color-texto-2);margin-bottom:1rem;">Suscríbete y recibe las últimas noticias del museo directamente en tu correo.</p>
-          <div class="form-grupo"><input type="email" class="form-input" placeholder="tu@correo.com" id="suscripcion-email"></div>
-          <button class="btn btn--primario w-full" id="btn-suscribirse" style="justify-content:center;">Suscribirse</button>
+          <p style="font-size:.82rem;color:var(--color-texto-2);margin-bottom:1rem;">Inicia sesión o regístrate para recibir las últimas noticias del museo directamente en tu correo.</p>
+          <a href="login.html" class="btn btn--primario w-full" style="justify-content:center;">Suscribirse</a>
         </div>
       </div>
     </div>
@@ -208,12 +207,7 @@ document.getElementById('filtros-noticias').addEventListener('click', e => {
   renderNoticias(chip.dataset.filtro);
 });
 
-document.getElementById('btn-suscribirse').addEventListener('click', () => {
-  const email = document.getElementById('suscripcion-email').value;
-  if (!email) return;
-  window.Museo?.mostrarToast(' ¡Suscripción exitosa! Te mantendremos informado.', 'exito');
-  document.getElementById('suscripcion-email').value = '';
-});
+
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
