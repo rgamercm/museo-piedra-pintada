@@ -1165,8 +1165,8 @@
       
       grid.innerHTML = htmlCards;
       
-      if (window.Museo && window.Museo.iniciarScrollReveal) {
-        window.Museo.iniciarScrollReveal();
+      if (typeof window.iniciarScrollReveal === 'function') {
+        window.iniciarScrollReveal();
       }
     } catch (e) {
       console.error('Error al cargar destacados:', e);
