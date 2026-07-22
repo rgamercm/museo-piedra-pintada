@@ -78,7 +78,7 @@ document.getElementById('form-empleado')?.addEventListener('submit', async (e) =
   try {
     // Si hay archivo, subir foto primero
     if (imagenInput.files.length > 0) {
-      const resFoto = await window.api.fotos.subir(imagenInput.files[0], 'avatar');
+      const resFoto = await window.api.fotos.subir(imagenInput.files[0], null, null, 'avatar');
       // Asegurar compatibilidad dependiendo de la respuesta de fotos.subir
       imagenUrl = resFoto.url || resFoto.ruta || resFoto; 
     }

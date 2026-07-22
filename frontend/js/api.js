@@ -185,11 +185,12 @@ const api = {
   },
 
   fotos: {
-    subir: async (file, petroglifo_id, comentario_id) => {
+    subir: async (file, petroglifo_id, comentario_id, tipo) => {
       const formData = new FormData();
       formData.append('imagen', file);
       if (petroglifo_id) formData.append('petroglifo_id', petroglifo_id);
       if (comentario_id) formData.append('comentario_id', comentario_id);
+      if (tipo) formData.append('tipo', tipo);
       
       const token = api.getToken();
       const res = await fetch(`${API_URL}/fotos`, {
