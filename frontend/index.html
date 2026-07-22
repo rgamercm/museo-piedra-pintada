@@ -949,7 +949,7 @@
         }
       } catch (e) {
         console.error('Error al cargar visitas:', e);
-        updateContador(['hero-stat-visitas', 'cifras-stat-visitas'], 12500); // Fallback realista
+        updateContador(['hero-stat-visitas', 'cifras-stat-visitas'], 1457); // Fallback realista
       }
 
       // Cifras reales de petroglifos y estaciones desde la API
@@ -959,7 +959,7 @@
           window.api.estaciones.obtenerTodas().catch(() => [])
         ]);
         if (Array.isArray(petros)) {
-          updateContador(['hero-stat-petros', 'cifras-stat-petros'], petros.length);
+          updateContador(['hero-stat-petros', 'cifras-stat-petros'], 110);
           
           // Renderizar Destacados
           const destacadosContainer = document.getElementById('contenedor-destacados');
@@ -992,7 +992,7 @@
           }
         }
         if (Array.isArray(estaciones)) {
-          updateContador(['hero-stat-estaciones', 'cifras-stat-estaciones'], estaciones.length);
+          updateContador(['hero-stat-estaciones', 'cifras-stat-estaciones'], 5);
         }
       } catch (e) {
         console.error('Error al cargar cifras:', e);
