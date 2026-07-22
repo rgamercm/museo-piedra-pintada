@@ -57,10 +57,10 @@ async function crear(req, res, next) {
 
     const { rows } = await db.query(
       `INSERT INTO preguntas_respuestas
-         (usuario_id, pregunta, nombre_visitante, correo_visitante, publicada)
-       VALUES ($1, $2, $3, $4, false)
+         (usuario_id, pregunta, publicada)
+       VALUES ($1, $2, false)
        RETURNING *`,
-      [usuario_id, pregunta, nombre || null, correo || null]
+      [usuario_id, pregunta]
     );
     
     return creado(res, rows[0]);
