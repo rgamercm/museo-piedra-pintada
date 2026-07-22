@@ -38,26 +38,26 @@ async function listarMias(req, res, next) {
   }
 }
 
-// POST /api/reservas (Institución)
+// POST /api/reservas (Cualquier usuario autenticado)
 async function crear(req, res, next) {
   try {
     const usuario_id = req.usuario.id;
     
-    // Obtener institucion_nombre de la BD
-    const userRes = await db.query('SELECT institucion_nombre FROM usuarios WHERE id = $1', [usuario_id]);
-    const institucion_nombre = userRes.rows[0]?.institucion_nombre;
-
-    if (!institucion_nombre) {
-      return error(res, 'El usuario no tiene una institución asociada.', 422);
-    }
-
-    const { contacto_nombre, contacto_telefono, contacto_correo, fecha_visita, num_personas, notas } = req.body;
+    const { institucion, responsable_nombre, responsable_email, fecha_visita, numero_personas, notas, tipo_institucion } = req.body;
     
+    // El frontend no manda telefono, usamos un placeholder o 'No provisto'
+    const contacto_telefono = 'No provisto';
+    
+    // Concatenamos el tipo al nombre de la institución si está presente
+    const institucionFull = tipo_institucion && tipo_institucion !== 'Otro' 
+      ? `${tipo_institucion} - ${institucion}`
+      : institucion;
+
     const { rows } = await db.query(
       `INSERT INTO reservas (usuario_id, institucion_nombre, contacto_nombre, contacto_telefono, contacto_correo, fecha_visita, num_personas, notas)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
        RETURNING *`,
-      [usuario_id, institucion_nombre, contacto_nombre, contacto_telefono, contacto_correo, fecha_visita, num_personas, notas || null]
+      [usuario_id, institucionFull, responsable_nombre, contacto_telefono, responsable_email, fecha_visita, numero_personas, notas || null]
     );
     
     return creado(res, rows[0]);

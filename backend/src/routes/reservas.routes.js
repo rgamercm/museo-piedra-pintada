@@ -28,15 +28,14 @@ router.get(
   ctrl.listarMias
 );
 
-// POST /api/reservas - institucion
+// POST /api/reservas - Cualquier usuario logueado
 router.post(
   '/',
   requiereSesion,
-  requiereRol('institucion'),
   [
-    body('contacto_nombre').trim().notEmpty().withMessage('El nombre de contacto es obligatorio.').isLength({ max: 100 }),
-    body('contacto_telefono').trim().notEmpty().withMessage('El teléfono es obligatorio.').isLength({ max: 20 }),
-    body('contacto_correo').trim().isEmail().withMessage('Correo de contacto inválido.').normalizeEmail(),
+    body('institucion').trim().notEmpty().withMessage('El nombre de la institución es obligatorio.').isLength({ max: 200 }),
+    body('responsable_nombre').trim().notEmpty().withMessage('El nombre de contacto es obligatorio.').isLength({ max: 100 }),
+    body('responsable_email').trim().isEmail().withMessage('Correo de contacto inválido.').normalizeEmail(),
     body('fecha_visita')
       .isDate().withMessage('Formato de fecha inválido (YYYY-MM-DD).')
       .custom(value => {
@@ -48,8 +47,9 @@ router.post(
         }
         return true;
       }),
-    body('num_personas').isInt({ min: 1, max: 200 }).withMessage('El número de personas debe estar entre 1 y 200.'),
-    body('notas').optional().trim()
+    body('numero_personas').isInt({ min: 1, max: 200 }).withMessage('El número de personas debe estar entre 1 y 200.'),
+    body('notas').optional().trim(),
+    body('tipo_institucion').optional().trim()
   ],
   validar,
   ctrl.crear
