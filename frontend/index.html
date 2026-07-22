@@ -981,6 +981,11 @@
                   </div>
                 </a>
               `).join('');
+              
+              // Activar la animación de aparición de las nuevas tarjetas
+              if (window.Museo && window.Museo.iniciarScrollReveal) {
+                window.Museo.iniciarScrollReveal();
+              }
             } else {
               destacadosContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align:center;padding:3rem;background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1rem;color:var(--color-texto-3);">Aún no se han destacado petroglifos en el catálogo.</div>`;
             }

@@ -281,7 +281,8 @@ window.Museo = {
   iniciarFiltroChips,
   validarFormulario,
   simularCarga,
-  animarContador
+  animarContador,
+  iniciarScrollReveal
 };
 
 // Registro del Service Worker para funcionamiento Offline
