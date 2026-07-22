@@ -178,7 +178,7 @@
     .hero__imagen-wrapper-fluid {
       position: relative;
       width: 100%;
-      max-width: 450px;
+      max-width: 550px; /* Aumentado para aprovechar espacio */
       animation: entrar-derecha 1s .2s var(--ease-out) both;
       display: none;
     }
@@ -229,14 +229,16 @@
     }
 
     .hero__compo-img--1 {
-      top: 0; left: 0;
+      top: -15%; left: -5%;
+      width: 45%;
       --rotacion: -4deg;
       --base-y: 0px;
       animation-duration: 5s;
       z-index: 2;
     }
     .hero__compo-img--2 {
-      top: -8%; right: 0;
+      top: -5%; right: -5%;
+      width: 52%;
       --rotacion: 6deg;
       --base-y: 0px;
       animation-duration: 6.5s;
@@ -244,14 +246,16 @@
       z-index: 1;
     }
     .hero__compo-img--3 {
-      bottom: 0; left: 5%;
+      bottom: -10%; left: -12%;
+      width: 55%;
       --rotacion: 3deg;
       --base-y: 0px;
       animation-duration: 7s;
       z-index: 3;
     }
     .hero__compo-img--4 {
-      bottom: 15%; right: 10%;
+      bottom: 5%; right: 2%;
+      width: 48%;
       --rotacion: -5deg;
       --base-y: 0px;
       animation-duration: 5.5s;
@@ -261,7 +265,7 @@
 
     @keyframes flotar-lento {
       0% { transform: translateY(0) rotate(var(--rotacion)); }
-      100% { transform: translateY(-12px) rotate(var(--rotacion)); }
+      100% { transform: translateY(-16px) rotate(var(--rotacion)); }
     }
 
     .hero__imagen-badge {
