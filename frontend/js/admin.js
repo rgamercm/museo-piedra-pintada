@@ -984,26 +984,23 @@ function redibujarRutaSimulador() {
   puntosSimuladorCapa.clearLayers();
   renderListaPuntosSimulador(); // mantener la lista en sync con el mapa
 
+  // Los puntos de interés NO son un recorrido: se muestran como marcadores
+  // sueltos (estrella dorada), sin línea que los conecte. El recorrido oficial
+  // es la línea verde (track.geojson) que ya se dibuja aparte.
   if (rutaSimuladorPolyline) {
     mapaAdmin.removeLayer(rutaSimuladorPolyline);
+    rutaSimuladorPolyline = null;
   }
 
   if (rutaSimuladorCoordenadas.length === 0) return;
 
-  rutaSimuladorPolyline = L.polyline(rutaSimuladorCoordenadas, {
-    color: '#4080FF',
-    weight: 4,
-    opacity: 0.8,
-    dashArray: '10, 10'
-  }).addTo(mapaAdmin);
-
   rutaSimuladorCoordenadas.forEach((coord, i) => {
-    L.circleMarker(coord, {
-      radius: 5,
-      color: '#fff',
-      fillColor: '#4080FF',
-      fillOpacity: 1
-    }).bindTooltip(`Punto ${i+1}`).addTo(puntosSimuladorCapa);
+    const icono = L.divIcon({
+      className: '',
+      html: `<div style="width:24px;height:24px;border-radius:50%;background:#E0A94B;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;font-size:12px;color:#3a2a00;">★</div>`,
+      iconSize: [24, 24], iconAnchor: [12, 12],
+    });
+    L.marker(coord, { icon: icono }).bindTooltip(`Punto de interés ${i + 1}`).addTo(puntosSimuladorCapa);
   });
 }
 
@@ -1079,14 +1076,14 @@ function toggleModoDibujo() {
   const txtInstrucciones = document.getElementById('instrucciones-mapa');
 
   if (modoDibujoRuta) {
-    btnDibujar.innerHTML = '❌ Cancelar Dibujo';
+    btnDibujar.innerHTML = '❌ Cancelar';
     btnDibujar.classList.replace('btn--contorno', 'btn--rojo');
     btnGuardar.style.display = 'inline-block';
     btnLimpiar.style.display = 'inline-block';
-    txtInstrucciones.innerHTML = '<strong>Modo Dibujo:</strong> Haz clic en el mapa para trazar la ruta punto por punto. Se guardará con líneas rectas.';
+    txtInstrucciones.innerHTML = '<strong>Marcar en el mapa:</strong> Haz clic para agregar puntos de interés. NO cambia el recorrido (línea verde); solo resalta lugares.';
     document.getElementById('mapa-editor').style.cursor = 'crosshair';
   } else {
-    btnDibujar.innerHTML = '✏️ Dibujar Ruta';
+    btnDibujar.innerHTML = '✏️ Marcar en el mapa';
     btnDibujar.classList.replace('btn--rojo', 'btn--contorno');
     btnGuardar.style.display = 'none';
     btnLimpiar.style.display = 'none';
@@ -1102,12 +1099,12 @@ function limpiarRutaDibujada() {
 }
 
 async function guardarRutaSimulador() {
-  if (rutaSimuladorCoordenadas.length < 2) {
-    window.Museo?.mostrarToast('La ruta debe tener al menos 2 puntos', 'aviso');
+  if (rutaSimuladorCoordenadas.length === 0 &&
+      !confirm('No hay puntos de interés. ¿Guardar y quitar todos los puntos del mapa?')) {
     return;
   }
-  
-  // Convertir [lat, lng] a [lng, lat] para GeoJSON format
+
+  // Convertir [lat, lng] a [lng, lat] para formato GeoJSON
   const geojsonCoords = rutaSimuladorCoordenadas.map(c => [c[1], c[0]]);
 
   try {
@@ -1115,14 +1112,14 @@ async function guardarRutaSimulador() {
       method: 'PUT',
       body: JSON.stringify({ coordenadas: geojsonCoords })
     });
-    
+
     if (res.ok) {
-      window.Museo?.mostrarToast('Ruta de simulador actualizada', 'exito');
-      if (modoDibujoRuta) toggleModoDibujo(); // Salir del modo dibujo solo si estaba activo
+      window.Museo?.mostrarToast('Puntos de interés guardados', 'exito');
+      if (modoDibujoRuta) toggleModoDibujo(); // Salir del modo marcar solo si estaba activo
     }
   } catch(e) {
     console.error(e);
-    window.Museo?.mostrarToast('Error al guardar ruta', 'error');
+    window.Museo?.mostrarToast('Error al guardar los puntos de interés', 'error');
   }
 }
 

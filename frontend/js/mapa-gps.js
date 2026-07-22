@@ -28,6 +28,7 @@ let rocasFueraDeEstaciones = [];    // Petroglifos de zonas no recorribles
 let monticuloSeleccionadoId = null; // Estación mostrada en el panel de petroglifos
 let marcadores = {};                // id_petroglifo -> L.marker (solo rocas fuera de estaciones)
 let marcadoresMonticulos = {};      // id_monticulo -> L.marker
+let capaPuntosInteres = null;       // L.layerGroup con los puntos de interés del admin
 let geojsonCoords = []; // Coordenadas [lng, lat] de TODA la ruta (tramos aplanados)
 let idSimulador = null;
 let indiceSimulador = 0;
@@ -53,38 +54,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     maxZoom: 19
   }).addTo(mapa);
 
-  // 2a. Ruta personalizada del simulador (dibujada en el panel admin).
-  //     Si existe en la BD, su trazado tiene prioridad sobre el GeoJSON
-  //     para la línea del mapa y el recorrido del simulador.
-  let rutaCargada = false;
-  try {
-    const resApi = await window.api.cliente('/api/ruta_simulador');
-    if (resApi.datos && Array.isArray(resApi.datos.coordenadas) && resApi.datos.coordenadas.length > 0) {
-      geojsonCoords = resApi.datos.coordenadas; // ya está en [lng, lat]
-
-      // Convertir a [lat, lng] para Leaflet Polyline
-      const latLngs = geojsonCoords.map(c => [c[1], c[0]]);
-      capaRuta = L.polyline(latLngs, {
-        color: '#7ABA58', weight: 4, opacity: 0.8, dashArray: '10, 10'
-      }).addTo(mapa);
-      mapa.fitBounds(capaRuta.getBounds());
-      rutaCargada = true;
-    }
-  } catch (e) {
-    console.warn('No hay ruta personalizada del simulador');
-  }
-
-  // 2b. Línea del recorrido desde el GeoJSON.
-  //     El archivo contiene SOLO la ruta (MultiLineString). Los fines de cada
-  //     tramo son las pausas de la grabación = paradas frente a un petroglifo,
-  //     así que las paradas se derivan de aquí SIEMPRE (aunque haya ruta
-  //     personalizada, que no trae esa información).
+  // 2a. Línea del recorrido (verde) SIEMPRE desde el GeoJSON (track.geojson).
+  //     Este es el recorrido oficial y también el trazado que sigue el
+  //     Simulador DEV. Los puntos definidos en el panel admin ya NO reemplazan
+  //     este recorrido: solo se muestran como puntos de interés (paso 2b).
+  //     El archivo contiene SOLO la ruta (MultiLineString); los fines de cada
+  //     tramo son las pausas de la grabación = paradas frente a un petroglifo.
   let paradasTrack = [];
   try {
     const { coords: coordsTrack, paradas } = await window.MuseoEstaciones.cargarTrack();
     paradasTrack = paradas;
 
-    if (!rutaCargada && coordsTrack.length > 1) {
+    if (coordsTrack.length > 1) {
       geojsonCoords = coordsTrack;
       const latLngs = coordsTrack.map(c => [c[1], c[0]]);
       capaRuta = L.polyline(latLngs, { color: '#7ABA58', weight: 4, opacity: 0.8 }).addTo(mapa);
@@ -92,6 +73,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   } catch (err) {
     console.error('Error cargando GeoJSON:', err);
+  }
+
+  // 2b. Puntos de interés destacados (definidos en el panel admin). NO son el
+  //     recorrido: solo se dibujan como marcadores sobre el mapa.
+  try {
+    const resApi = await window.api.cliente('/api/ruta_simulador');
+    if (resApi.datos && Array.isArray(resApi.datos.coordenadas)) {
+      renderizarPuntosInteres(resApi.datos.coordenadas); // coords en [lng, lat]
+    }
+  } catch (e) {
+    console.warn('No hay puntos de interés definidos');
   }
 
   // 3. Cargar TODOS los petroglifos (BD real, 110). Se usa el catálogo de
@@ -195,6 +187,33 @@ document.addEventListener('DOMContentLoaded', async () => {
   const primera = monticulos.find(m => !m.completada) || monticulos[0];
   if (primera) seleccionarMonticulo(primera.id, { pan: false, scroll: false });
 });
+
+/**
+ * Dibuja los puntos de interés destacados (definidos en el panel admin) como
+ * marcadores sobre el mapa. NO forman parte del recorrido; solo resaltan
+ * lugares a destacar. Recibe coordenadas en formato GeoJSON [lng, lat].
+ */
+function renderizarPuntosInteres(coordsLngLat) {
+  if (capaPuntosInteres) { mapa.removeLayer(capaPuntosInteres); capaPuntosInteres = null; }
+  if (!Array.isArray(coordsLngLat) || coordsLngLat.length === 0) return;
+
+  capaPuntosInteres = L.layerGroup();
+  coordsLngLat.forEach((c, i) => {
+    const lat = parseFloat(c[1]), lng = parseFloat(c[0]);
+    if (!isFinite(lat) || !isFinite(lng)) return;
+    const icono = L.divIcon({
+      className: '',
+      html: `<div style="width:26px;height:26px;border-radius:50%;background:var(--color-dorado,#E0A94B);
+        border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.6);display:flex;align-items:center;
+        justify-content:center;font-size:14px;line-height:1;">★</div>`,
+      iconSize: [26, 26], iconAnchor: [13, 13],
+    });
+    L.marker([lat, lng], { icon: icono, zIndexOffset: 500 })
+      .bindTooltip(`Punto de interés ${i + 1}`, { direction: 'top' })
+      .addTo(capaPuntosInteres);
+  });
+  capaPuntosInteres.addTo(mapa);
+}
 
 /** Crea (o re-crea) el marcador de una estación en el mapa. */
 function crearMarcadorMonticulo(m) {

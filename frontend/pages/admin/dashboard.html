@@ -312,8 +312,8 @@
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
         <h1 style="font-size:1.5rem;">Editor de Rutas (Puntos de Interés y GPS)</h1>
         <div style="display:flex; gap:0.5rem;">
-          <button class="btn btn--contorno btn--sm" id="btn-dibujar-ruta" style="border-color:#4080FF;color:#4080FF;">✏️ Dibujar Ruta</button>
-          <button class="btn btn--primario btn--sm" id="btn-guardar-ruta" style="display:none;background:#4080FF;">💾 Guardar Ruta</button>
+          <button class="btn btn--contorno btn--sm" id="btn-dibujar-ruta" style="border-color:#E0A94B;color:#E0A94B;">✏️ Marcar en el mapa</button>
+          <button class="btn btn--primario btn--sm" id="btn-guardar-ruta" style="display:none;background:#E0A94B;">💾 Guardar Puntos</button>
           <button class="btn btn--contorno btn--sm" id="btn-limpiar-ruta" style="display:none;color:#F09090;">🗑️ Limpiar</button>
           <div style="width:1px;background:var(--glass-border);margin:0 .5rem;"></div>
           <button class="btn btn--primario btn--sm" id="btn-gps-admin">📍 Rastrear mi GPS</button>
@@ -328,7 +328,7 @@
       <!-- Puntos de interés de la ruta del simulador (entrada por coordenadas) -->
       <div id="panel-poi-sim" style="background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1rem;padding:1rem;margin-bottom:1rem;">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem;">
-          <strong style="color:#4080FF;">📍 Puntos de la ruta del Simulador</strong>
+          <strong style="color:#E0A94B;">⭐ Puntos de Interés a destacar</strong>
           <span id="poi-contador" style="font-size:.8rem;color:var(--color-texto-2);">0 punto(s)</span>
         </div>
         <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:flex-end;">
@@ -340,12 +340,12 @@
             <label for="poi-lng" style="font-size:.75rem;color:var(--color-texto-2);">Longitud</label>
             <input id="poi-lng" type="number" step="any" placeholder="-67.887700" style="padding:.5rem;border-radius:.5rem;border:1px solid var(--glass-border);background:rgba(0,0,0,.25);color:var(--color-texto);width:160px;">
           </div>
-          <button class="btn btn--contorno btn--sm" id="btn-agregar-poi" style="border-color:#4080FF;color:#4080FF;">➕ Agregar punto</button>
-          <button class="btn btn--primario btn--sm" id="btn-actualizar-ruta-sim" style="background:#4080FF;">💾 Actualizar Ruta de Simulador</button>
+          <button class="btn btn--contorno btn--sm" id="btn-agregar-poi" style="border-color:#E0A94B;color:#E0A94B;">➕ Agregar punto</button>
+          <button class="btn btn--primario btn--sm" id="btn-actualizar-ruta-sim" style="background:#E0A94B;">💾 Guardar Puntos de Interés</button>
         </div>
         <div id="lista-poi-sim" style="margin-top:.75rem;display:flex;flex-direction:column;gap:.35rem;max-height:220px;overflow-y:auto;"></div>
         <p style="font-size:.72rem;color:var(--color-texto-2);margin-top:.5rem;line-height:1.4;">
-          Estos puntos definen, en orden, el trazado que sigue el <strong>Simulador DEV</strong> del Mapa GPS. Usa ▲▼ para ordenarlos a lo largo del recorrido y ✕ para quitarlos. También puedes trazar con clics usando “✏️ Dibujar Ruta”. Pulsa <strong>Actualizar Ruta de Simulador</strong> para guardar los cambios.
+          Estos puntos <strong>no cambian el recorrido</strong> (la línea verde sigue siendo la de siempre): solo se muestran como marcadores ⭐ para <strong>destacar lugares de interés</strong> en el Mapa GPS. Escribe Latitud y Longitud y pulsa “Agregar punto”, o márcalos con clics usando “✏️ Marcar en el mapa”. Usa ✕ para quitarlos y pulsa <strong>Guardar Puntos de Interés</strong>.
         </p>
       </div>
 
@@ -470,7 +470,7 @@
 <script src="../../js/componentes.js?v=2.4"></script>
 <script src="../../js/api.js?v=1.5"></script>
 <script src="../../js/qr-voz.js?v=1.3"></script>
-<script src="../../js/admin.js?v=1.5"></script>
+<script src="../../js/admin.js?v=1.6"></script>
 <script src="../../js/app.js?v=1.3"></script>
 <script>
 'use strict';
