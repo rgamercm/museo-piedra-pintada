@@ -791,12 +791,15 @@ async function inicializarMapaAdmin() {
 
     await cargarMarcadoresAdmin();
     await cargarRutaSimuladorAdmin();
+    renderListaPuntosSimulador(); // pintar la lista aunque la ruta venga vacía
     puntosSimuladorCapa.addTo(mapaAdmin);
     
     // UI Eventos
     document.getElementById('btn-dibujar-ruta').addEventListener('click', toggleModoDibujo);
     document.getElementById('btn-limpiar-ruta').addEventListener('click', limpiarRutaDibujada);
     document.getElementById('btn-guardar-ruta').addEventListener('click', guardarRutaSimulador);
+    document.getElementById('btn-agregar-poi')?.addEventListener('click', agregarPuntoManualSimulador);
+    document.getElementById('btn-actualizar-ruta-sim')?.addEventListener('click', guardarRutaSimulador);
   } catch(e) {
     console.error('Error al inicializar editor de mapa:', e);
   }
@@ -979,7 +982,8 @@ async function cargarRutaSimuladorAdmin() {
 
 function redibujarRutaSimulador() {
   puntosSimuladorCapa.clearLayers();
-  
+  renderListaPuntosSimulador(); // mantener la lista en sync con el mapa
+
   if (rutaSimuladorPolyline) {
     mapaAdmin.removeLayer(rutaSimuladorPolyline);
   }
@@ -1002,6 +1006,70 @@ function redibujarRutaSimulador() {
     }).bindTooltip(`Punto ${i+1}`).addTo(puntosSimuladorCapa);
   });
 }
+
+// Lista editable de los puntos de la ruta del simulador (entrada por coords).
+// rutaSimuladorCoordenadas almacena pares [lat, lng] (orden Leaflet).
+function renderListaPuntosSimulador() {
+  const cont = document.getElementById('lista-poi-sim');
+  const contador = document.getElementById('poi-contador');
+  if (!cont) return;
+  if (contador) contador.textContent = `${rutaSimuladorCoordenadas.length} punto(s)`;
+
+  if (rutaSimuladorCoordenadas.length === 0) {
+    cont.innerHTML = '<span style="font-size:.8rem;color:var(--color-texto-2);">Aún no hay puntos. Agrega coordenadas o traza con “Dibujar Ruta”.</span>';
+    return;
+  }
+
+  const ult = rutaSimuladorCoordenadas.length - 1;
+  cont.innerHTML = rutaSimuladorCoordenadas.map((c, i) => `
+    <div style="display:flex;align-items:center;gap:.5rem;background:rgba(0,0,0,.2);border:1px solid var(--glass-border);border-radius:.5rem;padding:.35rem .5rem;">
+      <span style="min-width:1.5rem;height:1.5rem;display:flex;align-items:center;justify-content:center;background:#4080FF;color:#fff;border-radius:50%;font-size:.72rem;font-weight:700;flex:none;">${i + 1}</span>
+      <span style="flex:1;font-size:.8rem;font-family:monospace;color:var(--color-texto);">Lat ${(+c[0]).toFixed(6)}, Lng ${(+c[1]).toFixed(6)}</span>
+      <button title="Subir" onclick="moverPuntoSimulador(${i}, -1)" style="background:none;border:none;color:${i === 0 ? '#555' : '#4080FF'};cursor:${i === 0 ? 'default' : 'pointer'};font-size:1rem;padding:0 .2rem;" ${i === 0 ? 'disabled' : ''}>▲</button>
+      <button title="Bajar" onclick="moverPuntoSimulador(${i}, 1)" style="background:none;border:none;color:${i === ult ? '#555' : '#4080FF'};cursor:${i === ult ? 'default' : 'pointer'};font-size:1rem;padding:0 .2rem;" ${i === ult ? 'disabled' : ''}>▼</button>
+      <button title="Eliminar" onclick="eliminarPuntoSimulador(${i})" style="background:none;border:none;color:#F09090;cursor:pointer;font-size:1rem;padding:0 .2rem;">✕</button>
+    </div>`).join('');
+}
+
+function agregarPuntoManualSimulador() {
+  const latEl = document.getElementById('poi-lat');
+  const lngEl = document.getElementById('poi-lng');
+  const lat = parseFloat(latEl.value);
+  const lng = parseFloat(lngEl.value);
+
+  if (!isFinite(lat) || !isFinite(lng)) {
+    window.Museo?.mostrarToast('Ingresa una latitud y longitud válidas', 'aviso');
+    return;
+  }
+  if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+    window.Museo?.mostrarToast('Coordenadas fuera de rango (lat ±90, lng ±180)', 'aviso');
+    return;
+  }
+
+  rutaSimuladorCoordenadas.push([lat, lng]);
+  redibujarRutaSimulador();
+  latEl.value = '';
+  lngEl.value = '';
+  latEl.focus();
+  if (mapaAdmin) mapaAdmin.panTo([lat, lng]);
+  window.Museo?.mostrarToast(`Punto ${rutaSimuladorCoordenadas.length} agregado`, 'exito');
+}
+
+// Expuestas globalmente para los onclick del listado renderizado.
+window.eliminarPuntoSimulador = function (i) {
+  if (i < 0 || i >= rutaSimuladorCoordenadas.length) return;
+  rutaSimuladorCoordenadas.splice(i, 1);
+  redibujarRutaSimulador();
+};
+
+window.moverPuntoSimulador = function (i, dir) {
+  const j = i + dir;
+  if (i < 0 || j < 0 || i >= rutaSimuladorCoordenadas.length || j >= rutaSimuladorCoordenadas.length) return;
+  const tmp = rutaSimuladorCoordenadas[i];
+  rutaSimuladorCoordenadas[i] = rutaSimuladorCoordenadas[j];
+  rutaSimuladorCoordenadas[j] = tmp;
+  redibujarRutaSimulador();
+};
 
 function toggleModoDibujo() {
   modoDibujoRuta = !modoDibujoRuta;
@@ -1049,8 +1117,8 @@ async function guardarRutaSimulador() {
     });
     
     if (res.ok) {
-      window.Museo?.mostrarToast('Ruta de simulador guardada', 'exito');
-      toggleModoDibujo(); // Salir del modo dibujo
+      window.Museo?.mostrarToast('Ruta de simulador actualizada', 'exito');
+      if (modoDibujoRuta) toggleModoDibujo(); // Salir del modo dibujo solo si estaba activo
     }
   } catch(e) {
     console.error(e);
