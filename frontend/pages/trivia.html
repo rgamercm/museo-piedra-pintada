@@ -155,11 +155,11 @@
       <span class="etiqueta">Pon a prueba tu conocimiento</span>
       <h1 style="font-size:2rem;margin:1rem 0 .75rem;">Trivia Arqueológica</h1>
       <p style="color:var(--color-texto-2);max-width:400px;margin:0 auto 2rem;line-height:1.7;">
-        Varias preguntas sobre los petroglifos, la historia precolombina y el Museo Piedra Pintada. ¿Cuántas puedes responder correctamente?
+        5 preguntas sobre los petroglifos, la historia precolombina y el Museo Piedra Pintada. ¿Cuántas puedes responder correctamente?
       </p>
       <div style="display:flex;gap:1.5rem;justify-content:center;margin-bottom:2rem;flex-wrap:wrap;">
         <div style="text-align:center;">
-          <div style="font-family:var(--font-titulo);font-size:1.5rem;color:var(--color-dorado-claro);">?</div>
+          <div style="font-family:var(--font-titulo);font-size:1.5rem;color:var(--color-dorado-claro);">5</div>
           <div style="font-size:.75rem;color:var(--color-texto-3);">Preguntas</div>
         </div>
         <div style="text-align:center;">
@@ -245,13 +245,31 @@ async function iniciarTrivia() {
     const btn = document.getElementById('btn-iniciar-trivia');
     const textOrg = btn.textContent;
     btn.textContent = 'Cargando...';
-    const data = await window.api.trivia.obtenerPreguntas(10);
-    PREGUNTAS = data.map(q => ({
-      id: q.id,
-      pregunta: q.pregunta,
-      opciones: [q.opcion_a, q.opcion_b, q.opcion_c, q.opcion_d],
-      categoria: 'TRIVIA'
-    }));
+
+    // Lógica de "No repetir combinaciones hasta agotar":
+    // 1. Buscamos en localStorage si tenemos un pool de preguntas guardado.
+    let poolStr = localStorage.getItem('museo_trivia_pool');
+    let pool = poolStr ? JSON.parse(poolStr) : [];
+
+    // Si nos quedamos sin preguntas suficientes (menos de 5), traemos TODAS del backend.
+    if (pool.length < 5) {
+      const data = await window.api.trivia.obtenerPreguntas(100); // Traemos hasta 100 para cubrir todas
+      pool = data.map(q => ({
+        id: q.id,
+        pregunta: q.pregunta,
+        opciones: [q.opcion_a, q.opcion_b, q.opcion_c, q.opcion_d],
+        categoria: 'TRIVIA'
+      }));
+      // Mezclamos (shuffle) las preguntas para aleatoriedad extra
+      pool.sort(() => Math.random() - 0.5);
+    }
+
+    // Sacamos 5 preguntas exactamente para ESTE juego
+    PREGUNTAS = pool.splice(0, 5);
+    
+    // Guardamos el resto para el siguiente juego
+    localStorage.setItem('museo_trivia_pool', JSON.stringify(pool));
+
     btn.textContent = textOrg;
   } catch (e) {
     document.getElementById('pantalla-inicio').style.display = '';
