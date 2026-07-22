@@ -46,17 +46,22 @@ async function subir(req, res, next) {
       return error(res, 'No se ha proporcionado ninguna imagen.', 400);
     }
 
-    const { petroglifo_id, comentario_id } = req.body;
+    const { petroglifo_id, comentario_id, tipo } = req.body;
     const usuario_id = req.usuario.id;
 
-    if (!petroglifo_id && !comentario_id) {
+    if (!petroglifo_id && !comentario_id && tipo !== 'avatar') {
       return error(res, 'La foto debe estar asociada a un petroglifo o a un comentario.', 400);
     }
 
     // 1) Subir primero al almacenamiento (Supabase Storage o disco local).
     subida = await subirImagen(req.file.buffer, req.file.originalname, req.file.mimetype);
 
-    // 2) Solo si la subida funcionó, guardamos la fila en la base de datos.
+    // Si es un avatar u otro archivo suelto, devolvemos solo la URL sin insertarlo en la tabla fotos
+    if (tipo === 'avatar') {
+      return creado(res, { url: subida.url });
+    }
+
+    // 2) Solo si la subida funcionó y no es avatar, guardamos la fila en la base de datos.
     const { rows } = await db.query(
       `INSERT INTO fotos (url, tipo_mime, tamano_bytes, comentario_id, petroglifo_id, usuario_id)
        VALUES ($1, $2, $3, $4, $5, $6)

@@ -28,7 +28,8 @@ router.post(
   upload.single('imagen'),
   [
     body('petroglifo_id').optional().isInt().withMessage('Debe ser entero.'),
-    body('comentario_id').optional().isInt().withMessage('Debe ser entero.')
+    body('comentario_id').optional().isInt().withMessage('Debe ser entero.'),
+    body('tipo').optional().isString().withMessage('El tipo debe ser texto.')
   ],
   validar,
   ctrl.subir
