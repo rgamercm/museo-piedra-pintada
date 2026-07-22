@@ -201,10 +201,71 @@
       }
     }
 
-    .hero__imagen-wrapper-fluid img {
+    /* Composición dinámica de 4 íconos */
+    .hero__compo {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1; /* Cuadrado perfecto */
+      margin-top: 1rem;
+    }
+    
+    .hero__compo-img {
+      position: absolute;
+      width: 48%; /* Tamaño considerable */
+      aspect-ratio: 1;
       border-radius: 1.5rem;
-      box-shadow: 0 20px 80px rgba(0, 0, 0, 0.7), 0 0 60px rgba(140, 115, 85, 0.15);
-      border: 1px solid rgba(140, 115, 85, 0.20);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5), 0 0 20px rgba(140, 115, 85, 0.15);
+      border: 1px solid rgba(140, 115, 85, 0.25);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      object-fit: contain;
+      padding: 1.5rem;
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.5s;
+      animation: flotar-lento ease-in-out infinite alternate;
+    }
+
+    .hero__compo-img:hover {
+      box-shadow: 0 25px 50px rgba(0,0,0,0.7), 0 0 40px rgba(140, 115, 85, 0.3);
+      z-index: 10 !important;
+      animation-play-state: paused;
+      /* Al hacer hover, se levantan sutilmente usando scale y un translateY adicional */
+      transform: translateY(calc(var(--base-y, 0) - 15px)) rotate(calc(var(--rotacion, 0deg) + 2deg)) scale(1.05) !important;
+    }
+
+    .hero__compo-img--1 {
+      top: 0; left: 0;
+      --rotacion: -4deg;
+      --base-y: 0px;
+      animation-duration: 5s;
+      z-index: 2;
+    }
+    .hero__compo-img--2 {
+      top: 10%; right: 0;
+      --rotacion: 6deg;
+      --base-y: 0px;
+      animation-duration: 6.5s;
+      animation-direction: alternate-reverse;
+      z-index: 1;
+    }
+    .hero__compo-img--3 {
+      bottom: 0; left: 5%;
+      --rotacion: 3deg;
+      --base-y: 0px;
+      animation-duration: 7s;
+      z-index: 3;
+    }
+    .hero__compo-img--4 {
+      bottom: 15%; right: 10%;
+      --rotacion: -5deg;
+      --base-y: 0px;
+      animation-duration: 5.5s;
+      animation-direction: alternate-reverse;
+      z-index: 4;
+    }
+
+    @keyframes flotar-lento {
+      0% { transform: translateY(0) rotate(var(--rotacion)); }
+      100% { transform: translateY(-12px) rotate(var(--rotacion)); }
     }
 
     .hero__imagen-badge {
@@ -461,7 +522,12 @@
 
       <!-- Imagen decorativa derecha fluida -->
       <div class="hero__imagen-wrapper-fluid" aria-hidden="true" style="flex: 0 1 450px;">
-        <img src="assets/img/petroglifo-01.png" alt="" loading="lazy">
+        <div class="hero__compo">
+          <img src="assets/img/cabezon.png" class="hero__compo-img hero__compo-img--1" alt="Petroglifo 1" loading="lazy">
+          <img src="assets/img/cara.png" class="hero__compo-img hero__compo-img--2" alt="Petroglifo 2" loading="lazy">
+          <img src="assets/img/diosa.png" class="hero__compo-img hero__compo-img--3" alt="Petroglifo 3" loading="lazy">
+          <img src="assets/img/machete (1).png" class="hero__compo-img hero__compo-img--4" alt="Petroglifo 4" loading="lazy">
+        </div>
         <div class="hero__imagen-badge">
           <span class="hero__imagen-badge-icon"></span>
           <div>
