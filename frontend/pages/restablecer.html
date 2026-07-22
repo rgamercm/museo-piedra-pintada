@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Restablecer Contraseña | Museo Piedra Pintada</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../css/styles.css">
+  
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-principal);
+      position: relative;
+    }
+    .auth-fondo {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url('../assets/img/hero-bg.jpg');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.15;
+      z-index: -1;
+    }
+    .auth-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      margin-top: var(--header-height);
+    }
+    .auth-card {
+      background: rgba(30, 30, 30, 0.6);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 24px 48px rgba(0,0,0,0.4);
+    }
+    .auth-logo {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+  </style>
+</head>
+<body>
+<div class="auth-fondo" aria-hidden="true"></div>
+<div id="header-placeholder"></div>
+
+<div class="auth-wrapper">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <img src="../assets/img/logo-museo.png" alt="Logo Piedra Pintada" style="height:60px; width:auto; object-fit:contain; margin:0 auto 1rem; display:block;">
+      <div style="font-family:var(--font-titulo);font-size:1.1rem;color:var(--color-dorado-claro);">Piedra Pintada</div>
+      <div style="font-size:.78rem;color:var(--color-texto-3);letter-spacing:.08em;text-transform:uppercase;">Museo Arqueológico</div>
+    </div>
+
+    <div style="text-align:center;margin-bottom:1.5rem;">
+      <h3 style="color:var(--color-dorado-claro);font-size:1.1rem;margin-bottom:0.5rem;">Crea una nueva contraseña</h3>
+      <p style="font-size:0.85rem;color:var(--color-texto-3);" id="correo-display"></p>
+    </div>
+
+    <form id="form-restablecer" novalidate>
+      <div class="form-grupo">
+        <label class="form-etiqueta" for="new-password">Nueva contraseña</label>
+        <div style="position:relative;">
+          <input type="password" id="new-password" class="form-input" placeholder="Mínimo 8 caracteres" required minlength="8" style="padding-right:3rem;">
+          <button type="button" id="toggle-pass-1" style="position:absolute;right:.75rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--color-texto-3);cursor:pointer;font-size:1.1rem;" aria-label="Mostrar contraseña">👁</button>
+        </div>
+        <div class="form-error">La contraseña debe tener al menos 8 caracteres</div>
+      </div>
+
+      <!-- Indicador de fortaleza -->
+      <div style="margin-bottom:1.25rem;">
+        <div style="display:flex;gap:4px;margin-bottom:4px;">
+          <div style="height:4px;flex:1;border-radius:2px;background:rgba(140, 115, 85,.15);" class="sbar"></div>
+          <div style="height:4px;flex:1;border-radius:2px;background:rgba(140, 115, 85,.15);" class="sbar"></div>
+          <div style="height:4px;flex:1;border-radius:2px;background:rgba(140, 115, 85,.15);" class="sbar"></div>
+          <div style="height:4px;flex:1;border-radius:2px;background:rgba(140, 115, 85,.15);" class="sbar"></div>
+        </div>
+        <div style="font-size:.75rem;color:var(--color-texto-3);" id="strength-label">Escribe una contraseña</div>
+      </div>
+
+      <div class="form-grupo">
+        <label class="form-etiqueta" for="confirm-password">Confirmar contraseña</label>
+        <div style="position:relative;">
+          <input type="password" id="confirm-password" class="form-input" placeholder="••••••••" required minlength="8" style="padding-right:3rem;">
+          <button type="button" id="toggle-pass-2" style="position:absolute;right:.75rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--color-texto-3);cursor:pointer;font-size:1.1rem;" aria-label="Mostrar contraseña">👁</button>
+        </div>
+        <div class="form-error">Las contraseñas no coinciden</div>
+      </div>
+
+      <button type="submit" class="btn btn--primario w-full" id="btn-restablecer-submit" style="justify-content:center;">
+        Actualizar contraseña
+      </button>
+    </form>
+    
+    <div style="text-align:center;margin-top:1.5rem;">
+      <a href="login.html" style="font-size:.85rem;color:var(--color-texto-3);">Volver a iniciar sesión</a>
+    </div>
+
+  </div>
+</div>
+
+<script src="../js/api.js?v=1.4"></script>
+<script src="../js/app.js?v=1.3"></script>
+<script>
+'use strict';
+
+const params = new URLSearchParams(window.location.search);
+const token = params.get('token');
+const correo = params.get('correo');
+
+if (!token || !correo) {
+  window.location.href = 'login.html';
+}
+
+document.getElementById('correo-display').textContent = correo;
+
+// Toggle passwords
+document.getElementById('toggle-pass-1').addEventListener('click', () => {
+  const inp = document.getElementById('new-password');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+});
+document.getElementById('toggle-pass-2').addEventListener('click', () => {
+  const inp = document.getElementById('confirm-password');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+});
+
+// Fortaleza
+document.getElementById('new-password').addEventListener('input', e => {
+  const val = e.target.value;
+  const bars = document.querySelectorAll('.sbar');
+  const colores = ['#E06060','#E0A040','#60C080','#4090E0'];
+  const niveles = [val.length >= 8, /[A-Z]/.test(val), /[0-9]/.test(val), /[^A-Za-z0-9]/.test(val)];
+  const nivel = niveles.filter(Boolean).length;
+  bars.forEach((b, i) => { b.style.background = i < nivel ? colores[nivel-1] : 'rgba(140, 115, 85,.15)'; });
+  const etiquetas = ['','Débil','Moderada','Fuerte','Muy fuerte'];
+  document.getElementById('strength-label').textContent = etiquetas[nivel] || 'Escribe una contraseña';
+});
+
+// Submit
+document.getElementById('form-restablecer').addEventListener('submit', async e => {
+  e.preventDefault();
+  
+  const form = e.target;
+  const pass1 = document.getElementById('new-password');
+  const pass2 = document.getElementById('confirm-password');
+  
+  // Custom validation for match
+  if (pass1.value !== pass2.value) {
+    pass2.setCustomValidity('Las contraseñas no coinciden');
+  } else {
+    pass2.setCustomValidity('');
+  }
+  
+  if (!window.Museo?.validarFormulario(form)) return;
+  
+  const btn = document.getElementById('btn-restablecer-submit');
+  btn.textContent = 'Actualizando...'; btn.disabled = true;
+  
+  try {
+    const data = await window.api.auth.restablecerContrasena(token, correo, pass1.value);
+    window.Museo?.mostrarToast(data.mensaje, 'exito');
+    setTimeout(() => {
+      window.location.href = `login.html?action=login&correo=${encodeURIComponent(correo)}`;
+    }, 1500);
+  } catch (err) {
+    console.error(err);
+    window.Museo?.mostrarToast(err.message || 'Error al restablecer', 'error');
+    btn.textContent = 'Actualizar contraseña'; btn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>

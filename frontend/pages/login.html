@@ -122,7 +122,7 @@
           <div class="form-error">La contraseña es obligatoria</div>
         </div>
         <div style="text-align:right;margin-bottom:1.25rem;">
-          <a href="#" style="font-size:.82rem;color:var(--color-dorado);">¿Olvidaste tu contraseña?</a>
+          <a href="#" id="link-recuperar" style="font-size:.82rem;color:var(--color-dorado);">¿Olvidaste tu contraseña?</a>
         </div>
         <button type="submit" class="btn btn--primario w-full" id="btn-login-submit" style="justify-content:center;">
           Ingresar al museo
@@ -131,11 +131,32 @@
 
       <div class="divider-texto">o continúa como</div>
 
-      <div style="display:flex;flex-direction:column;gap:.75rem;">
-        <a href="../index.html" class="btn btn--fantasma w-full" id="btn-como-visitante" style="justify-content:center;">
-           Visitante (sin registrarse)
-        </a>
+      <div style="display:flex;flex-direction:column;gap:.75rem;margin-top:1.25rem;">
+        <button class="btn btn--fantasma w-full" id="btn-soy-institucion" style="justify-content:center;font-size:.85rem;padding:.5rem;">
+          ¿Representas a una institución educativa?
+        </button>
       </div>
+    </div>
+
+    <!-- Panel Recuperar Contraseña -->
+    <div id="panel-recuperar" style="display:none;" role="tabpanel">
+      <div style="text-align:center;margin-bottom:1.5rem;">
+        <h3 style="color:var(--color-dorado-claro);font-size:1.1rem;margin-bottom:0.5rem;">Recuperar Contraseña</h3>
+        <p style="font-size:0.85rem;color:var(--color-texto-3);">Ingresa tu correo y te enviaremos un enlace para restablecer tu acceso.</p>
+      </div>
+      <form id="form-recuperar" novalidate>
+        <div class="form-grupo">
+          <label class="form-etiqueta" for="recuperar-email">Correo electrónico</label>
+          <input type="email" id="recuperar-email" class="form-input" placeholder="tu@correo.com" required autocomplete="email">
+          <div class="form-error">Ingresa un correo electrónico válido</div>
+        </div>
+        <button type="submit" class="btn btn--primario w-full" id="btn-recuperar-submit" style="justify-content:center;margin-bottom:1rem;">
+          Enviar enlace
+        </button>
+        <button type="button" class="btn btn--fantasma w-full" id="btn-volver-login" style="justify-content:center;">
+          Volver a iniciar sesión
+        </button>
+      </form>
     </div>
 
     <!-- Panel Registro -->
@@ -192,18 +213,33 @@
 <script src="../js/app.js?v=1.3"></script>
 <script>
 'use strict';
-// Tabs
-document.getElementById('tab-login').addEventListener('click', () => {
-  document.getElementById('tab-login').classList.add('activo');
-  document.getElementById('tab-registro').classList.remove('activo');
-  document.getElementById('panel-login').style.display = '';
-  document.getElementById('panel-registro').style.display = 'none';
+const tabs = [document.getElementById('tab-login'), document.getElementById('tab-registro')];
+const panels = [document.getElementById('panel-login'), document.getElementById('panel-registro')];
+const panelRecuperar = document.getElementById('panel-recuperar');
+const authTabsContainer = document.querySelector('.auth-tabs');
+
+tabs.forEach((tab, i) => {
+  tab.addEventListener('click', () => {
+    tabs.forEach(t => { t.classList.remove('activo'); t.setAttribute('aria-selected','false'); });
+    panels.forEach(p => p.style.display = 'none');
+    panelRecuperar.style.display = 'none';
+    authTabsContainer.style.display = 'flex';
+    
+    tab.classList.add('activo');
+    tab.setAttribute('aria-selected','true');
+    panels[i].style.display = 'block';
+  });
 });
-document.getElementById('tab-registro').addEventListener('click', () => {
-  document.getElementById('tab-registro').classList.add('activo');
-  document.getElementById('tab-login').classList.remove('activo');
-  document.getElementById('panel-registro').style.display = '';
-  document.getElementById('panel-login').style.display = 'none';
+
+document.getElementById('link-recuperar').addEventListener('click', (e) => {
+  e.preventDefault();
+  panels.forEach(p => p.style.display = 'none');
+  authTabsContainer.style.display = 'none';
+  panelRecuperar.style.display = 'block';
+});
+
+document.getElementById('btn-volver-login').addEventListener('click', () => {
+  document.getElementById('tab-login').click();
 });
 
 // Mostrar/ocultar contraseña
@@ -290,7 +326,7 @@ document.getElementById('form-login').addEventListener('submit', async e => {
   }
 });
 
-// Submit registro — llamada real a la API
+// Submit registro
 document.getElementById('form-registro').addEventListener('submit', async e => {
   e.preventDefault();
   if (!window.Museo?.validarFormulario(e.target)) return;
@@ -321,6 +357,35 @@ document.getElementById('form-registro').addEventListener('submit', async e => {
   } catch (err) {
     console.error(err);
     btn.textContent = 'Crear cuenta'; btn.disabled = false;
+  }
+});
+
+// Submit recuperar contraseña
+document.getElementById('form-recuperar').addEventListener('submit', async e => {
+  e.preventDefault();
+  if (!window.Museo?.validarFormulario(e.target)) return;
+  const btn = document.getElementById('btn-recuperar-submit');
+  btn.textContent = 'Enviando...'; btn.disabled = true;
+  try {
+    const correo = document.getElementById('recuperar-email').value;
+    const data = await window.api.auth.recuperarContrasena(correo);
+    window.Museo?.mostrarToast(data.mensaje, 'exito');
+    
+    // Simulación del enlace (para el entorno de desarrollo/pruebas)
+    if (data.simulated_url) {
+      setTimeout(() => {
+        if (confirm("SIMULACIÓN: ¿Ir al enlace de restablecimiento de contraseña ahora?")) {
+          window.location.href = data.simulated_url;
+        } else {
+          document.getElementById('tab-login').click();
+        }
+      }, 1000);
+    } else {
+      document.getElementById('tab-login').click();
+    }
+  } catch (err) {
+    console.error(err);
+    btn.textContent = 'Enviar enlace'; btn.disabled = false;
   }
 });
 </script>

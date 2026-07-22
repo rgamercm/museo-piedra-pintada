@@ -97,6 +97,16 @@ const api = {
       headers: api.getHeaders(),
       body: JSON.stringify(datos)
     }),
+    recuperarContrasena: (correo) => api.request('/auth/recuperar-contrasena', {
+      method: 'POST',
+      headers: api.getHeaders(),
+      body: JSON.stringify({ correo })
+    }),
+    restablecerContrasena: (token, correo, nuevaContrasena) => api.request('/auth/restablecer-contrasena', {
+      method: 'POST',
+      headers: api.getHeaders(),
+      body: JSON.stringify({ token, correo, nuevaContrasena })
+    }),
     perfil: () => api.request('/auth/perfil', {
       headers: api.getHeaders(true)
     })

@@ -46,6 +46,26 @@ router.post(
   ctrl.login
 );
 
+router.post(
+  '/recuperar-contrasena',
+  [
+    body('correo').trim().isEmail().withMessage('Correo inválido.').normalizeEmail()
+  ],
+  validar,
+  ctrl.solicitarRecuperacion
+);
+
+router.post(
+  '/restablecer-contrasena',
+  [
+    body('token').notEmpty().withMessage('Token requerido.'),
+    body('correo').trim().isEmail().withMessage('Correo inválido.').normalizeEmail(),
+    body('nuevaContrasena').isLength({ min: 8 }).withMessage('La contraseña debe tener al menos 8 caracteres.')
+  ],
+  validar,
+  ctrl.restablecerContrasena
+);
+
 router.get('/perfil', requiereSesion, ctrl.perfil);
 
 module.exports = router;

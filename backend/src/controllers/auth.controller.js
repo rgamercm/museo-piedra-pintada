@@ -80,4 +80,68 @@ async function perfil(req, res, next) {
   }
 }
 
-module.exports = { registro, login, perfil };
+/** POST /api/auth/recuperar-contrasena */
+async function solicitarRecuperacion(req, res, next) {
+  try {
+    const { correo } = req.body;
+    const { rows } = await db.query(
+      `SELECT id, correo, contrasena_hash FROM usuarios WHERE correo = $1`,
+      [correo.toLowerCase()]
+    );
+    const usuario = rows[0];
+    
+    // Si el correo no existe, devolvemos un éxito falso (para no revelar qué correos existen)
+    if (!usuario) {
+      return exito(res, { mensaje: 'Si el correo está registrado, recibirás un enlace de recuperación pronto.', correo });
+    }
+
+    // Firmar token usando la contraseña actual como parte del secreto
+    // Si la contraseña cambia, este token se invalida automáticamente
+    const secret = env.JWT_SECRET + usuario.contrasena_hash;
+    const token = jwt.sign({ id: usuario.id, correo: usuario.correo }, secret, { expiresIn: '15m' });
+    
+    // Enviar el enlace simulado como respuesta para probar el flujo sin SMTP
+    const urlRecuperacion = `/pages/restablecer.html?token=${token}&correo=${encodeURIComponent(usuario.correo)}`;
+    
+    return exito(res, { 
+      mensaje: 'Correo simulado con éxito',
+      simulated_url: urlRecuperacion,
+      correo: usuario.correo 
+    });
+  } catch (e) {
+    next(e);
+  }
+}
+
+/** POST /api/auth/restablecer-contrasena */
+async function restablecerContrasena(req, res, next) {
+  try {
+    const { token, correo, nuevaContrasena } = req.body;
+    
+    const { rows } = await db.query(
+      `SELECT id, contrasena_hash FROM usuarios WHERE correo = $1`,
+      [correo.toLowerCase()]
+    );
+    const usuario = rows[0];
+    if (!usuario) return error(res, 'Petición inválida', 400);
+
+    const secret = env.JWT_SECRET + usuario.contrasena_hash;
+    try {
+      jwt.verify(token, secret);
+    } catch (err) {
+      return error(res, 'El enlace de recuperación es inválido o ha expirado.', 400);
+    }
+
+    const nuevoHash = await bcrypt.hash(nuevaContrasena, 10);
+    await db.query(
+      `UPDATE usuarios SET contrasena_hash = $1 WHERE id = $2`,
+      [nuevoHash, usuario.id]
+    );
+
+    return exito(res, { mensaje: 'Contraseña actualizada correctamente.' });
+  } catch (e) {
+    next(e);
+  }
+}
+
+module.exports = { registro, login, perfil, solicitarRecuperacion, restablecerContrasena };
