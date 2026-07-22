@@ -194,7 +194,8 @@ function renderNoticias(filtro='todos') {
         <div style="font-size:.78rem;color:var(--color-texto-3);margin-top:.3rem;">${n.contenido.substring(0,80)}...</div>
       </div>
     </article>
-  `).join('');
+    `;
+  }).join('');
   // Scroll reveal
   const obs = new IntersectionObserver(en => en.forEach(e => { if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);} }), {threshold:.1});
   lista.querySelectorAll('.revelar').forEach(el => obs.observe(el));
