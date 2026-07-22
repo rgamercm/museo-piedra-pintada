@@ -125,7 +125,7 @@
           <a href="#" style="font-size:.82rem;color:var(--color-dorado);">¿Olvidaste tu contraseña?</a>
         </div>
         <button type="submit" class="btn btn--primario w-full" id="btn-login-submit" style="justify-content:center;">
-          Ingresar al museo ?
+          Ingresar al museo
         </button>
       </form>
 
@@ -176,7 +176,7 @@
           <div style="font-size:.75rem;color:var(--color-texto-3);" id="strength-label">Escribe una contraseña</div>
         </div>
         <button type="submit" class="btn btn--primario w-full" id="btn-registro-submit" style="justify-content:center;">
-          Crear cuenta ?
+          Crear cuenta
         </button>
       </form>
     </div>
@@ -242,7 +242,7 @@ document.getElementById('form-login').addEventListener('submit', async e => {
     }
   } catch(err) {
     console.error(err);
-    btn.textContent = 'Ingresar al museo ?'; btn.disabled = false;
+    btn.textContent = 'Ingresar al museo'; btn.disabled = false;
   }
 });
 
@@ -273,7 +273,7 @@ document.getElementById('form-registro').addEventListener('submit', async e => {
     setTimeout(() => { window.location.href = '../index.html'; }, 1200);
   } catch (err) {
     console.error(err);
-    btn.textContent = 'Crear cuenta ?'; btn.disabled = false;
+    btn.textContent = 'Crear cuenta'; btn.disabled = false;
   }
 });
 </script>
