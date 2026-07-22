@@ -110,7 +110,7 @@ function renderPetroglifos(reset = false) {
   const html = pagina.map(p => `
     <a href="petroglifo-detalle.html?id=${p.id}" class="petroglifo-card revelar" id="card-petroglifo-${p.id}">
       <div class="petroglifo-card__img-wrap">
-        <img src="${(p.imagen_url || '').replace(/^\/assets\//, '../assets/') || '../assets/img/petroglifo-01.png'}" alt="${p.nombre}" loading="lazy">
+        <img src="${(p.imagen_url || '').replace(/^\/assets\//, '../assets/') || '../assets/img/petroglifo-01.png'}" alt="${p.nombre}" loading="lazy" onerror="this.onerror=null; this.src='../assets/img/petroglifo-01.png';">
         ${p.categoria ? `<span class="petroglifo-card__badge">${p.categoria}</span>` : ''}
       </div>
       <div class="petroglifo-card__content">
