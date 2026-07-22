@@ -92,11 +92,7 @@
           <h2 style="font-size:1.3rem;margin-bottom:.5rem;">¿Tienes otra pregunta?</h2>
           <p style="font-size:.85rem;color:var(--color-texto-2);margin-bottom:1.5rem;line-height:1.6;">Envíanos tu consulta y el equipo del museo la responderá en máximo 3 días hábiles.</p>
           <form id="form-pregunta" novalidate>
-            <div class="form-grupo">
-              <label class="form-etiqueta" for="preg-nombre">Tu nombre (opcional)</label>
-              <input type="text" id="preg-nombre" class="form-input" placeholder="Nombre o anónimo" maxlength="100" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$" title="Solo letras y espacios" oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, '')">
-              <div class="form-error">El nombre solo debe contener letras</div>
-            </div>
+
             <div class="form-grupo">
               <label class="form-etiqueta" for="preg-email">Correo (para recibir respuesta)</label>
               <input type="email" id="preg-email" class="form-input" placeholder="tu@correo.com">
@@ -164,13 +160,18 @@ document.getElementById('form-pregunta').addEventListener('submit', async e => {
   try {
     await window.api.preguntas.crear({
       pregunta: document.getElementById('preg-texto').value,
-      nombre:   document.getElementById('preg-nombre').value.trim(),
       correo:   document.getElementById('preg-email').value.trim()
     });
     btn.textContent = ' Pregunta enviada';
     window.Museo?.mostrarToast(' Tu pregunta fue enviada. Responderemos pronto.', 'exito');
     e.target.reset();
   } catch(err) {
+    if (err.detalles && err.detalles.action) {
+      sessionStorage.setItem('draft_pregunta', document.getElementById('preg-texto').value);
+      sessionStorage.setItem('draft_correo', document.getElementById('preg-email').value.trim());
+      window.location.href = `login.html?action=${err.detalles.action}`;
+      return;
+    }
     console.error(err);
   } finally {
     setTimeout(() => { btn.textContent = ' Enviar pregunta'; btn.disabled = false; }, 3000);
@@ -178,6 +179,10 @@ document.getElementById('form-pregunta').addEventListener('submit', async e => {
 });
 
 document.addEventListener('DOMContentLoaded', async () => {
+  if (window.Museo && window.Museo.usuario) {
+    document.getElementById('preg-email').closest('.form-grupo').style.display = 'none';
+  }
+  
   try {
     const data = await window.api.preguntas.obtenerPublicadas();
     QAS = data.map(q => ({

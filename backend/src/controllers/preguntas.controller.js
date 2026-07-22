@@ -49,9 +49,9 @@ async function crear(req, res, next) {
     if (!usuario_id && correo) {
       const { rows: usuarios } = await db.query('SELECT id FROM usuarios WHERE correo = $1', [correo]);
       if (usuarios.length > 0) {
-        usuario_id = usuarios[0].id;
+        return error(res, 'auth_required', 401, { action: 'login', correo });
       } else {
-        return error(res, 'Correo no registrado. Por favor, regístrate para hacer una pregunta.', 400);
+        return error(res, 'auth_required', 401, { action: 'register', correo });
       }
     }
 

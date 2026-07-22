@@ -212,6 +212,47 @@ document.getElementById('toggle-pass-login').addEventListener('click', () => {
   inp.type = inp.type === 'password' ? 'text' : 'password';
 });
 
+async function procesarRedireccion(data) {
+  const draftPregunta = sessionStorage.getItem('draft_pregunta');
+  if (draftPregunta) {
+    try {
+      await window.api.preguntas.crear({
+        pregunta: draftPregunta,
+        correo: sessionStorage.getItem('draft_correo') || data.usuario.correo
+      });
+      sessionStorage.removeItem('draft_pregunta');
+      sessionStorage.removeItem('draft_correo');
+      window.Museo?.mostrarToast(' Pregunta enviada correctamente', 'exito');
+      setTimeout(() => { window.location.href = 'preguntas.html'; }, 1000);
+      return true;
+    } catch(err) {
+      console.error('Error enviando pregunta pendiente:', err);
+    }
+  }
+  return false;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const action = params.get('action');
+  if (action === 'register') {
+    document.getElementById('tab-registro').click();
+  }
+  
+  const draftCorreo = sessionStorage.getItem('draft_correo');
+  if (draftCorreo) {
+    document.getElementById('login-email').value = draftCorreo;
+    document.getElementById('reg-email').value = draftCorreo;
+    if (action === 'login') {
+      window.Museo?.mostrarToast(' Ingresa tu contraseña para continuar y enviar tu pregunta', 'info');
+      document.getElementById('login-password').focus();
+    } else if (action === 'register') {
+      window.Museo?.mostrarToast(' Crea tu cuenta para continuar y enviar tu pregunta', 'info');
+      document.getElementById('reg-nombre').focus();
+    }
+  }
+});
+
 // Fortaleza de contraseña
 document.getElementById('reg-password').addEventListener('input', e => {
   const val = e.target.value;
@@ -235,10 +276,13 @@ document.getElementById('form-login').addEventListener('submit', async e => {
     localStorage.setItem('museo_token', data.token);
     localStorage.setItem('museo_usuario', JSON.stringify(data.usuario));
     window.Museo?.mostrarToast(' Sesión iniciada correctamente', 'exito');
-    if (data.usuario.rol === 'admin') {
-      setTimeout(() => { window.location.href = 'admin/dashboard.html'; }, 1000);
-    } else {
-      setTimeout(() => { window.location.href = '../index.html'; }, 1000);
+    const manejado = await procesarRedireccion(data);
+    if (!manejado) {
+      if (data.usuario.rol === 'admin') {
+        setTimeout(() => { window.location.href = 'admin/dashboard.html'; }, 1000);
+      } else {
+        setTimeout(() => { window.location.href = '../index.html'; }, 1000);
+      }
     }
   } catch(err) {
     console.error(err);
@@ -270,7 +314,10 @@ document.getElementById('form-registro').addEventListener('submit', async e => {
     localStorage.setItem('museo_token', data.token);
     localStorage.setItem('museo_usuario', JSON.stringify(data.usuario));
     window.Museo?.mostrarToast(' Cuenta creada. ¡Bienvenido!', 'exito');
-    setTimeout(() => { window.location.href = '../index.html'; }, 1200);
+    const manejado = await procesarRedireccion(data);
+    if (!manejado) {
+      setTimeout(() => { window.location.href = '../index.html'; }, 1200);
+    }
   } catch (err) {
     console.error(err);
     btn.textContent = 'Crear cuenta'; btn.disabled = false;

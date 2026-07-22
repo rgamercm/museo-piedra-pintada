@@ -54,7 +54,9 @@ const api = {
       const msg = data.error || `Error en la petición (${res.status})`;
       console.error(`API Error (${endpoint}):`, msg);
       avisar(msg);
-      throw new Error(msg);
+      const errorObj = new Error(msg);
+      errorObj.detalles = data.detalles;
+      throw errorObj;
     }
 
     return data.datos;
