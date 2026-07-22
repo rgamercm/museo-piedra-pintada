@@ -107,7 +107,7 @@
       <div class="form-grupo">
         <label class="form-etiqueta">Calificación *</label>
         <div style="display:flex;gap:.5rem;font-size:2rem;cursor:pointer;" id="selector-estrellas" role="radiogroup" aria-label="Calificación">
-          <span data-val="1"></span><span data-val="2"></span><span data-val="3"></span><span data-val="4"></span><span data-val="5"></span>
+          <span data-val="1" style="color:var(--color-texto-3)">★</span><span data-val="2" style="color:var(--color-texto-3)">★</span><span data-val="3" style="color:var(--color-texto-3)">★</span><span data-val="4" style="color:var(--color-texto-3)">★</span><span data-val="5" style="color:var(--color-texto-3)">★</span>
         </div>
         <input type="hidden" id="valor-estrellas" value="0" required>
       </div>
@@ -181,7 +181,7 @@ document.getElementById('selector-estrellas').addEventListener('click', e => {
   calif = parseInt(span.dataset.val);
   document.getElementById('valor-estrellas').value = calif;
   const spans = document.querySelectorAll('#selector-estrellas span');
-  spans.forEach((s, i) => { s.textContent = i < calif ? '' : ''; s.style.color = i < calif ? 'var(--color-dorado-claro)' : 'var(--color-texto-3)'; });
+  spans.forEach((s, i) => { s.textContent = '★'; s.style.color = i < calif ? 'var(--color-dorado-claro)' : 'var(--color-texto-3)'; });
 });
 
 // Preview foto
