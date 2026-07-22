@@ -186,6 +186,7 @@ function generarFooter() {
         <ul class="footer__lista">
           <li><a href="${base}pages/petroglifos.html"         class="footer__enlace">Catálogo de petroglifos</a></li>
           <li><a href="${base}pages/guion-museologico.html"  class="footer__enlace">Guion Museológico</a></li>
+          <li><a href="${base}pages/equipo.html"             class="footer__enlace">Nuestro equipo</a></li>
           <li><a href="${base}pages/trivia.html"             class="footer__enlace">Trivia arqueológica</a></li>
           <li><a href="${base}pages/noticias.html"    class="footer__enlace">Noticias y eventos</a></li>
           <li><a href="${base}pages/resenas.html"     class="footer__enlace">Reseñas de visitantes</a></li>

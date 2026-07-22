@@ -203,6 +203,17 @@ const api = {
     }
   },
 
+  empleados: {
+    obtenerTodos: async () => {
+      try { return await api.request('/empleados', { silent: true }); }
+      catch (e) { return []; }
+    },
+    obtenerPorId: (id) => api.request(`/empleados/${id}`),
+    crear: (datos) => api.request('/empleados', { method: 'POST', headers: api.getHeaders(true), body: JSON.stringify(datos) }),
+    editar: (id, datos) => api.request(`/empleados/${id}`, { method: 'PUT', headers: api.getHeaders(true), body: JSON.stringify(datos) }),
+    eliminar: (id) => api.request(`/empleados/${id}`, { method: 'DELETE', headers: api.getHeaders(true) })
+  },
+
   preguntas: {
     obtenerPublicadas: () => api.request('/preguntas'),
     obtenerAdmin: () => api.request('/preguntas/pendientes', { headers: api.getHeaders(true) }),

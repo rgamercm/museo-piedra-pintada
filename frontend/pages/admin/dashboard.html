@@ -127,6 +127,7 @@
     <div class="admin-nav-titulo">Contenido</div>
     <button class="admin-nav-item" onclick="mostrarSeccion('noticias-admin')" id="nav-noticias-admin"> Noticias</button>
     <button class="admin-nav-item" onclick="mostrarSeccion('trivia-admin')" id="nav-trivia-admin"> Trivia</button>
+    <button class="admin-nav-item" onclick="mostrarSeccion('empleados')" id="nav-empleados"> Empleados</button>
     <div class="admin-nav-titulo">Configuración</div>
     <button class="admin-nav-item" onclick="mostrarSeccion('configuracion')" id="nav-configuracion"> Horarios</button>
     <div class="admin-nav-titulo">Accesos</div>
@@ -204,6 +205,22 @@
       </div>
     </section>
 
+    <!-- EMPLEADOS -->
+    <section class="seccion-admin" id="sec-empleados">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:1rem;">
+        <h1 style="font-size:1.5rem;">Equipo del Museo</h1>
+        <button class="btn btn--primario btn--sm" onclick="abrirModalEmpleado()">+ Añadir Empleado</button>
+      </div>
+      <div class="tabla-scroll" style="background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1rem;margin-bottom:2rem;">
+        <table class="tabla-admin">
+          <thead><tr><th>ID</th><th>Nombre</th><th>Cargo</th><th>Orden</th><th>Destacado</th><th>Acciones</th></tr></thead>
+          <tbody id="tbody-empleados">
+            <tr><td colspan="6" style="text-align:center;">Cargando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
     <!-- PETROGLIFOS Y ESTACIONES -->
     <section class="seccion-admin" id="sec-petroglifos">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:1rem;">
@@ -248,7 +265,47 @@
           <textarea id="estacion-descripcion" class="form-textarea" placeholder="Descripción"></textarea>
           <div style="display:flex; gap:1rem; margin-top:1rem;">
             <button type="submit" class="btn btn--primario">Guardar</button>
-            <button type="button" class="btn btn--contorno" onclick="cerrarModalEstacion()">Cancelar</button>
+            <button type="button" class="btn btn--contorno" onclick="document.getElementById('modal-estacion').style.display='none'">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL EMPLEADO -->
+    <div id="modal-empleado" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:999; align-items:center; justify-content:center; padding:1rem;">
+      <div style="background:linear-gradient(145deg, #12285A, #0A1A3C); padding:2rem; border-radius:1rem; width:100%; max-width:500px; border:1px solid rgba(140, 115, 85,0.3); box-shadow:0 10px 40px rgba(0,0,0,0.8); max-height:90vh; overflow-y:auto;">
+        <h2 style="margin-bottom:1rem;" id="modal-empleado-titulo">Empleado</h2>
+        <form id="form-empleado" style="display:flex; flex-direction:column; gap:1rem;">
+          <input type="hidden" id="empleado-id">
+          
+          <label style="font-size:.85rem;color:var(--color-dorado-claro);">Nombre</label>
+          <input type="text" id="empleado-nombre" class="form-input" placeholder="Ej: Dra. María López" required>
+          
+          <label style="font-size:.85rem;color:var(--color-dorado-claro);">Cargo / Rol</label>
+          <input type="text" id="empleado-cargo" class="form-input" placeholder="Ej: Investigadora Principal" required>
+          
+          <label style="font-size:.85rem;color:var(--color-dorado-claro);">Descripción (Opcional)</label>
+          <textarea id="empleado-descripcion" class="form-textarea" placeholder="Breve biografía o labor en el museo"></textarea>
+          
+          <label style="font-size:.85rem;color:var(--color-dorado-claro);">Imagen</label>
+          <input type="file" id="empleado-imagen" accept="image/*">
+          <input type="hidden" id="empleado-imagen-url">
+          
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+            <div>
+              <label style="font-size:.85rem;color:var(--color-dorado-claro);">Orden</label>
+              <input type="number" id="empleado-orden" class="form-input" value="0">
+            </div>
+            <div style="display:flex; align-items:flex-end;">
+              <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; margin-bottom: 0.75rem;">
+                <input type="checkbox" id="empleado-destacado" checked> ¿Destacado?
+              </label>
+            </div>
+          </div>
+          
+          <div style="display:flex; gap:1rem; margin-top:1rem;">
+            <button type="submit" class="btn btn--primario">Guardar</button>
+            <button type="button" class="btn btn--contorno" onclick="document.getElementById('modal-empleado').style.display='none'">Cancelar</button>
           </div>
         </form>
       </div>
@@ -489,6 +546,7 @@
 <script src="../../js/api.js?v=1.5"></script>
 <script src="../../js/qr-voz.js?v=1.3"></script>
 <script src="../../js/admin.js?v=1.7"></script>
+<script src="../../js/admin-empleados.js?v=1.0"></script>
 <script src="../../js/app.js?v=1.3"></script>
 <script>
 'use strict';
@@ -497,7 +555,7 @@ document.getElementById('fecha-admin').textContent = new Date().toLocaleDateStri
 function mostrarSeccion(id) {
   document.querySelectorAll('.seccion-admin').forEach(s => s.classList.remove('activa'));
   document.querySelectorAll('.admin-nav-item').forEach(b => b.classList.remove('activo'));
-  const mapa = { resumen:'sec-resumen', petroglifos:'sec-petroglifos', reservas:'sec-reservas', moderacion:'sec-moderacion', 'preguntas-admin':'sec-preguntas-admin', 'noticias-admin':'sec-noticias-admin', 'trivia-admin':'sec-trivia-admin', 'editor-mapa':'sec-editor-mapa', 'configuracion':'sec-configuracion' };
+  const mapa = { resumen:'sec-resumen', petroglifos:'sec-petroglifos', reservas:'sec-reservas', moderacion:'sec-moderacion', 'preguntas-admin':'sec-preguntas-admin', 'noticias-admin':'sec-noticias-admin', 'trivia-admin':'sec-trivia-admin', 'editor-mapa':'sec-editor-mapa', 'configuracion':'sec-configuracion', empleados:'sec-empleados' };
   const sec = document.getElementById(mapa[id]);
   const btn = document.getElementById('nav-'+id);
   if (sec) sec.classList.add('activa');

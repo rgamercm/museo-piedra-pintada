@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nuestro Equipo - Museo Arqueológico Piedra Pintada</title>
+  <meta name="description" content="Conoce a las personas dedicadas que hacen posible la preservación, investigación y difusión de nuestro patrimonio arqueológico.">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    .hero-equipo {
+      position: relative;
+      min-height: 40vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 1rem 3rem;
+      overflow: hidden;
+    }
+    
+    .hero-equipo::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top, rgba(140, 115, 85, 0.15) 0%, transparent 70%);
+      z-index: 0;
+    }
+
+    .hero-equipo > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .equipo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2rem;
+      padding: 2rem 0;
+    }
+
+    /* Tarjetas estilo "Destacados" */
+    .empleado-card {
+      background: var(--grad-card);
+      border: 1px solid var(--glass-border);
+      border-radius: 1rem;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+    }
+
+    .empleado-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(45deg, transparent, rgba(140,115,85,0.05), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s ease;
+    }
+
+    .empleado-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(140,115,85,0.2);
+      border-color: rgba(140,115,85,0.4);
+    }
+    
+    .empleado-card:hover::before {
+      transform: translateX(100%);
+    }
+
+    .empleado-img-wrap {
+      width: 100%;
+      height: 280px;
+      overflow: hidden;
+      position: relative;
+      border-bottom: 2px solid var(--color-dorado-claro);
+    }
+
+    .empleado-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.7s ease;
+    }
+
+    .empleado-card:hover .empleado-img {
+      transform: scale(1.08);
+    }
+
+    .empleado-info {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      text-align: center;
+    }
+
+    .empleado-nombre {
+      font-family: var(--font-titulo);
+      color: var(--color-dorado-claro);
+      font-size: 1.3rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .empleado-cargo {
+      color: var(--color-texto);
+      font-weight: 500;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
+      font-family: var(--font-ui);
+    }
+
+    .empleado-desc {
+      color: var(--color-texto-2);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      font-family: var(--font-lectura);
+      margin-top: auto;
+    }
+
+    .loading-spinner {
+      display: block;
+      margin: 4rem auto;
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(140,115,85,0.3);
+      border-radius: 50%;
+      border-top-color: var(--color-dorado-claro);
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-texture" aria-hidden="true"></div>
+  <div id="header-placeholder"></div>
+
+  <main id="main-content" tabindex="-1">
+    
+    <header class="hero-equipo revelar">
+      <div class="container">
+        <h1 class="titulo-seccion" style="margin-bottom: 1rem;">Nuestro Equipo</h1>
+        <p style="color:var(--color-texto-2); max-width:600px; margin:0 auto; font-size:1.1rem; line-height:1.6;">
+          Conoce a los profesionales y apasionados guardianes que dedican su vida a la preservación, investigación y difusión de nuestro patrimonio arqueológico.
+        </p>
+      </div>
+    </header>
+
+    <section class="container" style="margin-bottom: 5rem;">
+      <div id="loading" class="loading-spinner"></div>
+      
+      <!-- Contenedor del equipo -->
+      <div id="equipo-container" class="equipo-grid">
+        <!-- Generado dinámicamente -->
+      </div>
+      
+      <div id="empty-state" style="display:none; text-align:center; padding:4rem 1rem; background:var(--grad-card); border-radius:1rem; border:1px solid var(--glass-border);">
+        <p style="color:var(--color-texto-3); font-size:1.1rem;">Aún no se han añadido miembros al equipo.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="../js/componentes.js?v=2.4"></script>
+  <script src="../js/api.js?v=1.5"></script>
+  <script src="../js/app.js?v=1.4"></script>
+  <script>
+    'use strict';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const container = document.getElementById('equipo-container');
+      const loading = document.getElementById('loading');
+      const emptyState = document.getElementById('empty-state');
+
+      try {
+        const empleados = await window.api.empleados.obtenerTodos();
+        loading.style.display = 'none';
+
+        // Filtrar solo los destacados, o mostrar todos si es la página completa del equipo
+        // El requisito era "estilo destacados", pero en la página del equipo deberíamos mostrar a todos,
+        // o si queremos solo a los destacados:
+        const empleadosAMostrar = empleados.filter(e => e.destacado);
+
+        if (!empleadosAMostrar || empleadosAMostrar.length === 0) {
+          emptyState.style.display = 'block';
+        } else {
+          container.innerHTML = empleadosAMostrar.map((e, index) => `
+            <article class="empleado-card revelar" style="transition-delay: ${index * 0.1}s">
+              <div class="empleado-img-wrap">
+                <img src="${e.imagen_url || '../assets/img/avatar-placeholder.png'}" alt="${e.nombre}" class="empleado-img" loading="lazy" onerror="this.src='../assets/img/avatar-placeholder.png'">
+              </div>
+              <div class="empleado-info">
+                <h3 class="empleado-nombre">${e.nombre}</h3>
+                <div class="empleado-cargo">${e.cargo}</div>
+                ${e.descripcion ? `<p class="empleado-desc">${e.descripcion}</p>` : ''}
+              </div>
+            </article>
+          `).join('');
+
+          // Activar animaciones de las cards
+          if (window.Museo && window.Museo.iniciarScrollReveal) {
+            setTimeout(() => window.Museo.iniciarScrollReveal(), 100);
+          }
+        }
+      } catch (e) {
+        console.error('Error cargando equipo:', e);
+        loading.style.display = 'none';
+        emptyState.innerHTML = '<p style="color:#F09090;">No se pudo cargar la información del equipo.</p>';
+        emptyState.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>
