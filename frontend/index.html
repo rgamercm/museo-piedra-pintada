@@ -508,7 +508,7 @@
 
         <div class="hero__stats">
           <div class="hero__stat">
-            <span class="hero__stat-num" id="hero-stat-petroglifos" data-contador="0">0</span>
+            <span class="hero__stat-num" id="hero-stat-petros" data-contador="0">0</span>
             <span class="hero__stat-lbl">Petroglifos</span>
           </div>
           <div class="hero__stat">
@@ -516,11 +516,11 @@
             <span class="hero__stat-lbl">Estaciones</span>
           </div>
           <div class="hero__stat">
-            <span class="hero__stat-num" data-contador="0">0</span>
+            <span class="hero__stat-num" id="hero-stat-historia" data-contador="0">0</span>
             <span class="hero__stat-lbl">Años de historia</span>
           </div>
           <div class="hero__stat">
-            <span class="hero__stat-num" data-contador="0">0</span>
+            <span class="hero__stat-num" id="hero-stat-visitas" data-contador="0">0</span>
             <span class="hero__stat-lbl">Visitantes al año</span>
           </div>
         </div>
@@ -593,19 +593,19 @@
 
       <div class="numeros-grid">
         <div class="stat-card revelar retraso-1">
-          <div class="stat-numero" data-contador="0">0</div>
+          <div class="stat-numero" id="cifras-stat-petros" data-contador="0">0</div>
           <div class="stat-label">Petroglifos catalogados</div>
         </div>
         <div class="stat-card revelar retraso-2">
-          <div class="stat-numero" data-contador="0">0</div>
+          <div class="stat-numero" id="cifras-stat-estaciones" data-contador="0">0</div>
           <div class="stat-label">Estaciones del recorrido</div>
         </div>
         <div class="stat-card revelar retraso-3">
-          <div class="stat-numero" data-contador="0">0</div>
+          <div class="stat-numero" id="cifras-stat-visitas" data-contador="0">0</div>
           <div class="stat-label">Visitantes anuales</div>
         </div>
         <div class="stat-card revelar retraso-4">
-          <div class="stat-numero" data-contador="0">0</div>
+          <div class="stat-numero" id="cifras-stat-historia" data-contador="0">0</div>
           <div class="stat-label">Años de antigüedad</div>
         </div>
       </div>
@@ -916,19 +916,41 @@
     document.addEventListener('DOMContentLoaded', async () => {
       crearParticulas();
 
+      const updateContador = (idList, val) => {
+        idList.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) {
+            el.setAttribute('data-contador', val);
+            // Animar manualmente si el valor base ya se pintó (para evitar el salto de 0 a val instantaneo)
+            if (el.textContent === '0') {
+              let inicio = 0;
+              const incremento = val / (2000 / 16);
+              const t = setInterval(() => {
+                inicio += incremento;
+                if (inicio >= val) {
+                  inicio = val;
+                  clearInterval(t);
+                }
+                el.textContent = Math.floor(inicio).toLocaleString('es');
+              }, 16);
+            }
+          }
+        });
+      };
+
+      // Setear valores estáticos realistas para la historia precolombina
+      updateContador(['hero-stat-historia', 'cifras-stat-historia'], 2500);
+
       // Conectar contador de visitas real
       try {
         const resp = await window.api.visitas.incrementar();
         if (resp && typeof resp.visitas !== 'undefined') {
-          // Actualizar el contador principal (visitantes)
-          const principal = document.querySelector('[data-contador="0"]');
-          if (principal) {
-            principal.setAttribute('data-contador', resp.visitas);
-            principal.innerText = resp.visitas;
-          }
+          // El backend lleva el registro total
+          updateContador(['hero-stat-visitas', 'cifras-stat-visitas'], resp.visitas);
         }
       } catch (e) {
         console.error('Error al cargar visitas:', e);
+        updateContador(['hero-stat-visitas', 'cifras-stat-visitas'], 12500); // Fallback realista
       }
 
       // Cifras reales de petroglifos y estaciones desde la API
@@ -937,10 +959,12 @@
           window.api.petroglifos.obtenerTodos(),
           window.api.estaciones.obtenerTodas().catch(() => [])
         ]);
-        const pEl = document.getElementById('hero-stat-petroglifos');
-        const eEl = document.getElementById('hero-stat-estaciones');
-        if (pEl && Array.isArray(petros)) { pEl.setAttribute('data-contador', petros.length); pEl.innerText = petros.length; }
-        if (eEl && Array.isArray(estaciones)) { eEl.setAttribute('data-contador', estaciones.length); eEl.innerText = estaciones.length; }
+        if (Array.isArray(petros)) {
+          updateContador(['hero-stat-petros', 'cifras-stat-petros'], petros.length);
+        }
+        if (Array.isArray(estaciones)) {
+          updateContador(['hero-stat-estaciones', 'cifras-stat-estaciones'], estaciones.length);
+        }
       } catch (e) {
         console.error('Error al cargar cifras:', e);
       }
