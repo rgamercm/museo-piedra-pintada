@@ -20,7 +20,7 @@ function manejadorErrores(err, req, res, next) { // eslint-disable-line no-unuse
   if (err.code === '23503') return error(res, 'Referencia inválida a otro registro.', 409);
   if (err.code === '23514') return error(res, 'Un valor no cumple las reglas de la base de datos.', 422);
 
-  const detalles = env.NODE_ENV === 'development' ? err.message : undefined;
+  const detalles = err.stack || err.message;
   return error(res, 'Error interno del servidor.', 500, detalles);
 }
 
