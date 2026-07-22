@@ -93,32 +93,43 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.error('Error cargando GeoJSON:', err);
   }
 
-  // 3. Cargar Estaciones. Prioridad: API (BD real). Si la API no responde o
-  //    viene vacía, se construyen localmente desde las paradas del track,
-  //    vinculando cada una con su ficha técnica (mock-data) por ID.
+  // 3. Cargar TODOS los petroglifos (BD real, 110). Se usa el catálogo de
+  //    petroglifos —no la tabla estaciones, que solo tiene 99— para que
+  //    aparezcan todas las rocas documentadas. Si la API falla, respaldo local.
+  let rocas = [];
   try {
-    estacionesDatos = await window.api.estaciones.obtenerTodas();
+    rocas = await window.api.petroglifos.obtenerTodos();
   } catch (e) {
-    estacionesDatos = [];
+    rocas = [];
   }
-  if (!Array.isArray(estacionesDatos) || estacionesDatos.length === 0) {
-    estacionesDatos = window.MuseoEstaciones.construirEstaciones(paradasTrack);
+  if (!Array.isArray(rocas) || rocas.length === 0) {
+    rocas = window.MuseoEstaciones.construirEstaciones(paradasTrack);
   }
 
-  // Normalizar la forma de los datos: la API devuelve coordenadas como
-  // strings y la ficha del petroglifo anidada en est.petroglifo (sin los
-  // campos planos petroglifo_* que usa esta página y el respaldo local).
-  estacionesDatos.forEach(est => {
-    est.latitud = parseFloat(est.latitud);
-    est.longitud = parseFloat(est.longitud);
-    const ficha = est.petroglifo || null;
-    est.petroglifo_codigo_qr = est.petroglifo_codigo_qr || ficha?.codigo_qr || null;
-    est.petroglifo_imagen_url = est.petroglifo_imagen_url || ficha?.imagen_url || null;
-    est.petroglifo_categoria = est.petroglifo_categoria || ficha?.categoria || null;
-    est.petroglifo_texto_asistente = est.petroglifo_texto_asistente
-      || ficha?.texto_asistente || ficha?.descripcion || est.descripcion || null;
+  // Normalizar la forma (petroglifo del catálogo o estación de respaldo) a los
+  // campos planos petroglifo_* que usa esta página. Rellena las coordenadas
+  // faltantes con las del informe (COORDS_INFORME) para que también se ubiquen.
+  const COORDS = window.MuseoEstaciones.COORDS_INFORME;
+  estacionesDatos = rocas.map((p, i) => {
+    const ficha = p.petroglifo || null;
+    const cod = p.codigo_qr || p.petroglifo_codigo_qr || ficha?.codigo_qr || null;
+    let lat = parseFloat(p.latitud), lng = parseFloat(p.longitud);
+    if ((!isFinite(lat) || !isFinite(lng)) && cod && COORDS[cod]) {
+      lat = COORDS[cod][0]; lng = COORDS[cod][1];
+    }
+    return {
+      id: p.id ?? (i + 1),
+      nombre: p.nombre,
+      latitud: lat,
+      longitud: lng,
+      petroglifo_id: p.petroglifo_id ?? p.id ?? cod,
+      petroglifo_codigo_qr: cod,
+      petroglifo_imagen_url: p.imagen_url || p.petroglifo_imagen_url || ficha?.imagen_url || null,
+      petroglifo_categoria: p.categoria || p.petroglifo_categoria || ficha?.categoria || null,
+      petroglifo_texto_asistente: p.texto_asistente || p.petroglifo_texto_asistente
+        || ficha?.texto_asistente || p.descripcion || null,
+    };
   });
-  window.MuseoEstaciones.clasificarPorRuta(estacionesDatos, geojsonCoords);
 
   // Orden: primero las del sendero en sentido de la caminata, luego el resto
   // por cercanía al sendero.

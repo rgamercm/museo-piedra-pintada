@@ -145,52 +145,90 @@ function clasificarPorRuta(estaciones, coordsRuta) {
 }
 
 // ── Montículos: estaciones del recorrido (informe K. Juszczyk, AmerGraph 2023) ──
-// El plano del informe agrupa las rocas documentadas en 2022 en montículos.
-// El recorrido guiado usa las 5 estaciones RECORRIBLES del plano; las rocas
-// de las otras zonas del parque (extremo norte y sur) pertenecen a las 2
-// estaciones no recorribles y quedan fuera del tour.
-// Centros: centroides de las rocas de la BD dentro de cada polígono del plano.
+// El informe documenta 111 rocas "en cinco montículos adyacentes". La
+// agrupación real está en el PLANO dibujado por la autora; la tabla GPS del
+// informe (y por tanto la BD) es poco fiable para ~30 rocas por la deriva del
+// GPS bajo la selva (el informe incluso anota rocas "no in situ"). Por eso la
+// pertenencia a montículo se define EXPLÍCITAMENTE por código de roca, no por
+// cercanía de coordenadas.
+// Centros: centroides de las rocas con GPS fiable de cada montículo.
 const MONTICULOS_BASE = [
-  { id: 1, nombre: 'Montículo 1', latitud: 10.30034, longitud: -67.88703 },
-  { id: 2, nombre: 'Montículo 2', latitud: 10.30113, longitud: -67.88699 },
-  { id: 3, nombre: 'Montículo 3', latitud: 10.30193, longitud: -67.88727 },
-  { id: 4, nombre: 'Montículo 4', latitud: 10.30293, longitud: -67.88852 },
-  { id: 5, nombre: 'Montículo 5', latitud: 10.30421, longitud: -67.88843 },
+  { id: 1, nombre: 'Montículo 1', latitud: 10.300333, longitud: -67.887011 },
+  { id: 2, nombre: 'Montículo 2', latitud: 10.301107, longitud: -67.886983 },
+  { id: 3, nombre: 'Montículo 3', latitud: 10.301925, longitud: -67.887278 },
+  { id: 4, nombre: 'Montículo 4', latitud: 10.302971, longitud: -67.888472 },
+  { id: 5, nombre: 'Montículo 5', latitud: 10.304206, longitud: -67.888407 },
 ];
 
-// Una roca pertenece al montículo más cercano si está dentro de este radio;
-// más lejos se considera de una zona no recorrible del parque.
-const RADIO_MONTICULO_M = 140;
+// Coordenadas del informe (Juszczyk 2023) para rocas que en la BD están sin
+// coordenadas, para que también aparezcan en el mapa.
+const COORDS_INFORME = {
+  S9R15: [10.30305, -67.8883889], S9R34: [10.3030111, -67.8883611],
+  S9R79: [10.2989861, -67.8883556], S9R90: [10.2969806, -67.8893806],
+  S9R94: [10.2957333, -67.8911778], S9R103: [10.300989, -67.886972],
+};
+
+// Pertenencia roca → montículo. PROPUESTA (pendiente de revisión del museo):
+// las rocas de GPS fiable dan un patrón claro por rangos; los ~30 outliers se
+// asignan por secuencia de documentación y por la indicación de que S9R81
+// pertenece al Montículo 2.
+const MONTICULO_POR_ROCA = (() => {
+  const m = {};
+  const set = (a, b, id) => { for (let i = a; i <= b; i++) m['S9R' + i] = id; };
+  set(1, 9, 5);       // M5 (norte)
+  set(10, 43, 4);     // M4 (grande, oeste) — incluye S9R28–31, 41–42 (GPS desviado)
+  set(44, 61, 3);     // M3 (centro)
+  set(62, 66, 2);     // M2 (cerca del museo)
+  set(67, 73, 5);     // norte lejano → M5 (por confirmar)
+  set(74, 76, 4);     // → M4
+  set(77, 103, 2);    // sur lejano, incluye S9R81 → M2 (por confirmar)
+  set(104, 111, 1);   // M1 (sur)
+  m.S9R86 = 3; m.S9R87 = 3; m.S9R88 = 3; // caen junto a M3
+  return m;
+})();
+
+// Si el GPS de una roca cae más lejos que esto de su montículo asignado, se
+// considera coordenada poco fiable y se reubica cerca del centro del montículo.
+const RADIO_SNAP_MONTICULO_M = 120;
 
 /**
- * Agrupa las estaciones/petroglifos en los 5 montículos recorribles.
- * Anota cada estación con monticulo_id (o null si queda fuera).
- * @returns {{monticulos: Array, fuera: Array}} montículos con su lista
- *          de petroglifos, y las rocas fuera de las estaciones recorribles.
+ * Agrupa los petroglifos en los 5 montículos usando el mapeo explícito
+ * MONTICULO_POR_ROCA. Las rocas con GPS lejano a su montículo se reubican en
+ * un anillo alrededor del centro para que el mapa coincida con el plano; las
+ * de GPS bueno conservan su posición real.
+ * @returns {{monticulos: Array, fuera: Array}}
  */
 function agruparEnMonticulos(estaciones) {
   const monticulos = MONTICULOS_BASE.map(m => ({ ...m, petroglifos: [] }));
+  const porId = Object.fromEntries(monticulos.map(m => [m.id, m]));
   const fuera = [];
+  let iSnap = 0;
   for (const est of estaciones) {
-    const lat = parseFloat(est.latitud), lng = parseFloat(est.longitud);
-    if (!isFinite(lat) || !isFinite(lng)) { est.monticulo_id = null; fuera.push(est); continue; }
-    let mejor = null, mejorDist = Infinity;
-    for (const m of monticulos) {
-      const d = _haversine(lat, lng, m.latitud, m.longitud);
-      if (d < mejorDist) { mejorDist = d; mejor = m; }
+    const cod = est.petroglifo_codigo_qr || est.codigo_qr;
+    const mid = MONTICULO_POR_ROCA[cod];
+    const m = mid ? porId[mid] : null;
+    if (!m) { est.monticulo_id = null; fuera.push(est); continue; }
+    est.monticulo_id = m.id;
+
+    let lat = parseFloat(est.latitud), lng = parseFloat(est.longitud);
+    const lejos = !isFinite(lat) || !isFinite(lng) ||
+      _haversine(lat, lng, m.latitud, m.longitud) > RADIO_SNAP_MONTICULO_M;
+    if (lejos) {
+      const ang = iSnap * 2.399963;               // ángulo áureo (reparte sin solapar)
+      const r = 0.00010 + 0.00005 * (iSnap % 4);   // ~11–33 m del centro
+      iSnap++;
+      lat = m.latitud + r * Math.cos(ang);
+      lng = m.longitud + r * Math.sin(ang);
+      est.gps_reubicado = true;
     }
-    if (mejor && mejorDist <= RADIO_MONTICULO_M) {
-      est.monticulo_id = mejor.id;
-      mejor.petroglifos.push(est);
-    } else {
-      est.monticulo_id = null;
-      fuera.push(est);
-    }
+    est.latitud = lat; est.longitud = lng;
+    m.petroglifos.push(est);
   }
   return { monticulos, fuera };
 }
 
 window.MuseoEstaciones = {
-  PETROGLIFOS_POR_PARADA, UMBRAL_RUTA_M, MONTICULOS_BASE, RADIO_MONTICULO_M,
+  PETROGLIFOS_POR_PARADA, UMBRAL_RUTA_M, MONTICULOS_BASE,
+  COORDS_INFORME, MONTICULO_POR_ROCA, RADIO_SNAP_MONTICULO_M,
   cargarTrack, construirEstaciones, clasificarPorRuta, agruparEnMonticulos,
 };
