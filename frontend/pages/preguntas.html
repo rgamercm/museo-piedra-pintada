@@ -94,7 +94,7 @@
           <form id="form-pregunta" novalidate>
             <div class="form-grupo">
               <label class="form-etiqueta" for="preg-nombre">Tu nombre (opcional)</label>
-              <input type="text" id="preg-nombre" class="form-input" placeholder="Nombre o anónimo" maxlength="100" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$" title="Solo letras y espacios">
+              <input type="text" id="preg-nombre" class="form-input" placeholder="Nombre o anónimo" maxlength="100" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$" title="Solo letras y espacios" oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, '')">
               <div class="form-error">El nombre solo debe contener letras</div>
             </div>
             <div class="form-grupo">

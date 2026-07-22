@@ -90,7 +90,7 @@
             </div>
             <div class="form-grupo">
               <label class="form-etiqueta" for="res-contacto">Nombre del responsable *</label>
-              <input type="text" id="res-contacto" class="form-input" placeholder="Tu nombre completo" maxlength="100" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$" title="Solo letras y espacios" required>
+              <input type="text" id="res-contacto" class="form-input" placeholder="Tu nombre completo" maxlength="100" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$" title="Solo letras y espacios" required oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, '')">
               <div class="form-error">El nombre es obligatorio y debe contener solo letras</div>
             </div>
             <div class="form-grupo">

@@ -143,7 +143,7 @@
       <form id="form-registro" novalidate>
         <div class="form-grupo">
           <label class="form-etiqueta" for="reg-nombre">Nombre completo</label>
-          <input type="text" id="reg-nombre" class="form-input" placeholder="Tu nombre" maxlength="100" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$" title="Solo letras y espacios" required autocomplete="name">
+          <input type="text" id="reg-nombre" class="form-input" placeholder="Tu nombre" maxlength="100" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$" title="Solo letras y espacios" required autocomplete="name" oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, '')">
           <div class="form-error">El nombre es obligatorio y debe contener solo letras</div>
         </div>
         <div class="form-grupo">
