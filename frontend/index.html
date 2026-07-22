@@ -659,12 +659,8 @@
             <table class="horario-tabla" aria-label="Horario de visitas">
               <tbody>
                 <tr>
-                  <td>Lunes</td>
-                  <td id="horario-td-lunes" class="horario-cerrado">Cargando...</td>
-                </tr>
-                <tr>
-                  <td>Martes – Viernes</td>
-                  <td id="horario-td-martes-viernes">Cargando...</td>
+                  <td>Lunes – Viernes</td>
+                  <td id="horario-td-lunes-viernes">Cargando...</td>
                 </tr>
                 <tr>
                   <td>Sábado</td>
@@ -835,8 +831,7 @@
           }
         };
 
-        setTd('horario-td-lunes', config.lunes || 'Cerrado');
-        setTd('horario-td-martes-viernes', config.martes_viernes || '8:00 am - 5:00 pm');
+        setTd('horario-td-lunes-viernes', config.lunes_viernes || '9:00 am - 5:00 pm');
         setTd('horario-td-sabado', config.sabado || '8:00 am - 6:00 pm');
         setTd('horario-td-domingo', config.domingo || '9:00 am - 4:00 pm');
         setTd('horario-td-feriados', config.feriados || 'Consultar');
@@ -858,8 +853,7 @@
 
         let abierto = false;
         let strHorario = '';
-        if (dia === 1) strHorario = config.lunes;
-        else if (dia >= 2 && dia <= 5) strHorario = config.martes_viernes;
+        if (dia >= 1 && dia <= 5) strHorario = config.lunes_viernes || '9:00 am - 5:00 pm';
         else if (dia === 6) strHorario = config.sabado;
         else if (dia === 0) strHorario = config.domingo;
 

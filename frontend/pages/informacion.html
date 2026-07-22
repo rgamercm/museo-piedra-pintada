@@ -352,8 +352,7 @@
         <div class="info-bloque__titulo">Horario de Visitas</div>
         <table class="horario-tabla" aria-label="Horario semanal">
           <tbody>
-            <tr><td>Lunes</td><td id="horario-td-lunes" class="horario-cerrado">Cargando...</td></tr>
-            <tr><td>Martes – Viernes</td><td id="horario-td-martes-viernes">Cargando...</td></tr>
+            <tr><td>Lunes – Viernes</td><td id="horario-td-lunes-viernes">Cargando...</td></tr>
             <tr><td>Sábado</td><td id="horario-td-sabado">Cargando...</td></tr>
             <tr><td>Domingo</td><td id="horario-td-domingo">Cargando...</td></tr>
             <tr><td>Feriados nacionales</td><td id="horario-td-feriados" class="horario-cerrado">Cargando...</td></tr>
@@ -1104,8 +1103,7 @@
         }
       };
 
-      setTd('horario-td-lunes', config.lunes || 'Cerrado');
-      setTd('horario-td-martes-viernes', config.martes_viernes || '8:00 am - 5:00 pm');
+      setTd('horario-td-lunes-viernes', config.lunes_viernes || '9:00 am - 5:00 pm');
       setTd('horario-td-sabado', config.sabado || '8:00 am - 6:00 pm');
       setTd('horario-td-domingo', config.domingo || '9:00 am - 4:00 pm');
       setTd('horario-td-feriados', config.feriados || 'Consultar');
