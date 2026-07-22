@@ -21,15 +21,41 @@ router.get(
 
 // POST /api/preguntas - público o autenticado
 
+const { tieneGroserias, tieneCaracteresSospechosos, limpiarHtml } = require('../utils/filtro');
+
+// POST /api/preguntas - público o autenticado
 router.post(
   '/',
   sesionOpcional,
   [
-    body('pregunta').trim().notEmpty().withMessage('La pregunta no puede estar vacía.'),
-    body('nombre').optional({ values: 'falsy' }).trim().isLength({ max: 100 })
-      .withMessage('El nombre es demasiado largo.'),
-    body('correo').optional({ values: 'falsy' }).trim().isEmail()
-      .withMessage('El correo no es válido.').isLength({ max: 150 })
+    body('pregunta')
+      .trim()
+      .notEmpty().withMessage('La pregunta no puede estar vacía.')
+      .isLength({ max: 500 }).withMessage('La pregunta no puede exceder los 500 caracteres.')
+      .customSanitizer(value => limpiarHtml(value))
+      .custom(value => {
+        if (tieneGroserias(value)) throw new Error('La pregunta contiene lenguaje inapropiado.');
+        if (tieneCaracteresSospechosos(value)) throw new Error('La pregunta contiene secuencias inválidas.');
+        return true;
+      }),
+      
+    body('nombre')
+      .optional({ values: 'falsy' })
+      .trim()
+      .isLength({ max: 100 }).withMessage('El nombre es demasiado largo.')
+      .matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/).withMessage('El nombre solo debe contener letras.')
+      .custom(value => {
+        if (tieneGroserias(value)) throw new Error('El nombre contiene lenguaje inapropiado.');
+        if (tieneCaracteresSospechosos(value)) throw new Error('El nombre contiene secuencias inválidas.');
+        return true;
+      }),
+      
+    body('correo')
+      .optional({ values: 'falsy' })
+      .trim()
+      .isEmail().withMessage('El correo no es válido.')
+      .isLength({ max: 150 })
+      .normalizeEmail()
   ],
   validar,
   ctrl.crear
@@ -42,7 +68,10 @@ router.patch(
   requiereRol('admin'),
   [
     param('id').isInt().withMessage('ID inválido'),
-    body('respuesta').trim().notEmpty().withMessage('La respuesta no puede estar vacía.')
+    body('respuesta')
+      .trim()
+      .notEmpty().withMessage('La respuesta no puede estar vacía.')
+      .customSanitizer(value => limpiarHtml(value))
   ],
   validar,
   ctrl.responder

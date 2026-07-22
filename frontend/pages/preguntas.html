@@ -94,7 +94,8 @@
           <form id="form-pregunta" novalidate>
             <div class="form-grupo">
               <label class="form-etiqueta" for="preg-nombre">Tu nombre (opcional)</label>
-              <input type="text" id="preg-nombre" class="form-input" placeholder="Nombre o anónimo">
+              <input type="text" id="preg-nombre" class="form-input" placeholder="Nombre o anónimo" maxlength="100" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$" title="Solo letras y espacios">
+              <div class="form-error">El nombre solo debe contener letras</div>
             </div>
             <div class="form-grupo">
               <label class="form-etiqueta" for="preg-email">Correo (para recibir respuesta)</label>
@@ -102,8 +103,8 @@
             </div>
             <div class="form-grupo">
               <label class="form-etiqueta" for="preg-texto">Tu pregunta *</label>
-              <textarea id="preg-texto" class="form-textarea" placeholder="Escribe tu pregunta aquí..." required></textarea>
-              <div class="form-error">La pregunta es obligatoria</div>
+              <textarea id="preg-texto" class="form-textarea" placeholder="Escribe tu pregunta aquí..." maxlength="500" required></textarea>
+              <div class="form-error">La pregunta es obligatoria (máx 500 caracteres)</div>
             </div>
             <button type="submit" class="btn btn--primario w-full" id="btn-enviar-pregunta" style="justify-content:center;">
                Enviar pregunta

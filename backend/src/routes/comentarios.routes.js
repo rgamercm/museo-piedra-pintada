@@ -19,6 +19,8 @@ router.get(
   ctrl.listarPendientes
 );
 
+const { tieneGroserias, tieneCaracteresSospechosos, limpiarHtml } = require('../utils/filtro');
+
 // POST /api/comentarios - requiere sesión (registrado o institucion)
 // Permite que cualquier usuario autenticado (que no sea admin necesariamente) comente.
 // Usamos requiereSesion, y luego en el controlador tomamos el ID.
@@ -26,7 +28,17 @@ router.post(
   '/',
   requiereSesion,
   [
-    body('texto').trim().notEmpty().withMessage('El texto no puede estar vacío.'),
+    body('texto')
+      .trim()
+      .notEmpty().withMessage('El texto no puede estar vacío.')
+      .isLength({ max: 500 }).withMessage('La reseña no puede exceder los 500 caracteres.')
+      .customSanitizer(value => limpiarHtml(value))
+      .custom(value => {
+        if (tieneGroserias(value)) throw new Error('El texto contiene lenguaje inapropiado.');
+        if (tieneCaracteresSospechosos(value)) throw new Error('El texto contiene secuencias inválidas.');
+        return true;
+      }),
+      
     body('calificacion').optional().isInt({ min: 1, max: 5 }).withMessage('La calificación debe ser de 1 a 5.')
   ],
   validar,

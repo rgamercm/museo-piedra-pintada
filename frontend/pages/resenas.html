@@ -113,13 +113,13 @@
       </div>
       <div class="form-grupo">
         <label class="form-etiqueta" for="resena-titulo">Título de tu reseña *</label>
-        <input type="text" id="resena-titulo" class="form-input" placeholder="Resumen de tu experiencia" required>
-        <div class="form-error">El título es obligatorio</div>
+        <input type="text" id="resena-titulo" class="form-input" placeholder="Resumen de tu experiencia" maxlength="100" required>
+        <div class="form-error">El título es obligatorio (máx 100 caracteres)</div>
       </div>
       <div class="form-grupo">
         <label class="form-etiqueta" for="resena-texto">Tu reseña *</label>
-        <textarea id="resena-texto" class="form-textarea" placeholder="Cuéntanos sobre tu visita..." required></textarea>
-        <div class="form-error">La reseña es obligatoria</div>
+        <textarea id="resena-texto" class="form-textarea" placeholder="Cuéntanos sobre tu visita..." maxlength="500" required></textarea>
+        <div class="form-error">La reseña es obligatoria (máx 500 caracteres)</div>
       </div>
       <div class="form-grupo">
         <label class="form-etiqueta" for="resena-foto">Agregar foto (opcional)</label>
