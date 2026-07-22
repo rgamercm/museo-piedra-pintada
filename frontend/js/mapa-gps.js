@@ -6,7 +6,8 @@
 const CONFIG_GPS = {
   RADIO_ACTIVACION_M: 10,      // Radio (metros) para considerar que llegaste a una parada
   RADIO_SALIDA_M: 18,          // Hay que alejarse más de esto para poder re-disparar la misma parada
-  PRECISION_MAXIMA_M: 30,      // Lecturas GPS con precisión peor que esto se descartan
+  PRECISION_MAXIMA_M: 55,      // Lecturas GPS con precisión peor que esto se descartan
+                               // (bajo la selva el GPS del móvil ronda ±40–55 m)
   VELOCIDAD_MAXIMA_MS: 8,      // Saltos que impliquen ir a más de 8 m/s (a pie) se descartan
   COOLDOWN_NARRACION_MS: 3 * 60 * 1000, // No repetir la narración de una parada antes de 3 min
 };
@@ -468,6 +469,9 @@ function lecturaConfiable(pos) {
 
 let prevPos = null;
 
+// NOTA: snapToRoute() y proyectarPuntoEnSegmento() ya NO se usan para el punto
+// del usuario (mostramos la posición real). Se conservan por si se quisiera
+// dibujar el progreso a lo largo del sendero en el futuro.
 // Matemática para pegar el GPS al sendero (Snap to route)
 function proyectarPuntoEnSegmento(px, py, ax, ay, bx, by) {
   const dx = bx - ax;
@@ -500,8 +504,11 @@ function snapToRoute(lat, lng) {
 
 // Actualizar posición del usuario en el mapa (Flecha direccional)
 function actualizarPuntoUsuario(rawLat, rawLng, headingGps = null) {
-  // Aplicar Snap-to-Route
-  const { lat, lng } = snapToRoute(rawLat, rawLng);
+  // El indicador "Tu posición" debe mostrar la ubicación REAL de la persona.
+  // Antes se aplicaba snapToRoute(), que proyectaba el punto sobre la línea del
+  // sendero: el punto azul quedaba pegado al trazado del recorrido y no donde
+  // el usuario realmente está. Usamos las coordenadas crudas del GPS.
+  const lat = rawLat, lng = rawLng;
 
   // Rumbo del usuario: preferimos el heading del GPS (si el dispositivo lo da
   // y se está moviendo); si no, lo derivamos del vector de movimiento.
