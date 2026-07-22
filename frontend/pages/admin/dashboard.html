@@ -255,9 +255,10 @@
     </div>
 
     <!-- MODAL PETROGLIFO -->
-    <div id="modal-petroglifo" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:999; align-items:center; justify-content:center; padding:1rem;">
-      <div style="background:linear-gradient(145deg, #12285A, #0A1A3C); padding:2rem; border-radius:1rem; width:100%; max-width:520px; max-height:90vh; overflow-y:auto; border:1px solid rgba(140, 115, 85,0.3); box-shadow:0 10px 40px rgba(0,0,0,0.8);">
-        <h2 style="margin-bottom:1rem;">Petroglifo</h2>
+    <div id="modal-petroglifo" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:999; align-items:center; justify-content:center; padding:1rem;" onclick="if(event.target === this) cerrarModalPetroglifo()">
+      <div style="background:linear-gradient(145deg, #12285A, #0A1A3C); padding:2rem; border-radius:1rem; width:100%; max-width:520px; max-height:90vh; overflow-y:auto; border:1px solid rgba(140, 115, 85,0.3); box-shadow:0 10px 40px rgba(0,0,0,0.8); position:relative;">
+        <button type="button" onclick="cerrarModalPetroglifo()" style="position:absolute; top:1rem; right:1.5rem; background:transparent; border:none; color:var(--color-texto-2); font-size:1.5rem; cursor:pointer;">&times;</button>
+        <h2 style="margin-bottom:1rem; margin-top:0;">Petroglifo</h2>
         <form id="form-petroglifo" style="display:flex; flex-direction:column; gap:1rem;">
           <input type="hidden" id="petroglifo-id">
           <input type="text" id="petroglifo-nombre" class="form-input" placeholder="Nombre" required>
@@ -273,7 +274,7 @@
             <label style="font-size:.85rem; color:var(--color-texto-2);">Imagen del petroglifo (opcional):</label>
             <input type="file" id="petroglifo-imagen" class="form-input" accept="image/*">
             <input type="hidden" id="petroglifo-imagen_url">
-            <img id="petroglifo-imagen-preview" src="" style="max-width:100%; border-radius:.5rem; display:none; margin-top:.5rem;" alt="Previsualización">
+            <img id="petroglifo-imagen-preview" src="" style="max-width:100%; max-height:180px; object-fit:cover; border-radius:.5rem; display:none; margin-top:.5rem;" alt="Previsualización">
           </div>
 
           <textarea id="petroglifo-descripcion" class="form-textarea" placeholder="Descripción" required></textarea>
