@@ -141,6 +141,15 @@
         <div class="imagen-principal revelar">
           <img id="detalle-img" src="../assets/img/petroglifo-01.png" alt="El Guardián — Petroglifo antropomorfo">
         </div>
+
+        <!-- Calqueos del informe arqueológico (AmerGraph 2023) -->
+        <div id="seccion-calqueos" style="display:none;margin-top:1.5rem;">
+          <h3 style="font-family:var(--font-titulo);font-size:1rem;color:var(--color-dorado-claro);margin-bottom:.35rem;">Calqueos del registro arqueológico</h3>
+          <p style="font-size:.78rem;color:var(--color-texto-3);margin-bottom:.75rem;line-height:1.5;">
+            Dibujos de documentación del informe AmerGraph 2023 (K. Juszczyk, Universidad de Varsovia). Toca una lámina para ampliarla.
+          </p>
+          <div id="galeria-calqueos" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.75rem;"></div>
+        </div>
       </div>
 
       <!-- Columna derecha: info + asistente -->
@@ -306,6 +315,46 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (fichaEl && ficha.length) {
       fichaEl.innerHTML = '<h3 style="font-family:var(--font-titulo);color:var(--color-dorado-claro);font-size:1rem;margin:1.5rem 0 .75rem;">Ficha técnica</h3>' +
         ficha.map(([k, v]) => `<div style="display:flex;justify-content:space-between;gap:1rem;padding:.4rem 0;border-bottom:1px solid var(--glass-border);font-size:.88rem;"><span style="color:var(--color-texto-3);">${k}</span><span style="color:var(--color-texto);text-align:right;">${v}</span></div>`).join('');
+    }
+
+    // Calqueos del informe (AmerGraph 2023): láminas renderizadas del PDF,
+    // una por cara documentada. _dibujos.json: { "S9R1": 1, "S9R81": 4, ... }
+    try {
+      const cod = petroglifo.codigo_qr || petroglifo.codigo_roca
+        || (/^S9R\d+$/.test(String(petroglifo.id)) ? String(petroglifo.id) : null);
+      if (cod) {
+        const resDib = await fetch('../assets/img/petroglifos/dibujos/_dibujos.json');
+        const dibujos = resDib.ok ? await resDib.json() : {};
+        const n = dibujos[cod] || 0;
+        if (n > 0) {
+          const galeria = document.getElementById('galeria-calqueos');
+          galeria.innerHTML = Array.from({ length: n }, (_, i) => {
+            const src = `../assets/img/petroglifos/dibujos/${cod}_${i + 1}.png`;
+            const lbl = n > 1 ? `Lámina ${i + 1} de ${n}` : 'Lámina del informe';
+            return `<figure style="margin:0;background:#fff;border:1px solid var(--glass-border);border-radius:.6rem;overflow:hidden;cursor:zoom-in;" data-src="${src}" title="Ampliar">
+              <img src="${src}" alt="Calqueo ${cod} (${lbl})" loading="lazy" style="width:100%;display:block;">
+              <figcaption style="font-size:.7rem;color:#666;padding:.3rem .5rem;background:#f4f1ea;">${lbl} · ${cod}</figcaption>
+            </figure>`;
+          }).join('');
+          document.getElementById('seccion-calqueos').style.display = '';
+
+          // Lightbox sencillo para ampliar la lámina
+          galeria.querySelectorAll('figure').forEach(fig => {
+            fig.addEventListener('click', () => {
+              const overlay = document.createElement('div');
+              overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:1.5rem;cursor:zoom-out;';
+              overlay.innerHTML = `<img src="${fig.dataset.src}" alt="Calqueo ampliado" style="max-width:100%;max-height:100%;background:#fff;border-radius:.5rem;box-shadow:0 8px 40px rgba(0,0,0,.8);">`;
+              overlay.addEventListener('click', () => overlay.remove());
+              document.addEventListener('keydown', function esc(e) {
+                if (e.key === 'Escape') { overlay.remove(); document.removeEventListener('keydown', esc); }
+              });
+              document.body.appendChild(overlay);
+            });
+          });
+        }
+      }
+    } catch (e) {
+      console.warn('Sin calqueos para este petroglifo:', e);
     }
 
     // Si llegó por QR escaneado, narrar automáticamente tras un instante.
