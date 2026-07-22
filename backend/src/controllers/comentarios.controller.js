@@ -10,7 +10,7 @@ async function listarAprobados(req, res, next) {
     const { rows } = await db.query(
       `SELECT c.id, c.texto, c.calificacion, c.creado_en, u.nombre as autor_nombre 
        FROM comentarios_resenas c
-       JOIN usuarios u ON c.usuario_id = u.id
+       LEFT JOIN usuarios u ON c.usuario_id = u.id
        WHERE c.estado_moderacion = 'aprobado'
        ORDER BY c.creado_en DESC`
     );
@@ -26,7 +26,7 @@ async function listarPendientes(req, res, next) {
     const { rows } = await db.query(
       `SELECT c.*, u.nombre as autor_nombre 
        FROM comentarios_resenas c
-       JOIN usuarios u ON c.usuario_id = u.id
+       LEFT JOIN usuarios u ON c.usuario_id = u.id
        WHERE c.estado_moderacion = 'pendiente'
        ORDER BY c.creado_en ASC`
     );
