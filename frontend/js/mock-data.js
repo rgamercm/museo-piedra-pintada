@@ -645,7 +645,7 @@ window.MOCK_PETROGLIFOS = [
     "imagen_url": "../assets/img/petroglifos/S9R81.jpeg",
     "estacion_nombre": "512 m.s.n.m",
     "categoria": "al valle",
-    "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: Sin daños registrados; 3 cara(s) grabada(s); orientado al valle; altitud 512 m. Contiene el signo conocido como la Diosa de la Lluvia. Son tres rocas pegadas."
+    "descripcion": "Roca S9R81 registrada en el Sitio 9 (Museo Piedra Pintada). Estado: Sin daños registrados; 3 cara(s) grabada(s); orientado al valle; altitud 512 m. Son tres rocas pegadas."
   },
   {
     "id": "S9R82",
@@ -661,7 +661,7 @@ window.MOCK_PETROGLIFOS = [
     "imagen_url": "../assets/img/petroglifos/S9R83.jpeg",
     "estacion_nombre": "509 m.s.n.m",
     "categoria": "al valle",
-    "descripcion": "Roca registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al valle; altitud 509 m. La piedra está situada al pie de la Diosa de la Lluvia."
+    "descripcion": "Roca S9R83 registrada en el Sitio 9 (Museo Piedra Pintada). Estado: erosión; 1 cara(s) grabada(s); orientado al valle; altitud 509 m. Situada al pie de S9R81."
   },
   {
     "id": "S9R84",
