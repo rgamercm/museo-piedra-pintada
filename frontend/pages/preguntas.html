@@ -168,8 +168,9 @@ document.getElementById('form-pregunta').addEventListener('submit', async e => {
   } catch(err) {
     if (err.detalles && err.detalles.action) {
       sessionStorage.setItem('draft_pregunta', document.getElementById('preg-texto').value);
-      sessionStorage.setItem('draft_correo', document.getElementById('preg-email').value.trim());
-      window.location.href = `login.html?action=${err.detalles.action}`;
+      const email = document.getElementById('preg-email').value.trim();
+      sessionStorage.setItem('draft_correo', email);
+      window.location.href = `login.html?action=${err.detalles.action}&correo=${encodeURIComponent(email)}`;
       return;
     }
     console.error(err);
