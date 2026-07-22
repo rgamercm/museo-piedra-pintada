@@ -1130,11 +1130,7 @@
     
     try {
       const petroglifos = await window.api.petroglifos.obtenerTodos();
-      const rocasDestacadas = ['S9R9', 'S9R6', 'S9R44', 'S9R51', 'S9R101', 'S9R64', 'S9R107', 'S9R73', 'S9R66'];
-      
-      const filtrados = petroglifos
-        .filter(p => rocasDestacadas.includes(p.nombre))
-        .sort((a, b) => rocasDestacadas.indexOf(a.nombre) - rocasDestacadas.indexOf(b.nombre));
+      const filtrados = petroglifos.filter(p => p.destacado === true);
         
       if (filtrados.length === 0) {
         grid.innerHTML = '<div class="sin-resultados"><span>🪨</span><p>No se encontraron petroglifos destacados.</p></div>';

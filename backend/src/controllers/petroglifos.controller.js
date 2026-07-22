@@ -72,21 +72,21 @@ async function crear(req, res, next) {
     const {
       nombre, descripcion, texto_asistente, imagen_url, codigo_qr, categoria,
       codigo_roca, latitud, longitud, altitud_m, cantidad_caras, profundidad_surco,
-      forma_surco, exposicion_solar, orientacion, estado_conservacion, fecha_registro, notas
+      forma_surco, exposicion_solar, orientacion, estado_conservacion, fecha_registro, notas, destacado
     } = req.body;
 
     const { rows } = await db.query(
       `INSERT INTO petroglifos
         (nombre, descripcion, texto_asistente, imagen_url, codigo_qr, categoria,
          codigo_roca, latitud, longitud, altitud_m, cantidad_caras, profundidad_surco,
-         forma_surco, exposicion_solar, orientacion, estado_conservacion, fecha_registro, notas)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18)
+         forma_surco, exposicion_solar, orientacion, estado_conservacion, fecha_registro, notas, destacado)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19)
        RETURNING *`,
       [nombre, descripcion, texto_asistente, imagen_url || null, codigo_qr, categoria || null,
        codigo_roca || null, latitud || null, longitud || null, altitud_m || null,
        cantidad_caras || null, profundidad_surco || null, forma_surco || null,
        exposicion_solar || null, orientacion || null, estado_conservacion || null,
-       fecha_registro || null, notas || null]
+       fecha_registro || null, notas || null, destacado || false]
     );
 
     return creado(res, rows[0]);
@@ -101,7 +101,7 @@ async function editar(req, res, next) {
     const {
       nombre, descripcion, texto_asistente, imagen_url, codigo_qr, categoria,
       codigo_roca, latitud, longitud, altitud_m, cantidad_caras, profundidad_surco,
-      forma_surco, exposicion_solar, orientacion, estado_conservacion, fecha_registro, notas
+      forma_surco, exposicion_solar, orientacion, estado_conservacion, fecha_registro, notas, destacado
     } = req.body;
 
     const { rows } = await db.query(
@@ -110,14 +110,14 @@ async function editar(req, res, next) {
          codigo_qr = $5, categoria = $6, codigo_roca = $7, latitud = $8, longitud = $9,
          altitud_m = $10, cantidad_caras = $11, profundidad_surco = $12, forma_surco = $13,
          exposicion_solar = $14, orientacion = $15, estado_conservacion = $16,
-         fecha_registro = $17, notas = $18
-       WHERE id = $19
+         fecha_registro = $17, notas = $18, destacado = $19
+       WHERE id = $20
        RETURNING *`,
       [nombre, descripcion, texto_asistente, imagen_url || null, codigo_qr, categoria || null,
        codigo_roca || null, latitud || null, longitud || null, altitud_m || null,
        cantidad_caras || null, profundidad_surco || null, forma_surco || null,
        exposicion_solar || null, orientacion || null, estado_conservacion || null,
-       fecha_registro || null, notas || null, id]
+       fecha_registro || null, notas || null, destacado || false, id]
     );
 
     if (!rows[0]) return error(res, 'Petroglifo no encontrado.', 404);

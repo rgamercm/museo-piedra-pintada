@@ -41,6 +41,7 @@ CREATE TABLE petroglifos (
   imagen_url       VARCHAR(500),
   codigo_qr        VARCHAR(50)   NOT NULL UNIQUE,
   categoria        VARCHAR(100),
+  destacado        BOOLEAN       NOT NULL DEFAULT FALSE,
   creado_en        TIMESTAMP     NOT NULL DEFAULT NOW()
 );
 

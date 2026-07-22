@@ -40,7 +40,8 @@ router.post(
     body('orientacion').optional({ checkFalsy: true }).isLength({ max: 100 }),
     body('estado_conservacion').optional({ checkFalsy: true }).isLength({ max: 50 }),
     body('fecha_registro').optional({ checkFalsy: true }).isLength({ max: 50 }),
-    body('notas').optional({ checkFalsy: true })
+    body('notas').optional({ checkFalsy: true }),
+    body('destacado').optional().isBoolean().withMessage('Destacado debe ser un booleano.')
   ],
   validar,
   ctrl.crear
@@ -70,7 +71,8 @@ router.put(
     body('orientacion').optional({ checkFalsy: true }).isLength({ max: 100 }),
     body('estado_conservacion').optional({ checkFalsy: true }).isLength({ max: 50 }),
     body('fecha_registro').optional({ checkFalsy: true }).isLength({ max: 50 }),
-    body('notas').optional({ checkFalsy: true })
+    body('notas').optional({ checkFalsy: true }),
+    body('destacado').optional().isBoolean().withMessage('Destacado debe ser un booleano.')
   ],
   validar,
   ctrl.editar

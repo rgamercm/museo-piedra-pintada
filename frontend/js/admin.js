@@ -154,6 +154,10 @@ function abrirModalPetroglifo(id = null) {
       document.getElementById('petroglifo-codigo_qr').value = p.codigo_qr || '';
       document.getElementById('petroglifo-descripcion').value = p.descripcion;
       document.getElementById('petroglifo-texto_asistente').value = p.texto_asistente;
+      
+      const checkboxDestacado = document.getElementById('petroglifo-destacado');
+      if (checkboxDestacado) checkboxDestacado.checked = !!p.destacado;
+
       document.getElementById('petroglifo-imagen_url').value = p.imagen_url || '';
       document.getElementById('petroglifo-imagen').value = '';
       // Ficha técnica
@@ -205,6 +209,9 @@ document.getElementById('form-petroglifo')?.addEventListener('submit', async (e)
   try {
     let petroglifoId = id ? parseInt(id) : null;
     const isNew = !petroglifoId;
+    
+    const checkboxDestacado = document.getElementById('petroglifo-destacado');
+    const destacado = checkboxDestacado ? checkboxDestacado.checked : false;
 
     const val = (campo) => { const el = document.getElementById('petroglifo-'+campo); return el && el.value !== '' ? el.value : null; };
     const datos = {
@@ -213,6 +220,7 @@ document.getElementById('form-petroglifo')?.addEventListener('submit', async (e)
       codigo_qr: document.getElementById('petroglifo-codigo_qr').value,
       descripcion: document.getElementById('petroglifo-descripcion').value,
       texto_asistente: document.getElementById('petroglifo-texto_asistente').value,
+      destacado: destacado,
       imagen_url: imagenUrl || null,
       codigo_roca: val('codigo_roca'),
       fecha_registro: val('fecha_registro'),
