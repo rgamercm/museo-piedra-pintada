@@ -319,9 +319,7 @@ document.getElementById('link-recuperar').addEventListener('click', (e) => {
   panelRecuperar.style.display = 'block';
 });
 
-document.getElementById('btn-volver-login').addEventListener('click', () => {
-  document.getElementById('tab-login').click();
-});
+// El antiguo listener btn-volver-login fue eliminado para evitar TypeError
 
 // Mostrar/ocultar contraseña
 document.getElementById('toggle-pass-login').addEventListener('click', () => {
