@@ -110,7 +110,7 @@
     <span class="etiqueta">Orientación en el parque</span>
     <h1>Mapa del Parque Arqueológico</h1>
     <div class="divisor divisor--left"></div>
-    <p class="subtitulo" style="margin-top:.5rem;">Todos los petroglifos georreferenciados. Descarga el mapa para usarlo sin señal durante el recorrido.</p>
+    <p class="subtitulo" style="margin-top:.5rem;">Recorrido por las 5 estaciones (montículos) con petroglifos documentados. Descarga el mapa para usarlo sin señal durante la visita.</p>
   </div>
 </section>
 
@@ -143,20 +143,30 @@
       <button class="btn btn--contorno btn--sm" style="margin-left:auto;" id="btn-descargar-mapa-2">Descargar</button>
     </div>
 
-    <!-- Lista de estaciones -->
+    <!-- Estaciones del recorrido (montículos del informe AmerGraph 2023) -->
     <div style="margin-top:2.5rem;">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.25rem;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:.5rem;">
         <h2 style="font-size:1.3rem;margin:0;">Estaciones del recorrido</h2>
         <div style="display:flex;align-items:center;gap:.6rem;">
-          <span style="font-size:.8rem;color:var(--color-texto-3);white-space:nowrap;">Visitados:</span>
+          <span style="font-size:.8rem;color:var(--color-texto-3);white-space:nowrap;">Visitadas:</span>
           <div class="barra-carga" style="width:140px;"><div class="barra-carga__inner" id="barra-progreso-mapa" style="width:0%;animation:none;"></div></div>
-          <span style="font-size:.85rem;font-weight:600;color:var(--color-dorado-claro);" id="texto-progreso-mapa">0/0</span>
+          <span style="font-size:.85rem;font-weight:600;color:var(--color-dorado-claro);" id="texto-progreso-mapa">0/5</span>
         </div>
       </div>
+      <p style="font-size:.82rem;color:var(--color-texto-3);margin-bottom:1.25rem;">5 montículos recorribles según el plano arqueológico (AmerGraph 2023). Toca una estación para ver sus petroglifos.</p>
       <div style="margin-bottom:1rem;max-width:380px;">
-        <input type="search" class="form-input" id="buscar-estacion" placeholder="Buscar por código (ej. S9R81) o nombre..." aria-label="Buscar petroglifo del recorrido">
+        <input type="search" class="form-input" id="buscar-estacion" placeholder="Buscar petroglifo por código (ej. S9R81)..." aria-label="Buscar petroglifo del recorrido">
       </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;" id="grid-estaciones-mapa"></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;" id="grid-estaciones-mapa"></div>
+    </div>
+
+    <!-- Apartado: petroglifos adyacentes de la estación seleccionada -->
+    <div style="margin-top:2rem;" id="panel-monticulo" role="region" aria-label="Petroglifos de la estación seleccionada">
+      <div style="border-top:1px solid var(--glass-border);padding-top:1.5rem;">
+        <h3 style="font-size:1.15rem;margin:0 0 .3rem;color:var(--color-dorado-claro);" id="panel-monticulo-titulo">Estación</h3>
+        <p style="font-size:.82rem;color:var(--color-texto-3);margin-bottom:1.25rem;" id="panel-monticulo-nota"></p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:1rem;" id="grid-petroglifos-monticulo"></div>
+      </div>
     </div>
   </div>
 </section>
@@ -229,11 +239,11 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 <script src="../js/mock-data.js"></script>
-<script src="../js/estaciones-datos.js?v=1.1"></script>
+<script src="../js/estaciones-datos.js?v=1.2"></script>
 <script src="../js/componentes.js?v=2.4"></script>
 <script src="../js/api.js?v=1.5"></script>
 <script src="../js/qr-voz.js?v=1.4"></script>
-<script src="../js/mapa-gps.js?v=1.8"></script>
+<script src="../js/mapa-gps.js?v=1.9"></script>
 <script src="../js/app.js?v=1.4"></script>
 </body>
 </html>

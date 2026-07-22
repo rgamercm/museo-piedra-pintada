@@ -144,4 +144,53 @@ function clasificarPorRuta(estaciones, coordsRuta) {
   return estaciones;
 }
 
-window.MuseoEstaciones = { PETROGLIFOS_POR_PARADA, UMBRAL_RUTA_M, cargarTrack, construirEstaciones, clasificarPorRuta };
+// ── Montículos: estaciones del recorrido (informe K. Juszczyk, AmerGraph 2023) ──
+// El plano del informe agrupa las rocas documentadas en 2022 en montículos.
+// El recorrido guiado usa las 5 estaciones RECORRIBLES del plano; las rocas
+// de las otras zonas del parque (extremo norte y sur) pertenecen a las 2
+// estaciones no recorribles y quedan fuera del tour.
+// Centros: centroides de las rocas de la BD dentro de cada polígono del plano.
+const MONTICULOS_BASE = [
+  { id: 1, nombre: 'Montículo 1', latitud: 10.30034, longitud: -67.88703 },
+  { id: 2, nombre: 'Montículo 2', latitud: 10.30113, longitud: -67.88699 },
+  { id: 3, nombre: 'Montículo 3', latitud: 10.30193, longitud: -67.88727 },
+  { id: 4, nombre: 'Montículo 4', latitud: 10.30293, longitud: -67.88852 },
+  { id: 5, nombre: 'Montículo 5', latitud: 10.30421, longitud: -67.88843 },
+];
+
+// Una roca pertenece al montículo más cercano si está dentro de este radio;
+// más lejos se considera de una zona no recorrible del parque.
+const RADIO_MONTICULO_M = 140;
+
+/**
+ * Agrupa las estaciones/petroglifos en los 5 montículos recorribles.
+ * Anota cada estación con monticulo_id (o null si queda fuera).
+ * @returns {{monticulos: Array, fuera: Array}} montículos con su lista
+ *          de petroglifos, y las rocas fuera de las estaciones recorribles.
+ */
+function agruparEnMonticulos(estaciones) {
+  const monticulos = MONTICULOS_BASE.map(m => ({ ...m, petroglifos: [] }));
+  const fuera = [];
+  for (const est of estaciones) {
+    const lat = parseFloat(est.latitud), lng = parseFloat(est.longitud);
+    if (!isFinite(lat) || !isFinite(lng)) { est.monticulo_id = null; fuera.push(est); continue; }
+    let mejor = null, mejorDist = Infinity;
+    for (const m of monticulos) {
+      const d = _haversine(lat, lng, m.latitud, m.longitud);
+      if (d < mejorDist) { mejorDist = d; mejor = m; }
+    }
+    if (mejor && mejorDist <= RADIO_MONTICULO_M) {
+      est.monticulo_id = mejor.id;
+      mejor.petroglifos.push(est);
+    } else {
+      est.monticulo_id = null;
+      fuera.push(est);
+    }
+  }
+  return { monticulos, fuera };
+}
+
+window.MuseoEstaciones = {
+  PETROGLIFOS_POR_PARADA, UMBRAL_RUTA_M, MONTICULOS_BASE, RADIO_MONTICULO_M,
+  cargarTrack, construirEstaciones, clasificarPorRuta, agruparEnMonticulos,
+};
