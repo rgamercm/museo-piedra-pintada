@@ -625,9 +625,8 @@
           de años.</p>
       </div>
 
-      <div
-        style="text-align:center;padding:3rem;background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1rem;color:var(--color-texto-3);">
-        Próximamente se publicarán los petroglifos destacados del catálogo.
+      <div class="petroglifos-grid" id="contenedor-destacados">
+        <!-- Renderizado por JS -->
       </div>
 
       <div style="text-align:center;margin-top:2.5rem;" class="revelar">
@@ -961,6 +960,31 @@
         ]);
         if (Array.isArray(petros)) {
           updateContador(['hero-stat-petros', 'cifras-stat-petros'], petros.length);
+          
+          // Renderizar Destacados
+          const destacadosContainer = document.getElementById('contenedor-destacados');
+          if (destacadosContainer) {
+            const destacados = petros.filter(p => p.destacado);
+            if (destacados.length > 0) {
+              destacadosContainer.innerHTML = destacados.map(p => `
+                <a href="pages/petroglifo-detalle.html?id=${p.id}" class="petroglifo-card revelar" id="card-petroglifo-home-${p.id}">
+                  <div class="petroglifo-card__img-wrap">
+                    <img src="${(p.imagen_url || '').replace(/^\/assets\//, 'assets/') || 'assets/img/petroglifo-01.png'}" alt="${p.nombre}" loading="lazy" onerror="this.onerror=null; this.src='assets/img/petroglifo-01.png';">
+                    ${p.categoria ? `<span class="petroglifo-card__badge">${p.categoria}</span>` : ''}
+                  </div>
+                  <div class="petroglifo-card__content">
+                    <h3 class="petroglifo-card__title">${p.nombre}</h3>
+                    <div class="petroglifo-card__meta">
+                      <span>📍 ${p.estacion_nombre || 'Múltiples estaciones'}</span>
+                    </div>
+                    <p class="petroglifo-card__desc">${p.descripcion}</p>
+                  </div>
+                </a>
+              `).join('');
+            } else {
+              destacadosContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align:center;padding:3rem;background:var(--grad-card);border:1px solid var(--glass-border);border-radius:1rem;color:var(--color-texto-3);">Aún no se han destacado petroglifos en el catálogo.</div>`;
+            }
+          }
         }
         if (Array.isArray(estaciones)) {
           updateContador(['hero-stat-estaciones', 'cifras-stat-estaciones'], estaciones.length);
