@@ -745,6 +745,13 @@ document.getElementById('btn-simular-gps').addEventListener('click', () => {
     return;
   }
 
+  // Detener el rastreo GPS real: si sigue activo, cada lectura devuelve el
+  // marcador a la ubicación real y produce "tirones" contra el simulador.
+  if (idWatchPosition !== null) {
+    navigator.geolocation.clearWatch(idWatchPosition);
+    idWatchPosition = null;
+  }
+
   window.Museo?.mostrarToast('Simulador iniciado. Recorriendo la ruta...', 'exito');
   indiceSimulador = 0;
 
