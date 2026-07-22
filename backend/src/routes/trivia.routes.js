@@ -3,7 +3,7 @@
 const { Router } = require('express');
 const { body, param, query } = require('express-validator');
 const { validar } = require('../middlewares/validacion');
-const { requiereSesion, requiereRol } = require('../middlewares/auth');
+const { requiereSesion, requiereRol, sesionOpcional } = require('../middlewares/auth');
 const ctrl = require('../controllers/trivia.controller');
 
 const router = Router();
@@ -20,7 +20,6 @@ router.get(
   ctrl.obtenerSetAleatorio
 );
 
-const { sesionOpcional } = require('../middlewares/auth');
 
 // POST /api/trivia/verificar (Público, sesión opcional)
 router.post(
