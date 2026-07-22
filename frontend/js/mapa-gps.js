@@ -101,12 +101,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     estacionesDatos = window.MuseoEstaciones.construirEstaciones(paradasTrack);
   }
 
-  // Normalizar coordenadas (la API las devuelve como strings) y clasificar
-  // cada estación respecto al sendero: cuáles pasan por el recorrido
-  // (enRuta, con su orden de caminata) y cuáles quedan fuera.
+  // Normalizar la forma de los datos: la API devuelve coordenadas como
+  // strings y la ficha del petroglifo anidada en est.petroglifo (sin los
+  // campos planos petroglifo_* que usa esta página y el respaldo local).
   estacionesDatos.forEach(est => {
     est.latitud = parseFloat(est.latitud);
     est.longitud = parseFloat(est.longitud);
+    const ficha = est.petroglifo || null;
+    est.petroglifo_codigo_qr = est.petroglifo_codigo_qr || ficha?.codigo_qr || null;
+    est.petroglifo_imagen_url = est.petroglifo_imagen_url || ficha?.imagen_url || null;
+    est.petroglifo_categoria = est.petroglifo_categoria || ficha?.categoria || null;
+    est.petroglifo_texto_asistente = est.petroglifo_texto_asistente
+      || ficha?.texto_asistente || ficha?.descripcion || est.descripcion || null;
   });
   window.MuseoEstaciones.clasificarPorRuta(estacionesDatos, geojsonCoords);
 
@@ -732,10 +738,17 @@ function tarjetaEstacion(est, atenuada) {
   `;
 }
 
+let filtroGridEstaciones = '';
+
 function renderizarGridEstaciones(estaciones) {
   const grid = document.getElementById('grid-estaciones-mapa');
-  const enRuta = estaciones.filter(e => e.enRuta);
-  const fueraRuta = estaciones.filter(e => !e.enRuta);
+  const term = filtroGridEstaciones.toLowerCase().trim();
+  const coincide = e => !term
+    || (e.nombre || '').toLowerCase().includes(term)
+    || (e.petroglifo_codigo_qr || '').toLowerCase().includes(term);
+
+  const enRuta = estaciones.filter(e => e.enRuta && coincide(e));
+  const fueraRuta = estaciones.filter(e => !e.enRuta && coincide(e));
 
   let html = enRuta.map(e => tarjetaEstacion(e, false)).join('');
 
@@ -748,5 +761,169 @@ function renderizarGridEstaciones(estaciones) {
     html += fueraRuta.map(e => tarjetaEstacion(e, true)).join('');
   }
 
+  if (!enRuta.length && !fueraRuta.length) {
+    html = `<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--color-texto-3);">No se encontraron petroglifos con ese criterio.</div>`;
+  }
+
   grid.innerHTML = html;
+  actualizarProgresoMapa();
 }
+
+// Buscador de la lista (por nombre o código QR, ej. "S9R81")
+document.getElementById('buscar-estacion')?.addEventListener('input', e => {
+  filtroGridEstaciones = e.target.value;
+  renderizarGridEstaciones(estacionesDatos);
+});
+
+/** Barra "Visitados X/Y" del recorrido (solo cuenta estaciones del sendero). */
+function actualizarProgresoMapa() {
+  const barra = document.getElementById('barra-progreso-mapa');
+  const texto = document.getElementById('texto-progreso-mapa');
+  if (!barra || !texto) return;
+  const enRuta = estacionesDatos.filter(e => e.enRuta);
+  const total = enRuta.length || estacionesDatos.length;
+  const completas = (enRuta.length ? enRuta : estacionesDatos).filter(e => e.completada).length;
+  barra.style.width = (total ? Math.round(completas / total * 100) : 0) + '%';
+  texto.textContent = `${completas}/${total}`;
+}
+
+
+// ============================================================================
+// ESCÁNER QR INTEGRADO (antes vivía en recorrido.html)
+// ============================================================================
+
+let qrFrameId = null;
+let qrStream = null;
+
+function abrirEscanerQR() {
+  document.getElementById('modal-qr').classList.add('activo');
+}
+
+function cerrarEscanerQR() {
+  detenerCamaraQR();
+  document.getElementById('modal-qr').classList.remove('activo');
+}
+
+function detenerCamaraQR() {
+  if (qrFrameId) { cancelAnimationFrame(qrFrameId); clearTimeout(qrFrameId); qrFrameId = null; }
+  if (qrStream) {
+    qrStream.getTracks().forEach(t => t.stop());
+    qrStream = null;
+  }
+  const video = document.getElementById('qr-video');
+  if (video) { video.srcObject = null; video.style.display = 'none'; }
+  const ph = document.getElementById('qr-placeholder');
+  if (ph) ph.style.display = '';
+  const linea = document.getElementById('qr-linea');
+  if (linea) linea.style.display = 'none';
+}
+
+/** Busca la estación cuyo código QR coincide con el contenido escaneado.
+ *  Acepta el código pelado ("S9R81") o una URL que lo contenga. Se extrae el
+ *  código con regex para evitar falsos positivos (S9R1 dentro de S9R11). */
+function estacionPorCodigoQR(contenido) {
+  const texto = String(contenido || '').trim();
+  const exacta = estacionesDatos.find(e => e.petroglifo_codigo_qr === texto);
+  if (exacta) return exacta;
+  const m = texto.match(/S\d+R\d+/i);
+  if (!m) return null;
+  const codigo = m[0].toUpperCase();
+  return estacionesDatos.find(e => (e.petroglifo_codigo_qr || '').toUpperCase() === codigo) || null;
+}
+
+/** Flujo al escanear el QR de un petroglifo: igual que llegar caminando. */
+function procesarEscaneoQR(est) {
+  cerrarEscanerQR();
+  window.Museo?.mostrarToast(`QR escaneado: ${est.nombre}`, 'exito');
+
+  if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+
+  // Marcar visitada + persistir (mismo registro que la llegada por GPS)
+  est.completada = true;
+  if (est.petroglifo_id) {
+    const historial = JSON.parse(localStorage.getItem('museo_historial') || '[]');
+    if (!historial.includes(est.petroglifo_id)) {
+      historial.push(est.petroglifo_id);
+      localStorage.setItem('museo_historial', JSON.stringify(historial));
+    }
+  }
+  renderizarGridEstaciones(estacionesDatos);
+
+  // Mostrar en el mapa y narrar su ficha
+  const marcador = marcadores[est.id];
+  if (marcador) {
+    mapa.setView([est.latitud, est.longitud], 18);
+    marcador.openPopup();
+  }
+  if (est.petroglifo_texto_asistente) {
+    window.MuseoVoz?.detenerVoz();
+    window.MuseoVoz?.narrar(est.petroglifo_texto_asistente);
+  }
+
+  // Si está navegando y era el destino, avanzar a la siguiente del sendero
+  if (modoNavegacion && est.id === estacionDestinoId) {
+    const pendientes = estacionesDatos.filter(e => e.enRuta && !e.completada);
+    if (pendientes.length > 0) estacionDestinoId = pendientes[0].id;
+  }
+}
+
+document.getElementById('btn-abrir-qr')?.addEventListener('click', abrirEscanerQR);
+document.getElementById('btn-cerrar-qr')?.addEventListener('click', cerrarEscanerQR);
+document.getElementById('modal-qr')?.addEventListener('click', e => {
+  if (e.target.id === 'modal-qr') cerrarEscanerQR();
+});
+
+document.getElementById('btn-activar-camara')?.addEventListener('click', async () => {
+  try {
+    qrStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+    const video = document.getElementById('qr-video');
+    const canvas = document.getElementById('qr-canvas');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+    video.srcObject = qrStream;
+    video.setAttribute('playsinline', true);
+    video.play();
+
+    video.style.display = '';
+    document.getElementById('qr-placeholder').style.display = 'none';
+    document.getElementById('qr-linea').style.display = '';
+    window.Museo?.mostrarToast('Cámara activa — apunta al código QR del petroglifo', 'info');
+
+    const escanearFrame = () => {
+      if (!qrStream) return; // cámara detenida
+      if (video.readyState === video.HAVE_ENOUGH_DATA && window.jsQR) {
+        canvas.height = video.videoHeight;
+        canvas.width = video.videoWidth;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const codigo = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'dontInvert' });
+
+        if (codigo && codigo.data) {
+          const est = estacionPorCodigoQR(codigo.data);
+          if (est) {
+            procesarEscaneoQR(est);
+            return;
+          }
+          window.Museo?.mostrarToast('Código QR no reconocido como petroglifo del museo.', 'aviso');
+          qrFrameId = setTimeout(() => { qrFrameId = requestAnimationFrame(escanearFrame); }, 2000);
+          return;
+        }
+      }
+      qrFrameId = requestAnimationFrame(escanearFrame);
+    };
+
+    qrFrameId = requestAnimationFrame(escanearFrame);
+  } catch (e) {
+    window.Museo?.mostrarToast('No se pudo acceder a la cámara. Verifica los permisos.', 'aviso');
+  }
+});
+
+// Demo sin cámara: escanea la primera estación pendiente del sendero
+document.getElementById('btn-simular-qr')?.addEventListener('click', () => {
+  const pendientes = estacionesDatos.filter(e => e.enRuta && !e.completada);
+  if (!pendientes.length) {
+    window.Museo?.mostrarToast('¡Todas las estaciones del sendero están completadas!', 'info');
+    return;
+  }
+  procesarEscaneoQR(pendientes[0]);
+});
