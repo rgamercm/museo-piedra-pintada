@@ -47,12 +47,22 @@ router.post(
 );
 
 router.post(
-  '/recuperar-contrasena',
+  '/preguntas-seguridad',
   [
     body('correo').trim().isEmail().withMessage('Correo inválido.').normalizeEmail()
   ],
   validar,
-  ctrl.solicitarRecuperacion
+  ctrl.obtenerPreguntasSeguridad
+);
+
+router.post(
+  '/verificar-seguridad',
+  [
+    body('correo').trim().isEmail().withMessage('Correo inválido.').normalizeEmail(),
+    body('respuestas').isObject().withMessage('Las respuestas deben ser un objeto.')
+  ],
+  validar,
+  ctrl.verificarPreguntasSeguridad
 );
 
 router.post(

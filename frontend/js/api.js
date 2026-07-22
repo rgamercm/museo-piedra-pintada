@@ -97,10 +97,15 @@ const api = {
       headers: api.getHeaders(),
       body: JSON.stringify(datos)
     }),
-    recuperarContrasena: (correo) => api.request('/auth/recuperar-contrasena', {
+    obtenerPreguntasSeguridad: (correo) => api.request('/auth/preguntas-seguridad', {
       method: 'POST',
       headers: api.getHeaders(),
       body: JSON.stringify({ correo })
+    }),
+    verificarPreguntasSeguridad: (correo, respuestas) => api.request('/auth/verificar-seguridad', {
+      method: 'POST',
+      headers: api.getHeaders(),
+      body: JSON.stringify({ correo, respuestas })
     }),
     restablecerContrasena: (token, correo, nuevaContrasena) => api.request('/auth/restablecer-contrasena', {
       method: 'POST',

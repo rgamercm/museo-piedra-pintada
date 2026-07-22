@@ -29,6 +29,7 @@ CREATE TABLE usuarios (
   rol                 VARCHAR(20)   NOT NULL DEFAULT 'registrado'
                         CHECK (rol IN ('visitante','registrado','institucion','admin')),
   institucion_nombre  VARCHAR(200),
+  preguntas_seguridad JSONB         DEFAULT '[]'::jsonb,
   creado_en           TIMESTAMP     NOT NULL DEFAULT NOW()
 );
 
