@@ -47,7 +47,7 @@ async function crear(req, res, next) {
     }
 
     if (!usuario_id && correo) {
-      const { rows: usuarios } = await db.query('SELECT id FROM usuarios WHERE email = $1', [correo]);
+      const { rows: usuarios } = await db.query('SELECT id FROM usuarios WHERE correo = $1', [correo]);
       if (usuarios.length > 0) {
         usuario_id = usuarios[0].id;
       } else {
