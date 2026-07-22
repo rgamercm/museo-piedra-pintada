@@ -35,7 +35,7 @@
       <div style="flex: 1; min-width: 260px;">
         <strong style="color: var(--color-dorado-claro); font-family: var(--font-titulo); font-size: 1.05rem;">Informe arqueológico completo</strong>
         <p style="font-size: .85rem; color: var(--color-texto-2); margin: .35rem 0 0; line-height: 1.5;">
-          Documentación integral de las 111 rocas del Sitio 9 realizada por <strong>K. Juszczyk</strong> (Proyecto AmerGraph 2023, Universidad de Varsovia). Fichas, calqueos, coordenadas y análisis. Uso académico/educativo.
+          Estudio arqueológico de la Dra. <strong>Karolina Juszczyk</strong> (Proyecto AmerGraph 2023, Universidad de Varsovia) sobre distintos sitios de arte rupestre en Venezuela. Incluye la documentación del Sitio 9 — Piedra Pintada — junto a otros sitios investigados por la autora, con fichas, calqueos, coordenadas y análisis. Uso académico/educativo.
         </p>
       </div>
       <button type="button" class="btn btn--primario" id="btn-abrir-solicitud-informe">📥 Descargar informe</button>
@@ -258,8 +258,24 @@ document.getElementById('btn-cancelar-solicitud')?.addEventListener('click', cer
 modalSolicitud.addEventListener('click', e => { if (e.target === modalSolicitud) cerrarModalSolicitud(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && modalSolicitud.style.display === 'flex') cerrarModalSolicitud(); });
 
-document.getElementById('form-solicitud-informe').addEventListener('submit', async (e) => {
+// Abre la URL SIEMPRE en una nueva pestaña. Usar un <a target="_blank">
+// clickeado durante el gesto de usuario es más confiable que window.open,
+// que en algunos navegadores devuelve null con noopener y hace que caiga en
+// un fallback a la misma pestaña.
+function abrirEnNuevaPestana(url) {
+  const a = document.createElement('a');
+  a.href = url;
+  a.target = '_blank';
+  a.rel = 'noopener noreferrer';
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+document.getElementById('form-solicitud-informe').addEventListener('submit', (e) => {
   e.preventDefault();
+
   const registro = {
     nombre: document.getElementById('sol-nombre').value.trim(),
     correo: document.getElementById('sol-correo').value.trim(),
@@ -268,19 +284,26 @@ document.getElementById('form-solicitud-informe').addEventListener('submit', asy
     fecha: new Date().toISOString(),
   };
 
-  // Log local persistente (para que el museo pueda revisar quién lo pidió).
-  try {
-    const historial = JSON.parse(localStorage.getItem('museo_solicitudes_informe') || '[]');
-    historial.push(registro);
-    localStorage.setItem('museo_solicitudes_informe', JSON.stringify(historial));
-  } catch (err) { /* almacenamiento lleno o bloqueado, no es crítico */ }
+  // 1) Abrir el informe en nueva pestaña — hacerlo PRIMERO y sincrónico
+  //    dentro del gesto de usuario evita que el navegador lo bloquee.
+  abrirEnNuevaPestana(URL_INFORME);
 
   cerrarModalSolicitud();
   e.target.reset();
   window.Museo?.mostrarToast('Abriendo el informe en una nueva pestaña…', 'exito');
-  const win = window.open(URL_INFORME, '_blank', 'noopener,noreferrer');
-  // Fallback si el navegador bloquea el pop-up.
-  if (!win) window.location.href = URL_INFORME;
+
+  // 2) Registrar la solicitud en el Panel Admin (backend) y como respaldo
+  //    local, sin bloquear la apertura del PDF.
+  try {
+    const historial = JSON.parse(localStorage.getItem('museo_solicitudes_informe') || '[]');
+    historial.push(registro);
+    localStorage.setItem('museo_solicitudes_informe', JSON.stringify(historial));
+  } catch (_) { /* almacenamiento lleno/bloqueado, no crítico */ }
+
+  window.api?.cliente('/api/solicitudes-informe', {
+    method: 'POST',
+    body: JSON.stringify(registro),
+  }).catch(err => console.warn('No se pudo registrar la solicitud en el servidor:', err));
 });
 
 // Iniciar

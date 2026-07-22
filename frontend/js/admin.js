@@ -715,7 +715,61 @@ window.cambiarSeccion = function(id) {
   if(id === 'trivia-admin') cargarTriviaAdmin();
   if(id === 'editor-mapa') inicializarMapaAdmin();
   if(id === 'configuracion') cargarConfiguracion();
+  if(id === 'solicitudes-informe') cargarSolicitudesInforme();
 }
+
+// ── Solicitudes del informe arqueológico (K. Juszczyk 2023) ────────────
+async function cargarSolicitudesInforme() {
+  const tbody = document.getElementById('tbody-solicitudes-informe');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr class="empty-row"><td colspan="6">Cargando solicitudes…</td></tr>';
+  try {
+    const res = await window.api.cliente('/api/solicitudes-informe');
+    const lista = Array.isArray(res.datos) ? res.datos : [];
+    const badge = document.getElementById('badge-solicitudes');
+    if (badge) badge.textContent = lista.length ? String(lista.length) : '';
+
+    if (!lista.length) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="6">Aún no hay solicitudes registradas.</td></tr>';
+      return;
+    }
+
+    const esc = (s) => String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+
+    tbody.innerHTML = lista.map(s => {
+      const f = new Date(s.creado_en);
+      const fecha = isNaN(f) ? esc(s.creado_en) : f.toLocaleString('es-VE', { dateStyle: 'short', timeStyle: 'short' });
+      return `<tr>
+        <td style="white-space:nowrap;font-size:.85rem;color:var(--color-texto-2);">${esc(fecha)}</td>
+        <td><strong>${esc(s.nombre)}</strong></td>
+        <td><a href="mailto:${esc(s.correo)}" style="color:var(--color-dorado-claro);">${esc(s.correo)}</a></td>
+        <td style="color:var(--color-texto-2);">${esc(s.institucion) || '<span style="color:var(--color-texto-3);">—</span>'}</td>
+        <td style="max-width:340px;font-size:.85rem;color:var(--color-texto-2);white-space:pre-wrap;">${esc(s.finalidad)}</td>
+        <td><button class="btn btn--contorno btn--sm" onclick="eliminarSolicitudInforme(${s.id})" style="color:#F09090;border-color:#F09090;">Eliminar</button></td>
+      </tr>`;
+    }).join('');
+  } catch (e) {
+    console.error('Error cargando solicitudes:', e);
+    tbody.innerHTML = `<tr class="empty-row"><td colspan="6">No se pudieron cargar las solicitudes: ${e.message || 'error de red'}</td></tr>`;
+  }
+}
+
+window.eliminarSolicitudInforme = async function (id) {
+  if (!confirm('¿Eliminar esta solicitud?')) return;
+  try {
+    await window.api.cliente(`/api/solicitudes-informe/${id}`, { method: 'DELETE' });
+    window.Museo?.mostrarToast('Solicitud eliminada', 'exito');
+    cargarSolicitudesInforme();
+  } catch (e) {
+    window.Museo?.mostrarToast('No se pudo eliminar: ' + (e.message || 'error'), 'error');
+  }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('btn-refrescar-solicitudes')?.addEventListener('click', cargarSolicitudesInforme);
+});
 
 async function cargarConfiguracion() {
   try {
