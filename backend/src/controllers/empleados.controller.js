@@ -8,14 +8,10 @@ const { exito, error } = require('../utils/respuestas');
  */
 exports.obtenerTodos = async (req, res) => {
   try {
-    const { data, error: err } = await db.client
-      .from('empleados')
-      .select('*')
-      .order('orden', { ascending: true })
-      .order('creado_en', { ascending: false });
-
-    if (err) throw err;
-    return exito(res, data);
+    const { rows } = await db.query(
+      'SELECT * FROM empleados ORDER BY orden ASC, creado_en DESC'
+    );
+    return exito(res, rows);
   } catch (e) {
     return error(res, 'Error al obtener empleados', 500, e.message);
   }
@@ -28,14 +24,15 @@ exports.crear = async (req, res) => {
   try {
     const { nombre, cargo, descripcion, imagen_url, orden, destacado } = req.body;
 
-    const { data, error: err } = await db.client
-      .from('empleados')
-      .insert([{ nombre, cargo, descripcion, imagen_url, orden: orden || 0, destacado: destacado ?? true }])
-      .select()
-      .single();
+    const query = `
+      INSERT INTO empleados (nombre, cargo, descripcion, imagen_url, orden, destacado)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING *
+    `;
+    const valores = [nombre, cargo, descripcion, imagen_url, orden || 0, destacado ?? true];
 
-    if (err) throw err;
-    return exito(res, data, 201);
+    const { rows } = await db.query(query, valores);
+    return exito(res, rows[0], 201);
   } catch (e) {
     return error(res, 'Error al crear empleado', 500, e.message);
   }
@@ -47,17 +44,11 @@ exports.crear = async (req, res) => {
 exports.obtenerPorId = async (req, res) => {
   try {
     const { id } = req.params;
-    const { data, error: err } = await db.client
-      .from('empleados')
-      .select('*')
-      .eq('id', id)
-      .single();
+    const { rows } = await db.query('SELECT * FROM empleados WHERE id = $1', [id]);
 
-    if (err) {
-      if (err.code === 'PGRST116') return error(res, 'Empleado no encontrado', 404);
-      throw err;
-    }
-    return exito(res, data);
+    if (rows.length === 0) return error(res, 'Empleado no encontrado', 404);
+    
+    return exito(res, rows[0]);
   } catch (e) {
     return error(res, 'Error al obtener empleado', 500, e.message);
   }
@@ -71,25 +62,36 @@ exports.actualizar = async (req, res) => {
     const { id } = req.params;
     const { nombre, cargo, descripcion, imagen_url, orden, destacado } = req.body;
 
-    const campos = {};
-    if (nombre !== undefined) campos.nombre = nombre;
-    if (cargo !== undefined) campos.cargo = cargo;
-    if (descripcion !== undefined) campos.descripcion = descripcion;
-    if (imagen_url !== undefined) campos.imagen_url = imagen_url;
-    if (orden !== undefined) campos.orden = orden;
-    if (destacado !== undefined) campos.destacado = destacado;
+    // Construir la consulta de actualización dinámicamente
+    const campos = [];
+    const valores = [];
+    let i = 1;
 
-    const { data, error: err } = await db.client
-      .from('empleados')
-      .update(campos)
-      .eq('id', id)
-      .select()
-      .single();
+    if (nombre !== undefined) { campos.push(`nombre = $${i++}`); valores.push(nombre); }
+    if (cargo !== undefined) { campos.push(`cargo = $${i++}`); valores.push(cargo); }
+    if (descripcion !== undefined) { campos.push(`descripcion = $${i++}`); valores.push(descripcion); }
+    if (imagen_url !== undefined) { campos.push(`imagen_url = $${i++}`); valores.push(imagen_url); }
+    if (orden !== undefined) { campos.push(`orden = $${i++}`); valores.push(orden); }
+    if (destacado !== undefined) { campos.push(`destacado = $${i++}`); valores.push(destacado); }
 
-    if (err) throw err;
-    if (!data) return error(res, 'Empleado no encontrado', 404);
+    if (campos.length === 0) {
+      const { rows } = await db.query('SELECT * FROM empleados WHERE id = $1', [id]);
+      if (rows.length === 0) return error(res, 'Empleado no encontrado', 404);
+      return exito(res, rows[0]);
+    }
+
+    valores.push(id);
+    const query = `
+      UPDATE empleados 
+      SET ${campos.join(', ')} 
+      WHERE id = $${i} 
+      RETURNING *
+    `;
+
+    const { rows } = await db.query(query, valores);
+    if (rows.length === 0) return error(res, 'Empleado no encontrado', 404);
     
-    return exito(res, data);
+    return exito(res, rows[0]);
   } catch (e) {
     return error(res, 'Error al actualizar empleado', 500, e.message);
   }
@@ -101,14 +103,9 @@ exports.actualizar = async (req, res) => {
 exports.eliminar = async (req, res) => {
   try {
     const { id } = req.params;
-    const { data, error: err } = await db.client
-      .from('empleados')
-      .delete()
-      .eq('id', id)
-      .select();
+    const { rows } = await db.query('DELETE FROM empleados WHERE id = $1 RETURNING id', [id]);
 
-    if (err) throw err;
-    if (!data || data.length === 0) return error(res, 'Empleado no encontrado', 404);
+    if (rows.length === 0) return error(res, 'Empleado no encontrado', 404);
     
     return exito(res, { mensaje: 'Empleado eliminado correctamente' });
   } catch (e) {
