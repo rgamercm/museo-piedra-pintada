@@ -198,6 +198,20 @@ function generarFooter() {
         <ul class="footer__lista">
           <li><a href="https://maps.app.goo.gl/p6FLkBs1wx7HEK2S6?g_st=iw" target="_blank" rel="noopener noreferrer" class="footer__enlace" style="line-height:1.4; display:inline-block;">Sector Tronconero Norte de Vigirima,<br>Municipio Guacara, Edo. Carabobo,<br>Venezuela</a></li>
           <li><span class="footer__enlace">contacto@piedrapintada.ve</span></li>
+          <li style="margin-top: 1.5rem; display: flex; gap: 1rem; align-items: center;">
+            <a href="https://www.instagram.com/museopiedrapintada/" target="_blank" rel="noopener noreferrer" aria-label="Instagram del Museo" style="display:flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:50%; background:rgba(140, 115, 85, 0.1); color:var(--color-dorado-claro); transition:all 0.3s;" onmouseover="this.style.background='var(--color-dorado-claro)'; this.style.color='var(--color-fondo)';" onmouseout="this.style.background='rgba(140, 115, 85, 0.1)'; this.style.color='var(--color-dorado-claro)';">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+              </svg>
+            </a>
+            <a href="https://www.threads.com/@museopiedrapintada" target="_blank" rel="noopener noreferrer" aria-label="Threads del Museo" style="display:flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:50%; background:rgba(140, 115, 85, 0.1); color:var(--color-dorado-claro); transition:all 0.3s;" onmouseover="this.style.background='var(--color-dorado-claro)'; this.style.color='var(--color-fondo)';" onmouseout="this.style.background='rgba(140, 115, 85, 0.1)'; this.style.color='var(--color-dorado-claro)';">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 7.5c-1.333 -3 -3.667 -4.5 -7 -4.5c-5 0 -8 2.5 -8 9s3.5 9 8 9s7 -3 7 -5s-1 -5 -7 -5c-2.5 0 -3 1.25 -3 2.5c0 1.5 1 2.5 2.5 2.5c2.5 0 3.5 -1.5 3.5 -5s-2 -4 -3 -4s-1.833 .333 -2.5 1"></path>
+              </svg>
+            </a>
+          </li>
         </ul>
       </div>
     </div>
