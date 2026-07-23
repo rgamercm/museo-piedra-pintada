@@ -663,12 +663,8 @@
                   <td id="horario-td-lunes-viernes">Cargando...</td>
                 </tr>
                 <tr>
-                  <td>Sábado</td>
-                  <td id="horario-td-sabado">Cargando...</td>
-                </tr>
-                <tr>
-                  <td>Domingo</td>
-                  <td id="horario-td-domingo">Cargando...</td>
+                  <td>Sábado – Domingo</td>
+                  <td id="horario-td-fines-semana" class="horario-cerrado">Cargando...</td>
                 </tr>
                 <tr>
                   <td>Feriados</td>
@@ -832,8 +828,7 @@
         };
 
         setTd('horario-td-lunes-viernes', config.lunes_viernes || '9:00 am - 5:00 pm');
-        setTd('horario-td-sabado', config.sabado || '8:00 am - 6:00 pm');
-        setTd('horario-td-domingo', config.domingo || '9:00 am - 4:00 pm');
+        setTd('horario-td-fines-semana', 'Cerrado');
         setTd('horario-td-feriados', config.feriados || 'Consultar');
 
         // Logica basica para parsing de "8:00 am - 5:00 pm"
@@ -854,8 +849,7 @@
         let abierto = false;
         let strHorario = '';
         if (dia >= 1 && dia <= 5) strHorario = config.lunes_viernes || '9:00 am - 5:00 pm';
-        else if (dia === 6) strHorario = config.sabado;
-        else if (dia === 0) strHorario = config.domingo;
+        else if (dia === 6 || dia === 0) strHorario = 'Cerrado';
 
         if (strHorario && !strHorario.toLowerCase().includes('cerrado')) {
           const partes = strHorario.split('-');
